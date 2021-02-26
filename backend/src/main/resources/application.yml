@@ -1,0 +1,21 @@
+server:
+  port: 8080
+  tomcat:
+    threads:
+      max: 100
+
+spring:
+  datasource:
+    name: pgShoppy
+    generateUniqueName: false
+    url: jdbc:postgresql://localhost:5432/shoppy
+    username: shoppy
+    password: shoppy
+    platform: all
+    driverClassName: org.postgresql.Driver
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
