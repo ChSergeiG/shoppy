@@ -20,7 +20,7 @@ public class Tables {
     public static final Databasechangeloglock DATABASECHANGELOGLOCK = Databasechangeloglock.DATABASECHANGELOGLOCK;
 
     /**
-     * The table <code>public.Users</code>.
+     * The table <code>public.users</code>.
      */
     public static final Users USERS = Users.USERS;
 }

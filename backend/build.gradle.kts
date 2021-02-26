@@ -1,3 +1,5 @@
+val posgresVersion: String by rootProject
+
 plugins {
     java
     id("org.springframework.boot") version "2.4.3"
@@ -15,7 +17,7 @@ dependencies {
     implementation(group = "org.springframework.boot", name = "spring-boot-starter-jooq")
     implementation(group = "org.springframework.boot", name = "spring-boot-starter-web")
 
-    implementation(group = "org.postgresql", name = "postgresql")
+    implementation(group = "org.postgresql", name = "postgresql", version = posgresVersion)
 
     annotationProcessor(group = "org.mapstruct", name = "mapstruct-processor", version = "1.4.2.Final")
     implementation(group = "org.mapstruct", name = "mapstruct", version = "1.4.2.Final")

@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
@@ -37,7 +38,7 @@ public class Users extends TableImpl<UsersRecord> {
     private static final long serialVersionUID = 1L;
 
     /**
-     * The reference instance of <code>public.Users</code>
+     * The reference instance of <code>public.users</code>
      */
     public static final Users USERS = new Users();
 
@@ -50,17 +51,17 @@ public class Users extends TableImpl<UsersRecord> {
     }
 
     /**
-     * The column <code>public.Users.id</code>.
+     * The column <code>public.users.id</code>.
      */
-    public final TableField<UsersRecord, Integer> ID = createField(DSL.name("id"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field("nextval('\"Users_id_seq\"'::regclass)", SQLDataType.INTEGER)), this, "");
+    public final TableField<UsersRecord, Integer> ID = createField(DSL.name("id"), SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>public.Users.name</code>.
+     * The column <code>public.users.name</code>.
      */
-    public final TableField<UsersRecord, String> NAME = createField(DSL.name("name"), SQLDataType.VARCHAR(128).nullable(false), this, "");
+    public final TableField<UsersRecord, String> NAME = createField(DSL.name("name"), SQLDataType.VARCHAR(256).nullable(false), this, "");
 
     /**
-     * The column <code>public.Users.password</code>.
+     * The column <code>public.users.password</code>.
      */
     public final TableField<UsersRecord, String> PASSWORD = createField(DSL.name("password"), SQLDataType.VARCHAR(64), this, "");
 
@@ -73,24 +74,24 @@ public class Users extends TableImpl<UsersRecord> {
     }
 
     /**
-     * Create an aliased <code>public.Users</code> table reference
+     * Create an aliased <code>public.users</code> table reference
      */
     public Users(String alias) {
         this(DSL.name(alias), USERS);
     }
 
     /**
-     * Create an aliased <code>public.Users</code> table reference
+     * Create an aliased <code>public.users</code> table reference
      */
     public Users(Name alias) {
         this(alias, USERS);
     }
 
     /**
-     * Create a <code>public.Users</code> table reference
+     * Create a <code>public.users</code> table reference
      */
     public Users() {
-        this(DSL.name("Users"), null);
+        this(DSL.name("users"), null);
     }
 
     public <O extends Record> Users(Table<O> child, ForeignKey<O, UsersRecord> key) {
@@ -105,6 +106,11 @@ public class Users extends TableImpl<UsersRecord> {
     @Override
     public List<Index> getIndexes() {
         return Arrays.<Index>asList(Indexes.USERS_ID_UINDEX, Indexes.USERS_NAME_UINDEX);
+    }
+
+    @Override
+    public Identity<UsersRecord, Integer> getIdentity() {
+        return (Identity<UsersRecord, Integer>) super.getIdentity();
     }
 
     @Override

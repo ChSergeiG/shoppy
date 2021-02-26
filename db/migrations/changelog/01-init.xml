@@ -1,0 +1,26 @@
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+
+    <changeSet id="initial_schema" context="ddl" author="ChSergeiG">
+        <sql><![CDATA[
+         create table Users
+         (
+            id serial not null,
+            name varchar(256) not null,
+            password varchar(64)
+         );
+
+         create unique index users_id_uindex
+            on users (id);
+
+         create unique index users_name_uindex
+            on users (name);
+
+         alter table users
+            add constraint users_pk
+                primary key (id);
+        ]]></sql>
+    </changeSet>
+</databaseChangeLog>

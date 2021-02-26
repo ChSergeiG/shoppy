@@ -22,7 +22,7 @@ public class UsersRecord extends UpdatableRecordImpl<UsersRecord> implements Rec
     private static final long serialVersionUID = 1L;
 
     /**
-     * Setter for <code>public.Users.id</code>.
+     * Setter for <code>public.users.id</code>.
      */
     public UsersRecord setId(Integer value) {
         set(0, value);
@@ -30,14 +30,14 @@ public class UsersRecord extends UpdatableRecordImpl<UsersRecord> implements Rec
     }
 
     /**
-     * Getter for <code>public.Users.id</code>.
+     * Getter for <code>public.users.id</code>.
      */
     public Integer getId() {
         return (Integer) get(0);
     }
 
     /**
-     * Setter for <code>public.Users.name</code>.
+     * Setter for <code>public.users.name</code>.
      */
     public UsersRecord setName(String value) {
         set(1, value);
@@ -45,14 +45,14 @@ public class UsersRecord extends UpdatableRecordImpl<UsersRecord> implements Rec
     }
 
     /**
-     * Getter for <code>public.Users.name</code>.
+     * Getter for <code>public.users.name</code>.
      */
     public String getName() {
         return (String) get(1);
     }
 
     /**
-     * Setter for <code>public.Users.password</code>.
+     * Setter for <code>public.users.password</code>.
      */
     public UsersRecord setPassword(String value) {
         set(2, value);
@@ -60,7 +60,7 @@ public class UsersRecord extends UpdatableRecordImpl<UsersRecord> implements Rec
     }
 
     /**
-     * Getter for <code>public.Users.password</code>.
+     * Getter for <code>public.users.password</code>.
      */
     public String getPassword() {
         return (String) get(2);

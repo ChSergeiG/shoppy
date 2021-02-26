@@ -1,6 +1,8 @@
 import nu.studer.gradle.jooq.JooqEdition
 import org.jooq.meta.jaxb.Logging
 
+val posgresVersion: String by rootProject
+
 plugins {
     java
     id("nu.studer.jooq") version "5.2.1"
@@ -10,7 +12,7 @@ plugins {
 
 dependencies {
     implementation(group = "org.springframework.boot", name = "spring-boot-starter-jooq")
-    jooqGenerator(group = "org.postgresql", name = "postgresql", version = "42.2.14")
+    jooqGenerator(group = "org.postgresql", name = "postgresql", version = posgresVersion)
 }
 
 java {
@@ -36,6 +38,7 @@ jooq {
                     database.apply {
                         name = "org.jooq.meta.postgres.PostgresDatabase"
                         inputSchema = "public"
+                        excludes = "DATABASECHANGELOG*"
                     }
                     generate.apply {
                         isDeprecated = false

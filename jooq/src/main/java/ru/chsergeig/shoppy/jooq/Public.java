@@ -35,7 +35,7 @@ public class Public extends SchemaImpl {
     public final Databasechangeloglock DATABASECHANGELOGLOCK = Databasechangeloglock.DATABASECHANGELOGLOCK;
 
     /**
-     * The table <code>public.Users</code>.
+     * The table <code>public.users</code>.
      */
     public final Users USERS = Users.USERS;
 

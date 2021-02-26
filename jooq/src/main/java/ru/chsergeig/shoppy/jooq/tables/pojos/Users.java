@@ -36,21 +36,21 @@ public class Users implements Serializable {
     }
 
     /**
-     * Getter for <code>public.Users.id</code>.
+     * Getter for <code>public.users.id</code>.
      */
     public Integer getId() {
         return this.id;
     }
 
     /**
-     * Getter for <code>public.Users.name</code>.
+     * Getter for <code>public.users.name</code>.
      */
     public String getName() {
         return this.name;
     }
 
     /**
-     * Getter for <code>public.Users.password</code>.
+     * Getter for <code>public.users.password</code>.
      */
     public String getPassword() {
         return this.password;

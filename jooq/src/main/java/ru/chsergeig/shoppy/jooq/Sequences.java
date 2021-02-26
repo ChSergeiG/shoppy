@@ -16,7 +16,7 @@ import org.jooq.impl.SQLDataType;
 public class Sequences {
 
     /**
-     * The sequence <code>public.Users_id_seq</code>
+     * The sequence <code>public.users_id_seq</code>
      */
-    public static final Sequence<Integer> USERS_ID_SEQ = Internal.createSequence("Users_id_seq", Public.PUBLIC, SQLDataType.INTEGER.nullable(false), null, null, null, null, false, null);
+    public static final Sequence<Integer> USERS_ID_SEQ = Internal.createSequence("users_id_seq", Public.PUBLIC, SQLDataType.INTEGER.nullable(false), null, null, null, null, false, null);
 }
