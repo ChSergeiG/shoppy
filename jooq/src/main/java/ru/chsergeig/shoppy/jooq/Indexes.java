@@ -9,7 +9,7 @@ import org.jooq.OrderField;
 import org.jooq.impl.DSL;
 import org.jooq.impl.Internal;
 
-import ru.chsergeig.shoppy.jooq.tables.Users;
+import ru.chsergeig.shoppy.jooq.tables.User;
 
 
 /**
@@ -22,6 +22,6 @@ public class Indexes {
     // INDEX definitions
     // -------------------------------------------------------------------------
 
-    public static final Index USERS_ID_UINDEX = Internal.createIndex(DSL.name("users_id_uindex"), Users.USERS, new OrderField[] { Users.USERS.ID }, true);
-    public static final Index USERS_NAME_UINDEX = Internal.createIndex(DSL.name("users_name_uindex"), Users.USERS, new OrderField[] { Users.USERS.NAME }, true);
+    public static final Index USER_ID_UINDEX = Internal.createIndex(DSL.name("user_id_uindex"), User.USER, new OrderField[] { User.USER.ID }, true);
+    public static final Index USER_NAME_UINDEX = Internal.createIndex(DSL.name("user_name_uindex"), User.USER, new OrderField[] { User.USER.NAME }, true);
 }

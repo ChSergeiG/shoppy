@@ -17,6 +17,9 @@ dependencies {
     implementation(group = "org.springframework.boot", name = "spring-boot-starter-jooq")
     implementation(group = "org.springframework.boot", name = "spring-boot-starter-web")
 
+    implementation(group = "io.springfox", name = "springfox-boot-starter", version = "3.0.0")
+    implementation(group = "io.springfox", name = "springfox-swagger-ui", version = "2.9.2")
+
     implementation(group = "org.postgresql", name = "postgresql", version = posgresVersion)
 
     annotationProcessor(group = "org.mapstruct", name = "mapstruct-processor", version = "1.4.2.Final")

@@ -12,8 +12,11 @@ import org.jooq.Sequence;
 import org.jooq.Table;
 import org.jooq.impl.SchemaImpl;
 
-import ru.chsergeig.shoppy.jooq.tables.Databasechangeloglock;
-import ru.chsergeig.shoppy.jooq.tables.Users;
+import ru.chsergeig.shoppy.jooq.tables.Good;
+import ru.chsergeig.shoppy.jooq.tables.Order;
+import ru.chsergeig.shoppy.jooq.tables.OrderGood;
+import ru.chsergeig.shoppy.jooq.tables.User;
+import ru.chsergeig.shoppy.jooq.tables.UserOrder;
 
 
 /**
@@ -30,14 +33,29 @@ public class Public extends SchemaImpl {
     public static final Public PUBLIC = new Public();
 
     /**
-     * The table <code>public.databasechangeloglock</code>.
+     * The table <code>public.good</code>.
      */
-    public final Databasechangeloglock DATABASECHANGELOGLOCK = Databasechangeloglock.DATABASECHANGELOGLOCK;
+    public final Good GOOD = Good.GOOD;
 
     /**
-     * The table <code>public.users</code>.
+     * The table <code>public.order</code>.
      */
-    public final Users USERS = Users.USERS;
+    public final Order ORDER = Order.ORDER;
+
+    /**
+     * The table <code>public.order_good</code>.
+     */
+    public final OrderGood ORDER_GOOD = OrderGood.ORDER_GOOD;
+
+    /**
+     * The table <code>public.user</code>.
+     */
+    public final User USER = User.USER;
+
+    /**
+     * The table <code>public.user_order</code>.
+     */
+    public final UserOrder USER_ORDER = UserOrder.USER_ORDER;
 
     /**
      * No further instances allowed
@@ -55,13 +73,22 @@ public class Public extends SchemaImpl {
     @Override
     public final List<Sequence<?>> getSequences() {
         return Arrays.<Sequence<?>>asList(
-            Sequences.USERS_ID_SEQ);
+            Sequences.GOOD_ID_SEQ,
+            Sequences.ORDER_GOOD_GOOD_ID_SEQ,
+            Sequences.ORDER_GOOD_ORDER_ID_SEQ,
+            Sequences.ORDER_ID_SEQ,
+            Sequences.USER_ID_SEQ,
+            Sequences.USER_ORDER_ORDER_ID_SEQ,
+            Sequences.USER_ORDER_USER_ID_SEQ);
     }
 
     @Override
     public final List<Table<?>> getTables() {
         return Arrays.<Table<?>>asList(
-            Databasechangeloglock.DATABASECHANGELOGLOCK,
-            Users.USERS);
+            Good.GOOD,
+            Order.ORDER,
+            OrderGood.ORDER_GOOD,
+            User.USER,
+            UserOrder.USER_ORDER);
     }
 }

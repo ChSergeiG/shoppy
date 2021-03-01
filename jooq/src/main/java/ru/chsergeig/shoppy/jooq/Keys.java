@@ -4,15 +4,22 @@
 package ru.chsergeig.shoppy.jooq;
 
 
+import org.jooq.ForeignKey;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
 import org.jooq.impl.Internal;
 
-import ru.chsergeig.shoppy.jooq.tables.Databasechangeloglock;
-import ru.chsergeig.shoppy.jooq.tables.Users;
-import ru.chsergeig.shoppy.jooq.tables.records.DatabasechangeloglockRecord;
-import ru.chsergeig.shoppy.jooq.tables.records.UsersRecord;
+import ru.chsergeig.shoppy.jooq.tables.Good;
+import ru.chsergeig.shoppy.jooq.tables.Order;
+import ru.chsergeig.shoppy.jooq.tables.OrderGood;
+import ru.chsergeig.shoppy.jooq.tables.User;
+import ru.chsergeig.shoppy.jooq.tables.UserOrder;
+import ru.chsergeig.shoppy.jooq.tables.records.GoodRecord;
+import ru.chsergeig.shoppy.jooq.tables.records.OrderGoodRecord;
+import ru.chsergeig.shoppy.jooq.tables.records.OrderRecord;
+import ru.chsergeig.shoppy.jooq.tables.records.UserOrderRecord;
+import ru.chsergeig.shoppy.jooq.tables.records.UserRecord;
 
 
 /**
@@ -26,6 +33,15 @@ public class Keys {
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
 
-    public static final UniqueKey<DatabasechangeloglockRecord> DATABASECHANGELOGLOCK_PKEY = Internal.createUniqueKey(Databasechangeloglock.DATABASECHANGELOGLOCK, DSL.name("databasechangeloglock_pkey"), new TableField[] { Databasechangeloglock.DATABASECHANGELOGLOCK.ID }, true);
-    public static final UniqueKey<UsersRecord> USERS_PK = Internal.createUniqueKey(Users.USERS, DSL.name("users_pk"), new TableField[] { Users.USERS.ID }, true);
+    public static final UniqueKey<GoodRecord> GOOD_PK = Internal.createUniqueKey(Good.GOOD, DSL.name("good_pk"), new TableField[] { Good.GOOD.ID }, true);
+    public static final UniqueKey<OrderRecord> ORDER_PK = Internal.createUniqueKey(Order.ORDER, DSL.name("order_pk"), new TableField[] { Order.ORDER.ID }, true);
+    public static final UniqueKey<UserRecord> USER_PK = Internal.createUniqueKey(User.USER, DSL.name("user_pk"), new TableField[] { User.USER.ID }, true);
+
+    // -------------------------------------------------------------------------
+    // FOREIGN KEY definitions
+    // -------------------------------------------------------------------------
+
+    public static final ForeignKey<OrderGoodRecord, GoodRecord> ORDER_GOOD__ORDER_GOOD_GOOD_ID_FKEY = Internal.createForeignKey(OrderGood.ORDER_GOOD, DSL.name("order_good_good_id_fkey"), new TableField[] { OrderGood.ORDER_GOOD.GOOD_ID }, Keys.GOOD_PK, new TableField[] { Good.GOOD.ID }, true);
+    public static final ForeignKey<OrderGoodRecord, OrderRecord> ORDER_GOOD__ORDER_GOOD_ORDER_ID_FKEY = Internal.createForeignKey(OrderGood.ORDER_GOOD, DSL.name("order_good_order_id_fkey"), new TableField[] { OrderGood.ORDER_GOOD.ORDER_ID }, Keys.ORDER_PK, new TableField[] { Order.ORDER.ID }, true);
+    public static final ForeignKey<UserOrderRecord, OrderRecord> USER_ORDER__USER_ORDER_ORDER_ID_FKEY = Internal.createForeignKey(UserOrder.USER_ORDER, DSL.name("user_order_order_id_fkey"), new TableField[] { UserOrder.USER_ORDER.ORDER_ID }, Keys.ORDER_PK, new TableField[] { Order.ORDER.ID }, true);
 }

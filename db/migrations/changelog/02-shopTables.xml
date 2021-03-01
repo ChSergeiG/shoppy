@@ -1,0 +1,53 @@
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+
+    <changeSet id="initial_schema" context="ddl" author="ChSergeiG">
+        <sql><![CDATA[
+         CREATE TYPE status AS ENUM ('ADDED' ,'ACTIVE', 'REMOVED', 'DISABLED');
+
+         CREATE TABLE good
+         (
+            id SERIAL NOT NULL,
+            name VARCHAR(1024) NOT NULL,
+            article INT,
+            status status NOT NULL DEFAULT 'ADDED'::status
+         );
+
+         ALTER TABLE "user" ADD status status NOT NULL default 'ADDED'::status;
+
+         CREATE TABLE "order"
+         (
+            id SERIAL NOT NULL,
+            info TEXT,
+            status status NOT NULL DEFAULT 'ADDED'::status
+         );
+
+         CREATE TABLE user_order
+         (
+             user_id serial NOT NULL,
+             order_id serial NOT NULL
+         );
+
+         CREATE TABLE order_good
+         (
+             order_id serial NOT NULL,
+             good_id serial NOT NULL
+         );
+
+         ALTER TABLE good ADD CONSTRAINT good_pk PRIMARY KEY (id);
+
+         ALTER TABLE "order" ADD CONSTRAINT order_pk PRIMARY KEY (id);
+
+         ALTER TABLE user_order ADD FOREIGN KEY (user_id) REFERENCES "user" (id);
+
+         ALTER TABLE user_order ADD FOREIGN KEY (order_id) REFERENCES "order" (id);
+
+         ALTER TABLE order_good ADD FOREIGN KEY (order_id) REFERENCES "order" (id);
+
+         ALTER TABLE order_good ADD FOREIGN KEY (good_id) REFERENCES good (id);
+
+        ]]></sql>
+    </changeSet>
+</databaseChangeLog>

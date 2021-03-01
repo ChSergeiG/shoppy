@@ -1,4 +1,4 @@
-package ru.chsergeig.shoppy.service;
+package ru.chsergeig.shoppy.configuration;
 
 import lombok.RequiredArgsConstructor;
 import org.jooq.ExecuteContext;
@@ -25,16 +25,16 @@ public class JooqDsl {
     private final DataSource dataSource;
 
     @Bean(name = "jooqConnectionProvider")
-    DataSourceConnectionProvider connectionProvider() {
+    public DataSourceConnectionProvider connectionProvider() {
         return new DataSourceConnectionProvider(new TransactionAwareDataSourceProxy(dataSource));
     }
 
     @Bean(name = "jooqDslContext")
-    DefaultDSLContext dsl() {
+    public DefaultDSLContext dsl() {
         return new DefaultDSLContext(configuration());
     }
 
-    DefaultConfiguration configuration() {
+    private DefaultConfiguration configuration() {
         DefaultConfiguration jooqConfiguration = new DefaultConfiguration();
 
         jooqConfiguration.set(connectionProvider());
@@ -53,5 +53,4 @@ public class JooqDsl {
         );
         return jooqConfiguration;
     }
-
 }

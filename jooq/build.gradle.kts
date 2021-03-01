@@ -34,11 +34,14 @@ jooq {
                     password = "shoppy"
                 }
                 generator.apply {
-                    name = "org.jooq.codegen.DefaultGenerator"
+                    name = "org.jooq.codegen.JavaGenerator"
                     database.apply {
                         name = "org.jooq.meta.postgres.PostgresDatabase"
                         inputSchema = "public"
-                        excludes = "DATABASECHANGELOG*"
+                        excludes = """
+                            DATABASECHANGELOG
+                          | DATABASECHANGELOGLOCK
+                        """.trimIndent()
                     }
                     generate.apply {
                         isDeprecated = false

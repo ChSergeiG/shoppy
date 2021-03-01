@@ -3,7 +3,9 @@ server:
   tomcat:
     threads:
       max: 100
-
+  error:
+    whitelabel:
+      enabled: false
 spring:
   datasource:
     name: pgShoppy

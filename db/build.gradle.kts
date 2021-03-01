@@ -7,10 +7,7 @@ plugins {
 dependencies {
     liquibaseRuntime(group = "org.liquibase", name = "liquibase-core", version = "3.8.1")
     liquibaseRuntime(group = "org.postgresql", name = "postgresql", version = posgresVersion)
-//    liquibaseRuntime(group = "jakarta.xml.bind", name = "jakarta.xml.bind-api", version = "2.3.3")
     liquibaseRuntime(group = "javax.xml.bind", name = "jaxb-api", version = "2.3.1")
-
-
 }
 
 liquibase {

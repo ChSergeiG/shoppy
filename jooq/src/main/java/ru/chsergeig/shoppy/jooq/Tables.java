@@ -4,8 +4,11 @@
 package ru.chsergeig.shoppy.jooq;
 
 
-import ru.chsergeig.shoppy.jooq.tables.Databasechangeloglock;
-import ru.chsergeig.shoppy.jooq.tables.Users;
+import ru.chsergeig.shoppy.jooq.tables.Good;
+import ru.chsergeig.shoppy.jooq.tables.Order;
+import ru.chsergeig.shoppy.jooq.tables.OrderGood;
+import ru.chsergeig.shoppy.jooq.tables.User;
+import ru.chsergeig.shoppy.jooq.tables.UserOrder;
 
 
 /**
@@ -15,12 +18,27 @@ import ru.chsergeig.shoppy.jooq.tables.Users;
 public class Tables {
 
     /**
-     * The table <code>public.databasechangeloglock</code>.
+     * The table <code>public.good</code>.
      */
-    public static final Databasechangeloglock DATABASECHANGELOGLOCK = Databasechangeloglock.DATABASECHANGELOGLOCK;
+    public static final Good GOOD = Good.GOOD;
 
     /**
-     * The table <code>public.users</code>.
+     * The table <code>public.order</code>.
      */
-    public static final Users USERS = Users.USERS;
+    public static final Order ORDER = Order.ORDER;
+
+    /**
+     * The table <code>public.order_good</code>.
+     */
+    public static final OrderGood ORDER_GOOD = OrderGood.ORDER_GOOD;
+
+    /**
+     * The table <code>public.user</code>.
+     */
+    public static final User USER = User.USER;
+
+    /**
+     * The table <code>public.user_order</code>.
+     */
+    public static final UserOrder USER_ORDER = UserOrder.USER_ORDER;
 }

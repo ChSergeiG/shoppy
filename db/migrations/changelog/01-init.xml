@@ -5,22 +5,19 @@
 
     <changeSet id="initial_schema" context="ddl" author="ChSergeiG">
         <sql><![CDATA[
-         create table Users
+         CREATE TABLE "user"
          (
-            id serial not null,
-            name varchar(256) not null,
-            password varchar(64)
+            id SERIAL NOT NULL,
+            name VARCHAR(256) NOT NULL,
+            password VARCHAR(64)
          );
 
-         create unique index users_id_uindex
-            on users (id);
+         CREATE UNIQUE INDEX user_id_uindex ON "user" (id);
 
-         create unique index users_name_uindex
-            on users (name);
+         CREATE UNIQUE INDEX user_name_uindex ON "user" (name);
 
-         alter table users
-            add constraint users_pk
-                primary key (id);
+         ALTER TABLE "user" ADD CONSTRAINT user_pk PRIMARY KEY (id);
+
         ]]></sql>
     </changeSet>
 </databaseChangeLog>
