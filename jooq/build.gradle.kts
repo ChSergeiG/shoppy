@@ -10,9 +10,19 @@ plugins {
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
 }
 
+sourceSets {
+    main {
+        java {
+            srcDirs.add(file("src/jooq"))
+        }
+    }
+}
+
 dependencies {
     implementation(group = "org.springframework.boot", name = "spring-boot-starter-jooq")
+    implementation(group = "org.postgresql", name = "postgresql", version = posgresVersion)
     jooqGenerator(group = "org.postgresql", name = "postgresql", version = posgresVersion)
+    implementation(group = "org.liquibase", name = "liquibase-core", version = "3.8.1")
 }
 
 java {
@@ -51,7 +61,7 @@ jooq {
                     }
                     target.apply {
                         packageName = "ru.chsergeig.shoppy.jooq"
-                        directory = "src/main/java"
+                        directory = "src/jooq/java"
                     }
                     strategy.name = "org.jooq.codegen.DefaultGeneratorStrategy"
                 }

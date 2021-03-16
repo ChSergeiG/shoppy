@@ -1,13 +1,8 @@
-package ru.chsergeig.shoppy.configuration;
+package org.jooq.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.jooq.ExecuteContext;
 import org.jooq.SQLDialect;
-import org.jooq.impl.DataSourceConnectionProvider;
-import org.jooq.impl.DefaultConfiguration;
-import org.jooq.impl.DefaultDSLContext;
-import org.jooq.impl.DefaultExecuteListener;
-import org.jooq.impl.DefaultExecuteListenerProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy;
@@ -35,7 +30,7 @@ public class JooqDsl {
     }
 
     private DefaultConfiguration configuration() {
-        DefaultConfiguration jooqConfiguration = new DefaultConfiguration();
+        DefaultConfiguration jooqConfiguration = new DefaultConfiguration(SQLDialect.POSTGRES);
 
         jooqConfiguration.set(connectionProvider());
         jooqConfiguration.set(

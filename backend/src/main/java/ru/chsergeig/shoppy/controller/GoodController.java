@@ -2,6 +2,7 @@ package ru.chsergeig.shoppy.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
+import org.jooq.impl.DSL;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,7 +33,7 @@ public class GoodController {
     public List<GoodDTO> getAll() {
         GoodRecord[] goods = dsl
                 .selectFrom(GOOD)
-                .where(GOOD.STATUS.eq(Status.ACTIVE))
+                .where(GOOD.STATUS.eq(DSL.cast(Status.ACTIVE, Status.class)))
                 .fetchArray();
         return Arrays.stream(goods)
                 .map(goodMapper::map)
@@ -56,7 +57,7 @@ public class GoodController {
     ) {
         dsl
                 .update(GOOD)
-                .set(GOOD.STATUS, Status.REMOVED)
+                .set(GOOD.STATUS, DSL.cast(Status.REMOVED, Status.class))
                 .where(GOOD.ID.eq(id))
                 .execute();
     }

@@ -50,7 +50,7 @@ public class UserController {
                 .insertInto(USER)
                 .set(USER.NAME, name)
                 .set(USER.PASSWORD, UUID.randomUUID().toString())
-                .set(USER.STATUS, Status.ADDED)
+                .set(USER.STATUS, DSL.cast(Status.ADDED, Status.class))
                 .execute();
     }
 
@@ -69,7 +69,7 @@ public class UserController {
         dsl
                 .update(USER)
                 .set(USER.STATUS, Status.ADDED)
-                .where(USER.NAME.eq(name).and(USER.STATUS.notEqual(Status.ACTIVE)))
+                .where(USER.NAME.eq(name).and(USER.STATUS.notEqual(DSL.cast(Status.ACTIVE, Status.class))))
                 .execute();
     }
 
@@ -77,7 +77,7 @@ public class UserController {
     public void deleteUser(@PathVariable String name) {
         dsl
                 .update(USER)
-                .set(USER.STATUS, Status.REMOVED)
+                .set(USER.STATUS,  Status.REMOVED )
                 .where(USER.NAME.eq(name))
                 .execute();
     }

@@ -1,11 +1,11 @@
-package ru.chsergeig.shoppy;
+package ru.chsergeig.shoppy.jooq;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 
 @ConfigurationPropertiesScan
-@SpringBootApplication(scanBasePackages = {"org.jooq.impl", "ru.chsergeig.shoppy"})
+@SpringBootApplication
 public class Application {
 
     public static void main(String[] args) {
