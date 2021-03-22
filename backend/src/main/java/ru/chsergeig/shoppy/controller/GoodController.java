@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 import static ru.chsergeig.shoppy.jooq.tables.Good.GOOD;
 
 @RequiredArgsConstructor
-@RequestMapping("good")
+@RequestMapping("/admin/good")
 @RestController
 public class GoodController {
 
