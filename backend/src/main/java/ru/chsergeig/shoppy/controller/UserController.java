@@ -35,7 +35,7 @@ public class UserController {
     public List<UserDTO> getAllUsers() {
         UserRecord[] usersRecords = dsl
                 .selectFrom(USER)
-                .where(USER.STATUS.eq(DSL.cast(Status.ACTIVE, USER.STATUS)))
+                .where(USER.STATUS.notEqual(DSL.cast(Status.REMOVED, Status.class)))
                 .fetchArray();
         return Arrays.stream(usersRecords)
                 .map(userMapper::map)
@@ -60,26 +60,37 @@ public class UserController {
     ) {
         dsl
                 .insertInto(USER)
-                .set(userMapper.map(dto))
+                .set(USER.NAME, dto.getName())
+                .set(USER.PASSWORD, dto.getPassword())
+                .set(USER.STATUS, DSL.cast(dto.getStatus(), Status.class))
                 .execute();
     }
 
-    @PostMapping("activate/{name}")
-    public void activateUser(@PathVariable String name) {
-        dsl
-                .update(USER)
-                .set(USER.STATUS, Status.ADDED)
-                .where(USER.NAME.eq(name).and(USER.STATUS.notEqual(DSL.cast(Status.ACTIVE, Status.class))))
-                .execute();
+    @PostMapping("update")
+    public String updateUser(
+            @RequestBody UserDTO dto
+    ) {
+        try {
+            return "SUCCESS :" + dsl
+                    .update(USER)
+                    .set(userMapper.map(dto))
+                    .where(USER.ID.eq(dto.getId()))
+                    .execute();
+        } catch (Exception e) {
+            return e.getLocalizedMessage();
+        }
     }
 
     @DeleteMapping("{name}")
-    public void deleteUser(@PathVariable String name) {
+    public void deleteUser(
+            @PathVariable String name
+    ) {
         dsl
                 .update(USER)
-                .set(USER.STATUS,  Status.REMOVED )
+                .set(USER.STATUS, Status.REMOVED)
                 .where(USER.NAME.eq(name))
                 .execute();
     }
+
 
 }

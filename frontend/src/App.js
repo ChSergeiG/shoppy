@@ -1,72 +1,51 @@
-import './App.css';
-import React from "react";
-import API from './utils/API'
-import {MenuItem, Select, Table, TableBody, TableCell, TableHead, TableRow} from "@material-ui/core";
+import React, {Component} from 'react'
 
-class App extends React.Component {
+import Home from './components/pages/MainPage'
+import Admin from './components/pages/AdminPage'
+import {Route, Switch} from "react-router";
+import ButtonBar from "./components/ButtonBar";
+import {Button, TableCell} from "@material-ui/core";
+import {Link} from "react-router-dom";
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            isLoading: true,
-            userResponse: {},
-            states: null
-        };
-
-    }
+class App extends Component {
 
     render() {
-        const {isLoading, userResponse, states} = this.state;
-        let element = isLoading ?
-            <div>LOADING</div> :
-            <Table>
-                <TableHead>
-                    <TableRow>
-                        <TableCell>ID</TableCell>
-                        <TableCell>Name</TableCell>
-                        <TableCell>Pass</TableCell>
-                        <TableCell>Status</TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {userResponse.data.map(row => (
-                        <TableRow>
-                            <TableCell>{row.id}</TableCell>
-                            <TableCell>{row.name}</TableCell>
-                            <TableCell>{row.password}</TableCell>
-                            <TableCell>
-                                <Select>
-                                    {
-                                        states.data.map(item => (
-                                            <MenuItem
-                                                value={item}
-                                                selected={item === row.state}
-                                            >
-                                                {item}
-                                            </MenuItem>
-                                        ))
-                                    }
-                                </Select>
-                            </TableCell>
-                        </TableRow>
-                    ))}
-                </TableBody>
-            </Table>;
-        return element;
-    }
+        let items = [(
+            <TableCell style={{border: 'none'}}>
+                <Link to="/">
+                    <Button>Home</Button>
+                </Link>
+            </TableCell>
+        ), (
+            <TableCell style={{border: 'none'}}>
+                < Link to="/admin">
+                    <Button>Admin</Button>
+                </Link>
+            </TableCell>
+        )]
 
-    async componentDidMount() {
-        let userResponse = await API.get("/admin/users/get_all");
-        let states = await API.get("statuses");
 
-        this.setState({
-            ...this.state,
-            isLoading: false,
-            userResponse: userResponse,
-            states: states
-        });
+        return (
+            <div>
+                <header>
+                    {ButtonBar(items)}
+                </header>
+                <main>
+                    <Switch>
+                        <Route
+                            path="/"
+                            component={Home}
+                            exact
+                        />
+                        <Route
+                            path="/admin"
+                            component={Admin}
+                        />
+                    </Switch>
+                </main>
+            </div>
+        );
     }
 }
-
 
 export default App;
