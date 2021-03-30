@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 import static ru.chsergeig.shoppy.jooq.tables.User.USER;
 
 @RequiredArgsConstructor
-@RequestMapping("/admin/users")
+@RequestMapping("/admin/user")
 @RestController
 public class UserController {
 

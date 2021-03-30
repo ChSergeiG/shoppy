@@ -17,7 +17,7 @@ import binIcon from "../../../img/bin.svg";
 import refreshIcon from "../../../img/refresh.svg";
 import API from "../../../utils/API";
 
-class UsersTable extends React.Component {
+class GoodsTable extends React.Component {
 
     constructor(props) {
         super(props);
@@ -68,17 +68,17 @@ class UsersTable extends React.Component {
                 <TableCell align={"center"}>
                     <ButtonGroup>
                         <Button
-                            onClick={() => this.saveUser(row.id, row.name, row.password, row.status)}
+                            onClick={() => this.saveGood(row.id, row.name, row.password, row.status)}
                         >
                             <img src={floppyIcon} height={16} width={16} alt='save'/>
                         </Button>
                         <Button
-                            onClick={() => this.removeUser(row.id)}
+                            onClick={() => this.removeGood(row.id)}
                         >
                             <img src={binIcon} height={16} width={16} alt='remove'/>
                         </Button>
                         <Button
-                            onClick={() => this.refreshUser(row.id)}
+                            onClick={() => this.refreshGood(row.id)}
                         >
                             <img src={refreshIcon} height={16} width={16} alt='refresh'/>
                         </Button>
@@ -121,15 +121,15 @@ class UsersTable extends React.Component {
         });
     }
 
-    async saveUser(id, name, password, status) {
+    async saveGood(id, name, password, status) {
         if (id === '') {
-            await API.post("/admin/user/add", {
+            await API.post("/admin/users/add", {
                 name: name,
                 password: password,
                 status: status
             });
         } else {
-            await API.post("/admin/user/update", {
+            await API.post("/admin/users/update", {
                 id: id,
                 name: name,
                 password: password,
@@ -138,12 +138,12 @@ class UsersTable extends React.Component {
         }
     }
 
-    async removeUser(id) {
+    async removeGood(id) {
         let item = this.state.rows.find(r => r.id === id).item
-        await API.delete("/admin/user/" + item.name);
+        await API.delete("/admin/users/" + item.name);
     }
 
-    async refreshUser(id) {
+    async refreshGood(id) {
 
     }
 
@@ -160,7 +160,7 @@ class UsersTable extends React.Component {
     }
 
     async componentDidMount() {
-        let userResponse = await API.get("/admin/user/get_all");
+        let userResponse = await API.get("/admin/users/get_all");
         let statuses = await API.get("statuses");
         let rows = userResponse.data.map(r => {
             return {
@@ -192,7 +192,7 @@ class UsersTable extends React.Component {
                         <TableRow>
                             <TableCell width={50}>ID</TableCell>
                             <TableCell>Name</TableCell>
-                            <TableCell>Pass</TableCell>
+                            <TableCell>Article</TableCell>
                             <TableCell>Status</TableCell>
                             <TableCell width={200} align={"center"}>Actions</TableCell>
                         </TableRow>
@@ -206,4 +206,4 @@ class UsersTable extends React.Component {
 
 }
 
-export default UsersTable;
+export default GoodsTable;

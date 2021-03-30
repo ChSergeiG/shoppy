@@ -17,6 +17,10 @@ import javax.sql.DataSource;
 @RequiredArgsConstructor
 public class JooqDsl {
 
+    static {
+        System.getProperty("org.jooq.no-logo", Boolean.TRUE.toString());
+    }
+
     private final DataSource dataSource;
 
     @Bean(name = "jooqConnectionProvider")

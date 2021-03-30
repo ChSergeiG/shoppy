@@ -3,6 +3,7 @@ package ru.chsergeig.shoppy.controller;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,43 +23,68 @@ import java.util.stream.Collectors;
 import static ru.chsergeig.shoppy.jooq.tables.Order.ORDER;
 
 @RequiredArgsConstructor
-@RequestMapping("order")
+@RequestMapping("/admin/order")
 @RestController
 public class OrderController {
 
     private final DSLContext dsl;
     private final OrderMapper orderMapper;
 
-
     @GetMapping("get_all")
-    public List<OrderDTO> getAll() {
-        OrderRecord[] orders = dsl
+    public List<OrderDTO> getAllOrders() {
+        OrderRecord[] usersRecords = dsl
                 .selectFrom(ORDER)
-                .where(ORDER.STATUS.eq(DSL.cast(Status.ACTIVE, Status.class)))
+                .where(ORDER.STATUS.notEqual(DSL.cast(Status.REMOVED, Status.class)))
                 .fetchArray();
-        return Arrays.stream(orders)
+        return Arrays.stream(usersRecords)
                 .map(orderMapper::map)
                 .collect(Collectors.toList());
     }
 
+    @PutMapping("{info}")
+    public void addDefaultOrder(
+             @PathVariable String info
+    ) {
+        dsl
+                .insertInto(ORDER)
+                .set(ORDER.INFO, info)
+                .set(ORDER.STATUS, DSL.cast(Status.ADDED, Status.class))
+                .execute();
+    }
+
     @PostMapping("add")
-    public void add(
+    public void addOrderPost(
             @RequestBody OrderDTO dto
     ) {
         dsl
                 .insertInto(ORDER)
-                .set(orderMapper.map(dto))
+                .set(ORDER.INFO, dto.getInfo())
+                .set(ORDER.STATUS, DSL.cast(dto.getStatus(), Status.class))
                 .execute();
-
     }
 
-    @PutMapping("delete/{id}")
-    public void deleteById(
+    @PostMapping("update")
+    public String updateOrder(
+            @RequestBody OrderDTO dto
+    ) {
+        try {
+            return "SUCCESS :" + dsl
+                    .update(ORDER)
+                    .set(orderMapper.map(dto))
+                    .where(ORDER.ID.eq(dto.getId()))
+                    .execute();
+        } catch (Exception e) {
+            return e.getLocalizedMessage();
+        }
+    }
+
+    @DeleteMapping("{id}")
+    public void deleteOrder(
             @PathVariable Integer id
     ) {
         dsl
                 .update(ORDER)
-                .set(ORDER.STATUS, DSL.cast(Status.REMOVED, Status.class))
+                .set(ORDER.STATUS, Status.REMOVED)
                 .where(ORDER.ID.eq(id))
                 .execute();
     }
