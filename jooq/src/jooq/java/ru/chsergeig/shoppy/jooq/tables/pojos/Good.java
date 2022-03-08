@@ -17,10 +17,12 @@ public class Good implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private final Integer id;
-    private final String  name;
-    private final Integer article;
-    private final Status  status;
+    private Integer id;
+    private String  name;
+    private Integer article;
+    private Status  status;
+
+    public Good() {}
 
     public Good(Good value) {
         this.id = value.id;
@@ -49,10 +51,26 @@ public class Good implements Serializable {
     }
 
     /**
+     * Setter for <code>public.good.id</code>.
+     */
+    public Good setId(Integer id) {
+        this.id = id;
+        return this;
+    }
+
+    /**
      * Getter for <code>public.good.name</code>.
      */
     public String getName() {
         return this.name;
+    }
+
+    /**
+     * Setter for <code>public.good.name</code>.
+     */
+    public Good setName(String name) {
+        this.name = name;
+        return this;
     }
 
     /**
@@ -63,10 +81,26 @@ public class Good implements Serializable {
     }
 
     /**
+     * Setter for <code>public.good.article</code>.
+     */
+    public Good setArticle(Integer article) {
+        this.article = article;
+        return this;
+    }
+
+    /**
      * Getter for <code>public.good.status</code>.
      */
     public Status getStatus() {
         return this.status;
+    }
+
+    /**
+     * Setter for <code>public.good.status</code>.
+     */
+    public Good setStatus(Status status) {
+        this.status = status;
+        return this;
     }
 
     @Override

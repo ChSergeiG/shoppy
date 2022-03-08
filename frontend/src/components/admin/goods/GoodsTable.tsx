@@ -6,20 +6,23 @@ import {
     Input,
     MenuItem,
     Select,
+    SelectChangeEvent,
     Table,
     TableBody,
     TableCell,
     TableHead,
     TableRow
-} from "@material-ui/core";
+} from "@mui/material";
 import floppyIcon from "../../../img/floppy.svg";
 import binIcon from "../../../img/bin.svg";
 import refreshIcon from "../../../img/refresh.svg";
-import API from "../../../utils/API";
+import {createNewGood, deleteExistingGood, getGoods, getStatuses, updateExistingGood} from "../../../utils/API";
+import type {IAdminTableRow, IAdminTableState, IGood} from "../../../../types/AdminTypes";
+import type {IStatus} from "../../../../types/IStatus";
 
-class UsersTable extends React.Component {
+class GoodsTable extends React.Component<{}, IAdminTableState> {
 
-    constructor(props) {
+    constructor(props: {}) {
         super(props);
         this.state = {
             ...this.state,
@@ -29,29 +32,33 @@ class UsersTable extends React.Component {
         };
     }
 
-    createRow = (row, statuses) => {
+    createRow = (good: IGood, statuses: IStatus[]) => {
         return (
-            <TableRow key={row.id}>
-                <TableCell>{row.id}</TableCell>
+            <TableRow key={good.id}>
+                <TableCell>{good.id}</TableCell>
                 <TableCell>
                     <Input
                         fullWidth={true}
-                        defaultValue={row.name}
-                        onChange={(e) => row.name = e.target.value}
+                        defaultValue={good.name}
+                        onChange={(e) => good.name = e.target.value}
                     />
                 </TableCell>
                 <TableCell>
                     <Input
                         fullWidth={true}
-                        defaultValue={row.password}
-                        type={'password'}
-                        onChange={(e) => row.password = e.target.value}
+                        defaultValue={good.article}
+                        onChange={(e) => {
+                            try {
+                                good.article = parseInt(e.target.value)
+                            } catch (ignore) {
+                            }
+                        }}
                     />
                 </TableCell>
                 <TableCell>
                     <Select
-                        value={row.status}
-                        onChange={(e) => this.handleSelectorChange(e, row)}
+                        value={good.status}
+                        onChange={(e) => this.handleSelectorChange(e, good)}
                     >
                         {
                             statuses.map(item => (
@@ -68,17 +75,17 @@ class UsersTable extends React.Component {
                 <TableCell align={"center"}>
                     <ButtonGroup>
                         <Button
-                            onClick={() => this.saveUser(row.id, row.name, row.password, row.status)}
+                            onClick={() => this.saveGood(good)}
                         >
                             <img src={floppyIcon} height={16} width={16} alt='save'/>
                         </Button>
                         <Button
-                            onClick={() => this.removeUser(row.id)}
+                            onClick={() => this.removeGood(good)}
                         >
                             <img src={binIcon} height={16} width={16} alt='remove'/>
                         </Button>
                         <Button
-                            onClick={() => this.refreshUser(row.id)}
+                            onClick={() => this.refreshGood(good)}
                         >
                             <img src={refreshIcon} height={16} width={16} alt='refresh'/>
                         </Button>
@@ -93,7 +100,7 @@ class UsersTable extends React.Component {
             <TableRow key="new">
                 <TableCell colSpan={5} align={"center"}>
                     <Button
-                        onClick={() => this.newUser()}
+                        onClick={() => this.newGood()}
                     >
                         +
                     </Button>
@@ -103,76 +110,75 @@ class UsersTable extends React.Component {
     }
 
     createNewRow = () => {
-        return this.createRow({id: '', name: '', password: '', status: 'ADDED'}, this.state.statuses)
+        return this.createRow({id: undefined, name: '', article: undefined, status: 'ADDED'}, this.state.statuses)
     }
 
-    handleSelectorChange = (e, row) => {
-        const status = e.target.value;
-        this.setState(prev => {
-            const rows = prev.rows.map(r => r.id === row.id
-                ? {
-                    id: r.id,
-                    item: {...r.item, status},
-                    generatedRow: this.createRow({...r.item, status}, prev.statuses)
+    handleSelectorChange = (e: SelectChangeEvent, row: IGood) => {
+        const selectedStatus = (e.target.value as IStatus);
+
+        this.setState((prevState) => {
+            let rowsToUpdate: IAdminTableRow[] = prevState.rows.filter((r) => r.content === row);
+            rowsToUpdate.forEach((r) => {
+                if (r.content !== undefined) {
+                    r.content.status = selectedStatus
                 }
-                : r
-            );
-            return {...prev, rows}
+            });
+            return {...prevState, rows: rowsToUpdate};
         });
     }
 
-    async saveUser(id, name, password, status) {
-        if (id === '') {
-            await API.post("/admin/user/add", {
-                name: name,
-                password: password,
-                status: status
-            });
+    async saveGood(good: IGood) {
+        if (good.id === undefined) {
+            await createNewGood(good);
         } else {
-            await API.post("/admin/user/update", {
-                id: id,
-                name: name,
-                password: password,
-                status: status
-            });
+            await updateExistingGood(good);
         }
     }
 
-    async removeUser(id) {
-        let item = this.state.rows.find(r => r.id === id).item
-        await API.delete("/admin/user/" + item.name);
+    async removeGood(good: IGood) {
+        if (good !== undefined) {
+            await deleteExistingGood(good);
+        }
     }
 
-    async refreshUser(id) {
+    async refreshGood(god: IGood) {
 
     }
 
-    newUser = () => {
+    newGood = () => {
         this.setState(prev => {
             const rows = prev.rows;
             rows.push({
-                id: 0xfff8,
-                item: {},
-                generatedRow: this.createNewRow()
+                number: 0xfff8,
+                key: '',
+                content: {
+                    id: undefined,
+                    name: '',
+                    article: undefined,
+                    status: 'ADDED'
+                },
+                renderedContent: this.createNewRow()
             })
             return {...prev, rows};
         })
     }
 
     async componentDidMount() {
-        let userResponse = await API.get("/admin/user/get_all");
-        let statuses = await API.get("statuses");
-        let rows = userResponse.data.map(r => {
+        let goodsResponse = await getGoods();
+        let statuses = await getStatuses();
+        let rows: IAdminTableRow[] = goodsResponse.data.map(r => {
             return {
-                id: r.id,
-                item: r,
-                generatedRow: this.createRow(r, statuses.data)
-            };
+                number: (r.id !== undefined ? r.id : -1),
+                key: r.id + ' ' + r.article,
+                content: r,
+                renderedContent: this.createRow(r, statuses.data)
+            }
         });
         rows.push({
-            id: 0xffff,
-            item: {},
-            generatedRow: this.createPlusRow()
+            number: 0xffff,
+            key: '+',
+            content: undefined,
+            renderedContent: this.createPlusRow()
         })
         this.setState({
             ...this.state,
@@ -192,18 +198,22 @@ class UsersTable extends React.Component {
                         <TableRow>
                             <TableCell width={50}>ID</TableCell>
                             <TableCell>Name</TableCell>
-                            <TableCell>Pass</TableCell>
+                            <TableCell>Article</TableCell>
                             <TableCell>Status</TableCell>
                             <TableCell width={200} align={"center"}>Actions</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {this.state.rows.sort((l, r) => l.id - r.id).map(r => r.generatedRow)}
+                        {
+                            this.state.rows
+                                .sort((l, r) =>
+                                    (l.number !== undefined ? l.number : 0) - (r.number !== undefined ? r.number : 0))
+                                .map(r => r.renderedContent)
+                        }
                     </TableBody>
                 </Table>
         );
     }
-
 }
 
-export default UsersTable;
+export default GoodsTable;

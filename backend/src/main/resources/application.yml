@@ -22,9 +22,11 @@ spring:
     password: shoppy
     contexts: dml, ddl
     url: jdbc:postgresql://localhost:5432/shoppy
-  spring:
-    jooq:
-      sql-dialect: Postgres
+#  jooq:
+#    sql-dialect: Postgres
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
 
 management:
   endpoints:

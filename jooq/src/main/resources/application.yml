@@ -14,6 +14,5 @@ spring:
     password: shoppy
     contexts: dml, ddl
     url: jdbc:postgresql://localhost:5432/shoppy
-  spring:
-    jooq:
-      sql-dialect: Postgres
+  jooq:
+    sql-dialect: Postgres

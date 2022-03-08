@@ -1,40 +1,17 @@
 import React, {Component} from 'react'
-
-import Home from './components/pages/MainPage'
-import Admin from './components/pages/AdminPage'
-import {Route, Switch} from "react-router";
-import {Button, ButtonGroup} from "@material-ui/core";
+import ButtonBar from "./components/ButtonBar";
 import {Link} from "react-router-dom";
 
 class App extends Component {
 
     render() {
         return (
-            <div>
-                <header>
-                    <ButtonGroup>
-                        <Link to="/">
-                            <Button>Home</Button>
-                        </Link>
-                        <Link to="/admin">
-                            <Button>{"\u26BF"}</Button>
-                        </Link>
-                    </ButtonGroup>
-                </header>
-                <main>
-                    <Switch>
-                        <Route
-                            path="/"
-                            component={Home}
-                            exact
-                        />
-                        <Route
-                            path="/admin"
-                            component={Admin}
-                        />
-                    </Switch>
-                </main>
-            </div>
+            <>
+                <ButtonBar items={[
+                    <Link to="/admin/orders">{"\u26BF"}</Link>
+                ]}/>
+                <h2>Main Page</h2>
+            </>
         );
     }
 }

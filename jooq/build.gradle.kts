@@ -1,12 +1,12 @@
 import nu.studer.gradle.jooq.JooqEdition
-import org.jooq.meta.jaxb.Logging
-
-val posgresVersion: String by rootProject
+import org.jooq.meta.jaxb.Logging.WARN
+import ru.chsergeig.shoppy.gradle.POSTGRES_VERSION
+import ru.chsergeig.shoppy.gradle.SOURCE_COMPATIBILITY
 
 plugins {
     java
-    id("nu.studer.jooq") version "5.2.1"
-    id("org.springframework.boot") version "2.4.3"
+    id("nu.studer.jooq") version "7.1.1"
+    id("org.springframework.boot") version "2.6.4"
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
 }
 
@@ -20,13 +20,14 @@ sourceSets {
 
 dependencies {
     implementation(group = "org.springframework.boot", name = "spring-boot-starter-jooq")
-    implementation(group = "org.postgresql", name = "postgresql", version = posgresVersion)
-    jooqGenerator(group = "org.postgresql", name = "postgresql", version = posgresVersion)
+
+    implementation(group = "org.postgresql", name = "postgresql", version = POSTGRES_VERSION)
+    jooqGenerator(group = "org.postgresql", name = "postgresql", version = POSTGRES_VERSION)
     implementation(group = "org.liquibase", name = "liquibase-core", version = "3.8.1")
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_15
+    sourceCompatibility = SOURCE_COMPATIBILITY
 }
 
 jooq {
@@ -36,7 +37,7 @@ jooq {
         create("main") {
             generateSchemaSourceOnCompilation.set(true)
             jooqConfiguration.apply {
-                logging = Logging.WARN
+                logging = WARN
                 jdbc.apply {
                     driver = "org.postgresql.Driver"
                     url = "jdbc:postgresql://localhost:5432/shoppy"
@@ -56,8 +57,8 @@ jooq {
                     generate.apply {
                         isDeprecated = false
                         isRecords = true
-                        isImmutablePojos = true
                         isFluentSetters = true
+                        isDaos = true
                     }
                     target.apply {
                         packageName = "ru.chsergeig.shoppy.jooq"

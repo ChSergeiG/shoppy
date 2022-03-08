@@ -17,10 +17,12 @@ public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private final Integer id;
-    private final String  name;
-    private final String  password;
-    private final Status  status;
+    private Integer id;
+    private String  name;
+    private String  password;
+    private Status  status;
+
+    public User() {}
 
     public User(User value) {
         this.id = value.id;
@@ -49,10 +51,26 @@ public class User implements Serializable {
     }
 
     /**
+     * Setter for <code>public.user.id</code>.
+     */
+    public User setId(Integer id) {
+        this.id = id;
+        return this;
+    }
+
+    /**
      * Getter for <code>public.user.name</code>.
      */
     public String getName() {
         return this.name;
+    }
+
+    /**
+     * Setter for <code>public.user.name</code>.
+     */
+    public User setName(String name) {
+        this.name = name;
+        return this;
     }
 
     /**
@@ -63,10 +81,26 @@ public class User implements Serializable {
     }
 
     /**
+     * Setter for <code>public.user.password</code>.
+     */
+    public User setPassword(String password) {
+        this.password = password;
+        return this;
+    }
+
+    /**
      * Getter for <code>public.user.status</code>.
      */
     public Status getStatus() {
         return this.status;
+    }
+
+    /**
+     * Setter for <code>public.user.status</code>.
+     */
+    public User setStatus(Status status) {
+        this.status = status;
+        return this;
     }
 
     @Override

@@ -17,9 +17,11 @@ public class Order implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private final Integer id;
-    private final String  info;
-    private final Status  status;
+    private Integer id;
+    private String  info;
+    private Status  status;
+
+    public Order() {}
 
     public Order(Order value) {
         this.id = value.id;
@@ -45,6 +47,14 @@ public class Order implements Serializable {
     }
 
     /**
+     * Setter for <code>public.order.id</code>.
+     */
+    public Order setId(Integer id) {
+        this.id = id;
+        return this;
+    }
+
+    /**
      * Getter for <code>public.order.info</code>.
      */
     public String getInfo() {
@@ -52,10 +62,26 @@ public class Order implements Serializable {
     }
 
     /**
+     * Setter for <code>public.order.info</code>.
+     */
+    public Order setInfo(String info) {
+        this.info = info;
+        return this;
+    }
+
+    /**
      * Getter for <code>public.order.status</code>.
      */
     public Status getStatus() {
         return this.status;
+    }
+
+    /**
+     * Setter for <code>public.order.status</code>.
+     */
+    public Order setStatus(Status status) {
+        this.status = status;
+        return this;
     }
 
     @Override

@@ -15,8 +15,10 @@ public class UserOrder implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private final Integer userId;
-    private final Integer orderId;
+    private Integer userId;
+    private Integer orderId;
+
+    public UserOrder() {}
 
     public UserOrder(UserOrder value) {
         this.userId = value.userId;
@@ -39,10 +41,26 @@ public class UserOrder implements Serializable {
     }
 
     /**
+     * Setter for <code>public.user_order.user_id</code>.
+     */
+    public UserOrder setUserId(Integer userId) {
+        this.userId = userId;
+        return this;
+    }
+
+    /**
      * Getter for <code>public.user_order.order_id</code>.
      */
     public Integer getOrderId() {
         return this.orderId;
+    }
+
+    /**
+     * Setter for <code>public.user_order.order_id</code>.
+     */
+    public UserOrder setOrderId(Integer orderId) {
+        this.orderId = orderId;
+        return this;
     }
 
     @Override

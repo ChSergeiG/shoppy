@@ -1,4 +1,5 @@
-.*
-!.gitignore
+**/.gradle
+**/.idea
+**/.node
 **/build
 **/node_modules

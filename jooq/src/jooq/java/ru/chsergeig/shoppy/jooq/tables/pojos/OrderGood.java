@@ -15,8 +15,10 @@ public class OrderGood implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private final Integer orderId;
-    private final Integer goodId;
+    private Integer orderId;
+    private Integer goodId;
+
+    public OrderGood() {}
 
     public OrderGood(OrderGood value) {
         this.orderId = value.orderId;
@@ -39,10 +41,26 @@ public class OrderGood implements Serializable {
     }
 
     /**
+     * Setter for <code>public.order_good.order_id</code>.
+     */
+    public OrderGood setOrderId(Integer orderId) {
+        this.orderId = orderId;
+        return this;
+    }
+
+    /**
      * Getter for <code>public.order_good.good_id</code>.
      */
     public Integer getGoodId() {
         return this.goodId;
+    }
+
+    /**
+     * Setter for <code>public.order_good.good_id</code>.
+     */
+    public OrderGood setGoodId(Integer goodId) {
+        this.goodId = goodId;
+        return this;
     }
 
     @Override

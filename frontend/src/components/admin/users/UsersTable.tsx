@@ -6,20 +6,23 @@ import {
     Input,
     MenuItem,
     Select,
+    SelectChangeEvent,
     Table,
     TableBody,
     TableCell,
     TableHead,
     TableRow
-} from "@material-ui/core";
+} from "@mui/material";
 import floppyIcon from "../../../img/floppy.svg";
 import binIcon from "../../../img/bin.svg";
 import refreshIcon from "../../../img/refresh.svg";
-import API from "../../../utils/API";
+import {createNewUser, deleteExistingUser, getStatuses, getUsers, updateExistingUser} from "../../../utils/API";
+import type {IStatus} from "../../../../types/IStatus";
+import type {IAdminTableRow, IAdminTableState, IUser} from "../../../../types/AdminTypes";
 
-class GoodsTable extends React.Component {
+class UsersTable extends React.Component<{}, IAdminTableState> {
 
-    constructor(props) {
+    constructor(props: {}) {
         super(props);
         this.state = {
             ...this.state,
@@ -29,29 +32,29 @@ class GoodsTable extends React.Component {
         };
     }
 
-    createRow = (row, statuses) => {
+    createRow = (user: IUser, statuses: IStatus[]) => {
         return (
-            <TableRow key={row.id}>
-                <TableCell>{row.id}</TableCell>
+            <TableRow key={user.id}>
+                <TableCell>{user.id}</TableCell>
                 <TableCell>
                     <Input
                         fullWidth={true}
-                        defaultValue={row.name}
-                        onChange={(e) => row.name = e.target.value}
+                        defaultValue={user.name}
+                        onChange={(e) => user.name = e.target.value}
                     />
                 </TableCell>
                 <TableCell>
                     <Input
                         fullWidth={true}
-                        defaultValue={row.password}
+                        defaultValue={user.password}
                         type={'password'}
-                        onChange={(e) => row.password = e.target.value}
+                        onChange={(e) => user.password = e.target.value}
                     />
                 </TableCell>
                 <TableCell>
                     <Select
-                        value={row.status}
-                        onChange={(e) => this.handleSelectorChange(e, row)}
+                        value={user.status}
+                        onChange={(e) => this.handleSelectorChange(e, user)}
                     >
                         {
                             statuses.map(item => (
@@ -68,17 +71,17 @@ class GoodsTable extends React.Component {
                 <TableCell align={"center"}>
                     <ButtonGroup>
                         <Button
-                            onClick={() => this.saveGood(row.id, row.name, row.password, row.status)}
+                            onClick={() => this.saveUser(user)}
                         >
                             <img src={floppyIcon} height={16} width={16} alt='save'/>
                         </Button>
                         <Button
-                            onClick={() => this.removeGood(row.id)}
+                            onClick={() => this.removeUser(user)}
                         >
                             <img src={binIcon} height={16} width={16} alt='remove'/>
                         </Button>
                         <Button
-                            onClick={() => this.refreshGood(row.id)}
+                            onClick={() => this.refreshUser(user)}
                         >
                             <img src={refreshIcon} height={16} width={16} alt='refresh'/>
                         </Button>
@@ -102,77 +105,81 @@ class GoodsTable extends React.Component {
         );
     }
 
-    createNewRow = () => {
-        return this.createRow({id: '', name: '', password: '', status: 'ADDED'}, this.state.statuses)
+    createNewRow = (user: IUser) => {
+        return this.createRow(user, this.state.statuses)
     }
 
-    handleSelectorChange = (e, row) => {
-        const status = e.target.value;
-        this.setState(prev => {
-            const rows = prev.rows.map(r => r.id === row.id
-                ? {
-                    id: r.id,
-                    item: {...r.item, status},
-                    generatedRow: this.createRow({...r.item, status}, prev.statuses)
+    handleSelectorChange = (e: SelectChangeEvent, row: IUser) => {
+        const selectedStatus = (e.target.value as IStatus);
+        console.log("selected: " + selectedStatus)
+
+        this.setState((prevState) => {
+            console.log("prev state: ")
+            console.log(prevState)
+            let updatedRows = prevState.rows.map((r) => {
+                if (r.content === row) {
+                    r.content.status = selectedStatus;
+                    r.renderedContent = this.createNewRow(r.content);
                 }
-                : r
-            );
-            return {...prev, rows}
+                return r;
+            });
+            return {...prevState, rows: updatedRows};
         });
     }
 
-    async saveGood(id, name, password, status) {
-        if (id === '') {
-            await API.post("/admin/users/add", {
-                name: name,
-                password: password,
-                status: status
-            });
+    async saveUser(user: IUser) {
+        if (user.id === undefined) {
+            await createNewUser(user);
         } else {
-            await API.post("/admin/users/update", {
-                id: id,
-                name: name,
-                password: password,
-                status: status
-            });
+            await updateExistingUser(user);
         }
     }
 
-    async removeGood(id) {
-        let item = this.state.rows.find(r => r.id === id).item
-        await API.delete("/admin/users/" + item.name);
+    async removeUser(user: IUser) {
+        if (user !== undefined) {
+            await deleteExistingUser(user);
+        }
     }
 
-    async refreshGood(id) {
+    async refreshUser(user: IUser) {
 
     }
 
     newUser = () => {
         this.setState(prev => {
             const rows = prev.rows;
+            let newUser: IUser = {
+                id: undefined,
+                name: '',
+                password: '',
+                status: 'ADDED'
+            };
             rows.push({
-                id: 0xfff8,
-                item: {},
-                generatedRow: this.createNewRow()
+                number: 0xfff8,
+                key: '',
+                content: newUser,
+                renderedContent: this.createNewRow(newUser)
             })
             return {...prev, rows};
         })
     }
 
     async componentDidMount() {
-        let userResponse = await API.get("/admin/users/get_all");
-        let statuses = await API.get("statuses");
-        let rows = userResponse.data.map(r => {
+        let userResponse = await getUsers();
+        let statuses = await getStatuses();
+        let rows: IAdminTableRow[] = userResponse.data.map(r => {
             return {
-                id: r.id,
-                item: r,
-                generatedRow: this.createRow(r, statuses.data)
-            };
+                number: (r.id !== undefined ? r.id : -1),
+                key: r.name,
+                content: r,
+                renderedContent: this.createRow(r, statuses.data)
+            }
         });
         rows.push({
-            id: 0xffff,
-            item: {},
-            generatedRow: this.createPlusRow()
+            number: 0xffff,
+            key: '+',
+            content: undefined,
+            renderedContent: this.createPlusRow()
         })
         this.setState({
             ...this.state,
@@ -192,18 +199,22 @@ class GoodsTable extends React.Component {
                         <TableRow>
                             <TableCell width={50}>ID</TableCell>
                             <TableCell>Name</TableCell>
-                            <TableCell>Article</TableCell>
+                            <TableCell>Pass</TableCell>
                             <TableCell>Status</TableCell>
                             <TableCell width={200} align={"center"}>Actions</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {this.state.rows.sort((l, r) => l.id - r.id).map(r => r.generatedRow)}
+                        {
+                            this.state.rows
+                                .sort((l, r) =>
+                                    (l.number !== undefined ? l.number : 0) - (r.number !== undefined ? r.number : 0))
+                                .map(r => r.renderedContent)
+                        }
                     </TableBody>
                 </Table>
         );
     }
-
 }
 
-export default GoodsTable;
+export default UsersTable;

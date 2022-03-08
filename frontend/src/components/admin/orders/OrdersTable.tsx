@@ -6,19 +6,22 @@ import {
     Input,
     MenuItem,
     Select,
+    SelectChangeEvent,
     Table,
     TableBody,
     TableCell,
     TableHead,
     TableRow
-} from "@material-ui/core";
+} from "@mui/material";
 import floppyIcon from "../../../img/floppy.svg";
 import refreshIcon from "../../../img/refresh.svg";
-import API from "../../../utils/API";
+import {createNewOrder, deleteExistingOrder, getOrders, getStatuses, updateExistingOrder} from "../../../utils/API";
+import type {IStatus} from "../../../../types/IStatus";
+import type {IAdminTableRow, IAdminTableState, IOrder} from "../../../../types/AdminTypes";
 
-class OrdersTable extends React.Component {
+class OrdersTable extends React.Component<{}, IAdminTableState> {
 
-    constructor(props) {
+    constructor(props: {}) {
         super(props);
         this.state = {
             ...this.state,
@@ -28,21 +31,21 @@ class OrdersTable extends React.Component {
         };
     }
 
-    createRow = (row, statuses) => {
+    createRow = (order: IOrder, statuses: IStatus[]) => {
         return (
-            <TableRow key={row.id}>
-                <TableCell>{row.id}</TableCell>
+            <TableRow key={order.id}>
+                <TableCell>{order.id}</TableCell>
                 <TableCell>
                     <Input
                         fullWidth={true}
-                        defaultValue={row.name}
-                        onChange={(e) => row.name = e.target.value}
+                        defaultValue={order.info}
+                        onChange={(e) => order.info = e.target.value}
                     />
                 </TableCell>
                 <TableCell>
                     <Select
-                        value={row.status}
-                        onChange={(e) => this.handleSelectorChange(e, row)}
+                        value={order.status}
+                        onChange={(e) => this.handleSelectorChange(e, order)}
                     >
                         {
                             statuses.map(item => (
@@ -59,12 +62,12 @@ class OrdersTable extends React.Component {
                 <TableCell align={"center"}>
                     <ButtonGroup>
                         <Button
-                            onClick={() => this.saveOrder(row.id, row.name, row.password, row.status)}
+                            onClick={() => this.saveOrder(order)}
                         >
                             <img src={floppyIcon} height={16} width={16} alt='save'/>
                         </Button>
                         <Button
-                            onClick={() => this.refreshOrder(row.id)}
+                            onClick={() => this.refreshOrder(order)}
                         >
                             <img src={refreshIcon} height={16} width={16} alt='refresh'/>
                         </Button>
@@ -79,7 +82,7 @@ class OrdersTable extends React.Component {
             <TableRow key="new">
                 <TableCell colSpan={5} align={"center"}>
                     <Button
-                        onClick={() => this.newUser()}
+                        onClick={() => this.newOrder()}
                     >
                         +
                     </Button>
@@ -89,76 +92,74 @@ class OrdersTable extends React.Component {
     }
 
     createNewRow = () => {
-        return this.createRow({id: '', name: '', password: '', status: 'ADDED'}, this.state.statuses)
+        return this.createRow({id: undefined, info: '', status: 'ADDED'}, this.state.statuses)
     }
 
-    handleSelectorChange = (e, row) => {
-        const status = e.target.value;
-        this.setState(prev => {
-            const rows = prev.rows.map(r => r.id === row.id
-                ? {
-                    id: r.id,
-                    item: {...r.item, status},
-                    generatedRow: this.createRow({...r.item, status}, prev.statuses)
+    handleSelectorChange = (e: SelectChangeEvent, row: IOrder) => {
+        const selectedStatus = (e.target.value as IStatus);
+
+        this.setState((prevState) => {
+            let rowsToUpdate: IAdminTableRow[] = prevState.rows.filter((r) => r.content === row);
+            rowsToUpdate.forEach((r) => {
+                if (r.content !== undefined) {
+                    r.content.status = selectedStatus
                 }
-                : r
-            );
-            return {...prev, rows}
+            });
+            return {...prevState, rows: rowsToUpdate};
         });
     }
 
-    async saveOrder(id, name, password, status) {
-        if (id === '') {
-            await API.post("/admin/users/add", {
-                name: name,
-                password: password,
-                status: status
-            });
+    async saveOrder(order: IOrder) {
+        if (order === undefined || order.id === undefined) {
+            await createNewOrder(order);
         } else {
-            await API.post("/admin/users/update", {
-                id: id,
-                name: name,
-                password: password,
-                status: status
-            });
+            await updateExistingOrder(order);
         }
     }
 
-    async removeUser(id) {
-        let item = this.state.rows.find(r => r.id === id).item
-        await API.delete("/admin/users/" + item.name);
+    async removeOrder(order: IOrder) {
+        if (order !== undefined && order.id !== undefined) {
+            await deleteExistingOrder(order);
+        }
     }
 
-    async refreshOrder(id) {
+    async refreshOrder(order: IOrder) {
 
     }
 
-    newUser = () => {
+    newOrder = () => {
         this.setState(prev => {
             const rows = prev.rows;
             rows.push({
-                id: 0xfff8,
-                item: {},
-                generatedRow: this.createNewRow()
+                number: 0xfff8,
+                key: '',
+                content: {
+                    id: undefined,
+                    info: '',
+                    status: 'ADDED'
+                },
+                renderedContent: this.createNewRow()
             })
             return {...prev, rows};
         })
     }
 
     async componentDidMount() {
-        let userResponse = await API.get("/admin/users/get_all");
-        let statuses = await API.get("statuses");
-        let rows = userResponse.data.map(r => {
+        let userResponse = await getOrders();
+        let statuses = await getStatuses();
+        let rows: IAdminTableRow[] = userResponse.data.map(r => {
             return {
-                id: r.id,
-                item: r,
-                generatedRow: this.createRow(r, statuses.data)
-            };
+                number: (r.id !== undefined ? r.id : -1),
+                key: r.id + r.info,
+                content: r,
+                renderedContent: this.createRow(r, statuses.data)
+            }
         });
         rows.push({
-            id: 0xffff,
-            item: {},
-            generatedRow: this.createPlusRow()
+            number: 0xffff,
+            key: '+',
+            content: undefined,
+            renderedContent: this.createPlusRow()
         })
         this.setState({
             ...this.state,
@@ -183,7 +184,12 @@ class OrdersTable extends React.Component {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {this.state.rows.sort((l, r) => l.id - r.id).map(r => r.generatedRow)}
+                        {
+                            this.state.rows
+                                .sort((l, r) =>
+                                    (l.number !== undefined ? l.number : 0) - (r.number !== undefined ? r.number : 0))
+                                .map(r => r.renderedContent)
+                        }
                     </TableBody>
                 </Table>
         );
