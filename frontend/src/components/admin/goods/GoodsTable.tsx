@@ -109,21 +109,22 @@ class GoodsTable extends React.Component<{}, IAdminTableState> {
         );
     }
 
-    createNewRow = () => {
-        return this.createRow({id: undefined, name: '', article: undefined, status: 'ADDED'}, this.state.statuses)
+    createNewRow = (good: IGood) => {
+        return this.createRow(good, this.state.statuses)
     }
 
     handleSelectorChange = (e: SelectChangeEvent, row: IGood) => {
         const selectedStatus = (e.target.value as IStatus);
 
         this.setState((prevState) => {
-            let rowsToUpdate: IAdminTableRow[] = prevState.rows.filter((r) => r.content === row);
-            rowsToUpdate.forEach((r) => {
-                if (r.content !== undefined) {
-                    r.content.status = selectedStatus
+            let updatedRows = prevState.rows.map((r) => {
+                if (r.content === row) {
+                    r.content.status = selectedStatus;
+                    r.renderedContent = this.createNewRow(r.content);
                 }
+                return r;
             });
-            return {...prevState, rows: rowsToUpdate};
+            return {...prevState, rows: updatedRows};
         });
     }
 
@@ -148,16 +149,17 @@ class GoodsTable extends React.Component<{}, IAdminTableState> {
     newGood = () => {
         this.setState(prev => {
             const rows = prev.rows;
+            let newGood: IGood = {
+                id: undefined,
+                name: '',
+                article: undefined,
+                status: 'ADDED'
+            };
             rows.push({
                 number: 0xfff8,
                 key: '',
-                content: {
-                    id: undefined,
-                    name: '',
-                    article: undefined,
-                    status: 'ADDED'
-                },
-                renderedContent: this.createNewRow()
+                content: newGood,
+                renderedContent: this.createNewRow(newGood)
             })
             return {...prev, rows};
         })

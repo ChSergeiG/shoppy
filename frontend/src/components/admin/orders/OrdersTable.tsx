@@ -91,21 +91,22 @@ class OrdersTable extends React.Component<{}, IAdminTableState> {
         );
     }
 
-    createNewRow = () => {
-        return this.createRow({id: undefined, info: '', status: 'ADDED'}, this.state.statuses)
+    createNewRow = (order: IOrder) => {
+        return this.createRow(order, this.state.statuses)
     }
 
     handleSelectorChange = (e: SelectChangeEvent, row: IOrder) => {
         const selectedStatus = (e.target.value as IStatus);
 
         this.setState((prevState) => {
-            let rowsToUpdate: IAdminTableRow[] = prevState.rows.filter((r) => r.content === row);
-            rowsToUpdate.forEach((r) => {
-                if (r.content !== undefined) {
-                    r.content.status = selectedStatus
+            let updatedRows = prevState.rows.map((r) => {
+                if (r.content === row) {
+                    r.content.status = selectedStatus;
+                    r.renderedContent = this.createNewRow(r.content);
                 }
+                return r;
             });
-            return {...prevState, rows: rowsToUpdate};
+            return {...prevState, rows: updatedRows};
         });
     }
 
@@ -130,15 +131,16 @@ class OrdersTable extends React.Component<{}, IAdminTableState> {
     newOrder = () => {
         this.setState(prev => {
             const rows = prev.rows;
+            let newOrder: IOrder = {
+                id: undefined,
+                info: '',
+                status: 'ADDED'
+            };
             rows.push({
                 number: 0xfff8,
                 key: '',
-                content: {
-                    id: undefined,
-                    info: '',
-                    status: 'ADDED'
-                },
-                renderedContent: this.createNewRow()
+                content: newOrder,
+                renderedContent: this.createNewRow(newOrder)
             })
             return {...prev, rows};
         })

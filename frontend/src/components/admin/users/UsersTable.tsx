@@ -111,11 +111,8 @@ class UsersTable extends React.Component<{}, IAdminTableState> {
 
     handleSelectorChange = (e: SelectChangeEvent, row: IUser) => {
         const selectedStatus = (e.target.value as IStatus);
-        console.log("selected: " + selectedStatus)
 
         this.setState((prevState) => {
-            console.log("prev state: ")
-            console.log(prevState)
             let updatedRows = prevState.rows.map((r) => {
                 if (r.content === row) {
                     r.content.status = selectedStatus;
