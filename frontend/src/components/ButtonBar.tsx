@@ -17,7 +17,11 @@ class ButtonBar extends Component<ButtonBarProps, {}> {
             <Table style={{width: '10%'}}>
                 <TableBody>
                     <TableRow>
-                        {items.map(i => <TableCell style={{border: 'none'}}>{i}</TableCell>)}
+                        {items.map(i =>
+                            <TableCell style={{border: 'none'}} key={items.indexOf(i)}>
+                                {i}
+                            </TableCell>
+                        )}
                     </TableRow>
                 </TableBody>
             </Table>

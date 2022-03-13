@@ -5,8 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.chsergeig.shoppy.dao.OrderRepository;
 import ru.chsergeig.shoppy.dto.OrderDTO;
 import ru.chsergeig.shoppy.jooq.enums.Status;
-import ru.chsergeig.shoppy.jooq.tables.pojos.Good;
-import ru.chsergeig.shoppy.jooq.tables.pojos.Order;
+import ru.chsergeig.shoppy.jooq.tables.pojos.Orders;
 import ru.chsergeig.shoppy.mapping.OrderMapper;
 import ru.chsergeig.shoppy.service.OrderService;
 
@@ -23,7 +22,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<OrderDTO> getAllOrders() {
-        List<Order> orders = orderRepository.fetchByStatus(Status.ADDED, Status.ACTIVE, Status.DISABLED);
+        List<Orders> orders = orderRepository.fetchByStatus(Status.ADDED, Status.ACTIVE, Status.DISABLED);
         return orders.stream()
                 .map(orderMapper::map)
                 .collect(Collectors.toList());
@@ -31,28 +30,28 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderDTO addOrder(String info) {
-        Order pojo = new Order(null,   info, Status.ADDED);
+        Orders pojo = new Orders(null, info, Status.ADDED);
         orderRepository.insert(pojo);
         return orderMapper.map(pojo);
     }
 
     @Override
     public OrderDTO addOrder(OrderDTO dto) {
-        Order pojo = orderMapper.map(dto);
+        Orders pojo = orderMapper.map(dto);
         orderRepository.insert(pojo);
         return orderMapper.map(pojo);
     }
 
     @Override
     public OrderDTO updateOrder(OrderDTO dto) {
-        Order pojo = orderMapper.map(dto);
+        Orders pojo = orderMapper.map(dto);
         orderRepository.update(pojo);
         return orderMapper.map(pojo);
     }
 
     @Override
     public Integer deleteOrder(Integer id) {
-        List<Order> orders = orderRepository.fetchById(id);
+        List<Orders> orders = orderRepository.fetchById(id);
         orders.forEach(o -> o.setStatus(Status.REMOVED));
         orderRepository.update(orders);
         return orders.size();

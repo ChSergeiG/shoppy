@@ -10,7 +10,7 @@ spring:
   datasource:
     name: pgShoppy
     generateUniqueName: false
-    url: jdbc:postgresql://localhost:5432/shoppy
+    url: jdbc:postgresql://localhost:5433/shoppy
     username: shoppy
     password: shoppy
     platform: all
@@ -21,9 +21,9 @@ spring:
     user: shoppy
     password: shoppy
     contexts: dml, ddl
-    url: jdbc:postgresql://localhost:5432/shoppy
-#  jooq:
-#    sql-dialect: Postgres
+    url: jdbc:postgresql://localhost:5433/shoppy
+  jooq:
+    sql-dialect: POSTGRES
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher

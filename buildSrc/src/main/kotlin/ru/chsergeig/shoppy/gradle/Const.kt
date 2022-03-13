@@ -6,5 +6,6 @@ import org.gradle.api.JavaVersion
 val SOURCE_COMPATIBILITY = JavaVersion.VERSION_15
 
 // libs
+const val LIQUIBASE_VERSION = "3.10.3"
 const val MAPSTRUCT_VERSION = "1.4.2.Final"
 const val POSTGRES_VERSION = "42.2.18"

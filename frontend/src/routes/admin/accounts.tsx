@@ -1,9 +1,9 @@
 import React from "react";
-import {Link} from "react-router-dom";
-import GoodsTable from "../../components/admin/goods/GoodsTable";
+import AccountsTable from "../../components/admin/accounts/AccountsTable";
 import ButtonBar from "../../components/ButtonBar";
+import {Link} from "react-router-dom";
 
-export default function Goods() {
+export default function Accounts() {
     return (
         <>
             <ButtonBar items={[
@@ -12,7 +12,7 @@ export default function Goods() {
                 <Link to="/admin/goods">Goods</Link>,
                 <Link to="/admin/orders">Orders</Link>
             ]}/>
-            <GoodsTable/>
+            <AccountsTable/>
         </>
     );
 }

@@ -9,9 +9,9 @@ export default function Orders() {
         <>
             <ButtonBar items={[
                 <Link to="/">Main</Link>,
+                <Link to="/admin/accounts">Accounts</Link>,
                 <Link to="/admin/goods">Goods</Link>,
-                <Link to="/admin/orders">Orders</Link>,
-                <Link to="/admin/users">Users</Link>
+                <Link to="/admin/orders">Orders</Link>
             ]}/>
             <OrdersTable/>
         </>

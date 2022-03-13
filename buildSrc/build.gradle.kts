@@ -3,5 +3,14 @@ plugins {
 }
 
 repositories {
+    gradlePluginPortal()
     mavenCentral()
+}
+
+dependencies {
+    implementation(
+        group = "com.bmuschko.docker-remote-api",
+        name = "com.bmuschko.docker-remote-api.gradle.plugin",
+        version = "7.3.0"
+    )
 }

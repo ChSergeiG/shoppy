@@ -13,14 +13,14 @@ export type IOrder = {
     status: IStatus;
 };
 
-export type IUser = {
+export type IAccount = {
     id: number | undefined;
     name: string;
     password: string;
     status: IStatus;
 };
 
-export type IAdminContent =  IGood | IOrder | IUser
+export type IAdminContent =  IGood | IOrder | IAccount
 
 export type IAdminTableRow = {
     // table row number

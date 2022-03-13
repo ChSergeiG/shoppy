@@ -1,3 +1,4 @@
+import ru.chsergeig.shoppy.gradle.LIQUIBASE_VERSION
 import ru.chsergeig.shoppy.gradle.MAPSTRUCT_VERSION
 import ru.chsergeig.shoppy.gradle.POSTGRES_VERSION
 import ru.chsergeig.shoppy.gradle.SOURCE_COMPATIBILITY
@@ -21,23 +22,22 @@ dependencies {
     implementation(project(":jooq"))
 
     annotationProcessor(group = "org.springframework.boot", name = "spring-boot-configuration-processor")
+    annotationProcessor(group = "org.mapstruct", name = "mapstruct-processor", version = MAPSTRUCT_VERSION)
 
     implementation(group = "org.springframework.boot", name = "spring-boot-starter")
     implementation(group = "org.springframework.boot", name = "spring-boot-starter-actuator")
     implementation(group = "org.springframework.boot", name = "spring-boot-starter-jooq")
     implementation(group = "org.springframework.boot", name = "spring-boot-starter-web")
 
+    testImplementation(group = "org.springframework.boot", name = "spring-boot-starter-test")
 
 //    implementation(group = "io.springfox", name = "springfox-boot-starter", version = "3.0.0")
 //    implementation(group = "io.springfox", name = "springfox-swagger-ui", version = "3.0.0")
 
-    implementation(group = "org.postgresql", name = "postgresql", version = POSTGRES_VERSION)
-    implementation(group = "org.liquibase", name = "liquibase-core", version = "3.8.1")
-
-    annotationProcessor(group = "org.mapstruct", name = "mapstruct-processor", version = MAPSTRUCT_VERSION)
+    implementation(group = "org.liquibase", name = "liquibase-core", version = LIQUIBASE_VERSION)
     implementation(group = "org.mapstruct", name = "mapstruct", version = MAPSTRUCT_VERSION)
+    implementation(group = "org.postgresql", name = "postgresql", version = POSTGRES_VERSION)
 
-    testImplementation(group = "org.springframework.boot", name = "spring-boot-starter-test")
     testImplementation(group = "org.junit.jupiter", name = "junit-jupiter", version = "5.5.2")
 }
 
@@ -46,12 +46,6 @@ java {
 }
 
 tasks {
-
-    processResources {
-        from(project(":jooq").sourceSets["main"].resources)
-        duplicatesStrategy = DuplicatesStrategy.WARN
-    }
-
     test {
         useJUnitPlatform()
     }

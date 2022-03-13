@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.chsergeig.shoppy.dao.GoodRepository;
 import ru.chsergeig.shoppy.dto.GoodDTO;
 import ru.chsergeig.shoppy.jooq.enums.Status;
-import ru.chsergeig.shoppy.jooq.tables.pojos.Good;
+import ru.chsergeig.shoppy.jooq.tables.pojos.Goods;
 import ru.chsergeig.shoppy.mapping.GoodMapper;
 import ru.chsergeig.shoppy.service.GoodService;
 
@@ -22,7 +22,7 @@ public class GoodServiceImpl implements GoodService {
 
     @Override
     public List<GoodDTO> getAllGoods() {
-        List<Good> goods = goodRepository.fetchByStatus(Status.ADDED, Status.ACTIVE, Status.DISABLED);
+        List<Goods> goods = goodRepository.fetchByStatus(Status.ADDED, Status.ACTIVE, Status.DISABLED);
         return goods.stream()
                 .map(goodMapper::map)
                 .collect(Collectors.toList());
@@ -30,21 +30,21 @@ public class GoodServiceImpl implements GoodService {
 
     @Override
     public GoodDTO addGood(String name) {
-        Good pojo = new Good(null, name, null, Status.ADDED);
+        Goods pojo = new Goods(null, name, null, Status.ADDED);
         goodRepository.insert(pojo);
         return goodMapper.map(pojo);
     }
 
     @Override
     public GoodDTO addGood(GoodDTO dto) {
-        Good pojo = goodMapper.map(dto);
+        Goods pojo = goodMapper.map(dto);
         goodRepository.insert(pojo);
         return goodMapper.map(pojo);
     }
 
     @Override
     public GoodDTO updateGood(GoodDTO dto) {
-        Good pojo = goodMapper.map(dto);
+        Goods pojo = goodMapper.map(dto);
         goodRepository.update(pojo);
         return goodMapper.map(pojo);
     }
@@ -52,7 +52,7 @@ public class GoodServiceImpl implements GoodService {
     @Override
     @Transactional
     public Integer deleteGood(Integer article) {
-        List<Good> goods = goodRepository.fetchByArticle(article);
+        List<Goods> goods = goodRepository.fetchByArticle(article);
         goods.forEach(g -> g.setStatus(Status.REMOVED));
         goodRepository.update(goods);
         return goods.size();
