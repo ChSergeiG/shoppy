@@ -9,4 +9,9 @@ public interface AuthenticationService {
      */
     ResponseDto authenticate(String login, String password);
 
+    /**
+     * Check is token healthy
+     */
+    Boolean probeToken(String token);
+
 }

@@ -25,7 +25,7 @@ import java.util.List;
 @RequestMapping("/admin/good")
 @RestController
 @Secured("ROLE_ADMIN")
-@CrossOrigin
+@CrossOrigin(origins = {"http://localhost:8080"})
 public class GoodController {
 
     private final GoodService goodsService;

@@ -2,6 +2,7 @@ import React from "react";
 import AccountsTable from "../../components/admin/accounts/AccountsTable";
 import ButtonBar from "../../components/ButtonBar";
 import {Link} from "react-router-dom";
+import AuthorizationOverlay from "../../components/admin/AuthorizationOverlay";
 
 export default function Accounts() {
     return (
@@ -12,6 +13,7 @@ export default function Accounts() {
                 <Link to="/admin/goods">Goods</Link>,
                 <Link to="/admin/orders">Orders</Link>
             ]}/>
+            <AuthorizationOverlay/>
             <AccountsTable/>
         </>
     );

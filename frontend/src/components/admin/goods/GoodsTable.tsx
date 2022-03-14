@@ -16,9 +16,17 @@ import {
 import floppyIcon from "../../../img/floppy.svg";
 import binIcon from "../../../img/bin.svg";
 import refreshIcon from "../../../img/refresh.svg";
-import {createNewGood, deleteExistingGood, getGoods, getStatuses, updateExistingGood} from "../../../utils/API";
+import {
+    createNewGood,
+    deleteExistingGood,
+    getGoods,
+    getStatuses,
+    JWT_TOKEN_COOKIE_KEY,
+    updateExistingGood
+} from "../../../utils/API";
 import type {IAdminTableRow, IAdminTableState, IGood} from "../../../../types/AdminTypes";
 import type {IStatus} from "../../../../types/IStatus";
+import Cookies from "universal-cookie";
 
 class GoodsTable extends React.Component<{}, IAdminTableState> {
 
@@ -166,7 +174,9 @@ class GoodsTable extends React.Component<{}, IAdminTableState> {
     }
 
     async componentDidMount() {
-        let goodsResponse = await getGoods();
+        const cookies = new Cookies();
+        const token = cookies.get(JWT_TOKEN_COOKIE_KEY);
+        let goodsResponse = await getGoods(token);
         let statuses = await getStatuses();
         let rows: IAdminTableRow[] = goodsResponse.data.map(r => {
             return {

@@ -38,4 +38,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
         return null;
     }
+
+    @Override
+    public Boolean probeToken(String token) {
+        UserDetails userDetails = userDetailsService.loadUserByUsername(tokenUtilComponent.getUsernameFromToken(token));
+        if (userDetails instanceof JwtUserDetails) {
+            return tokenUtilComponent.isTokenValid(token, (JwtUserDetails) userDetails);
+        }
+        return false;
+    }
 }

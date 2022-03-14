@@ -15,9 +15,17 @@ import {
 } from "@mui/material";
 import floppyIcon from "../../../img/floppy.svg";
 import refreshIcon from "../../../img/refresh.svg";
-import {createNewOrder, deleteExistingOrder, getOrders, getStatuses, updateExistingOrder} from "../../../utils/API";
+import {
+    createNewOrder,
+    deleteExistingOrder,
+    getOrders,
+    getStatuses,
+    JWT_TOKEN_COOKIE_KEY,
+    updateExistingOrder
+} from "../../../utils/API";
 import type {IStatus} from "../../../../types/IStatus";
 import type {IAdminTableRow, IAdminTableState, IOrder} from "../../../../types/AdminTypes";
+import Cookies from "universal-cookie";
 
 class OrdersTable extends React.Component<{}, IAdminTableState> {
 
@@ -147,7 +155,9 @@ class OrdersTable extends React.Component<{}, IAdminTableState> {
     }
 
     async componentDidMount() {
-        let userResponse = await getOrders();
+        const cookies = new Cookies();
+        const token = cookies.get(JWT_TOKEN_COOKIE_KEY);
+        let userResponse = await getOrders(token);
         let statuses = await getStatuses();
         let rows: IAdminTableRow[] = userResponse.data.map(r => {
             return {

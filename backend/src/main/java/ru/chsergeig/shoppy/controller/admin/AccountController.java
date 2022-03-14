@@ -1,7 +1,5 @@
 package ru.chsergeig.shoppy.controller.admin;
 
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.Authorization;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +25,7 @@ import java.util.List;
 @RequestMapping("/admin/account")
 @RestController
 @Secured("ROLE_ADMIN")
-@CrossOrigin
+@CrossOrigin(origins = {"http://localhost:8080"})
 public class AccountController {
 
     private final AccountService accountService;

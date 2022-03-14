@@ -16,9 +16,17 @@ import {
 import floppyIcon from "../../../img/floppy.svg";
 import binIcon from "../../../img/bin.svg";
 import refreshIcon from "../../../img/refresh.svg";
-import {createNewAccount, deleteExistingAccount, getStatuses, getAccounts, updateExistingAccount} from "../../../utils/API";
+import {
+    createNewAccount,
+    deleteExistingAccount,
+    getStatuses,
+    getAccounts,
+    updateExistingAccount,
+    JWT_TOKEN_COOKIE_KEY
+} from "../../../utils/API";
 import type {IStatus} from "../../../../types/IStatus";
 import type {IAdminTableRow, IAdminTableState, IAccount} from "../../../../types/AdminTypes";
+import Cookies from "universal-cookie";
 
 class AccountsTable extends React.Component<{}, IAdminTableState> {
 
@@ -162,9 +170,11 @@ class AccountsTable extends React.Component<{}, IAdminTableState> {
     }
 
     async componentDidMount() {
-        let userResponse = await getAccounts();
+        const cookies = new Cookies();
+        const token = cookies.get(JWT_TOKEN_COOKIE_KEY);
+        let accountResponse = await getAccounts(token);
         let statuses = await getStatuses();
-        let rows: IAdminTableRow[] = userResponse.data.map(r => {
+        let rows: IAdminTableRow[] = accountResponse.data.map(r => {
             return {
                 number: (r.id !== undefined ? r.id : -1),
                 key: r.name,
@@ -195,8 +205,8 @@ class AccountsTable extends React.Component<{}, IAdminTableState> {
                     <TableHead>
                         <TableRow>
                             <TableCell width={50}>ID</TableCell>
-                            <TableCell>Name</TableCell>
-                            <TableCell>Pass</TableCell>
+                            <TableCell>Login</TableCell>
+                            <TableCell>Password</TableCell>
                             <TableCell>Status</TableCell>
                             <TableCell width={200} align={"center"}>Actions</TableCell>
                         </TableRow>

@@ -20,7 +20,7 @@ export type IAccount = {
     status: IStatus;
 };
 
-export type IAdminContent =  IGood | IOrder | IAccount
+export type IAdminContent = IGood | IOrder | IAccount
 
 export type IAdminTableRow = {
     // table row number
@@ -37,4 +37,14 @@ export type IAdminTableState = {
     isLoading: boolean;
     statuses: IStatus[];
     rows: IAdminTableRow[];
+};
+
+export type IJwtRequest = {
+    login: string;
+    password: string;
+};
+
+export type IJwtResponse = {
+    token: string;
+    expirationTime: any;
 };

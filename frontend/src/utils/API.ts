@@ -1,21 +1,23 @@
 import axios, {AxiosInstance, AxiosResponse} from "axios";
-import type {IAccount, IGood, IOrder} from "../../types/AdminTypes";
+import type {IAccount, IGood, IJwtRequest, IJwtResponse, IOrder} from "../../types/AdminTypes";
 import type {IStatus} from "../../types/IStatus";
 
-export default function client(): AxiosInstance {
+export const JWT_TOKEN_COOKIE_KEY = "JWT_TOKEN_COOKIE_KEY";
+
+function client(): AxiosInstance {
     return axios.create({
         baseURL: 'http://localhost:8080',
         responseType: 'json'
     });
 }
 
-//////////////////////////
+/////////////////////////////
 // admin/AccountController //
-//////////////////////////
+/////////////////////////////
 
-export async function getAccounts(): Promise<AxiosResponse<IAccount[]>> {
+export async function getAccounts(token: string): Promise<AxiosResponse<IAccount[]>> {
     return client()
-        .get("/admin/account/get_all");
+        .get("/admin/account/get_all", {headers: {"X-Authorization": token}});
 }
 
 export async function createNewDefaultAccount(login: string): Promise<AxiosResponse<void>> {
@@ -42,9 +44,9 @@ export async function deleteExistingAccount(accountToDelete: IAccount): Promise<
 // admin/GoodController //
 //////////////////////////
 
-export async function getGoods(): Promise<AxiosResponse<IGood[]>> {
+export async function getGoods(token: string): Promise<AxiosResponse<IGood[]>> {
     return client()
-        .get("/admin/good/get_all");
+        .get("/admin/good/get_all", {headers: {"X-Authorization": token}});
 }
 
 export async function createNewDefaultGood(name: string): Promise<AxiosResponse<IGood>> {
@@ -71,9 +73,9 @@ export async function deleteExistingGood(goodToDelete: IGood): Promise<AxiosResp
 // admin/OrderController //
 ///////////////////////////
 
-export async function getOrders(): Promise<AxiosResponse<IOrder[]>> {
+export async function getOrders(token: string): Promise<AxiosResponse<IOrder[]>> {
     return client()
-        .get("/admin/order/get_all");
+        .get("/admin/order/get_all", {headers: {"X-Authorization": token}});
 }
 
 export async function createNewDefaultOrder(info: string): Promise<AxiosResponse<void>> {
@@ -94,6 +96,20 @@ export async function updateExistingOrder(orderToUpdate: IOrder): Promise<AxiosR
 export async function deleteExistingOrder(orderToDelete: IOrder): Promise<AxiosResponse<void>> {
     return client()
         .delete(`/admin/order/${orderToDelete.id}`);
+}
+
+/////////////////////////////////////
+// jwt/JwtAuthenticationController //
+/////////////////////////////////////
+
+export async function postLogin(loginRequest: IJwtRequest): Promise<AxiosResponse<IJwtResponse>> {
+    return client()
+        .post(`/jwt/login`, loginRequest);
+}
+
+export async function getProbeLogin(token: string): Promise<AxiosResponse<boolean>> {
+    return client()
+        .get("/jwt/probe", {headers: {"X-Authorization": token}})
 }
 
 //////////////////////

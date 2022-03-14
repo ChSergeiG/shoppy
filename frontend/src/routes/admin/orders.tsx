@@ -2,6 +2,7 @@ import React from "react";
 import OrdersTable from "../../components/admin/orders/OrdersTable";
 import ButtonBar from "../../components/ButtonBar";
 import {Link} from "react-router-dom";
+import AuthorizationOverlay from "../../components/admin/AuthorizationOverlay";
 
 export default function Orders() {
 
@@ -13,6 +14,7 @@ export default function Orders() {
                 <Link to="/admin/goods">Goods</Link>,
                 <Link to="/admin/orders">Orders</Link>
             ]}/>
+            <AuthorizationOverlay/>
             <OrdersTable/>
         </>
     );
