@@ -3,11 +3,11 @@ package ru.chsergeig.shoppy.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.chsergeig.shoppy.dao.AccountRepository;
-import ru.chsergeig.shoppy.dto.AccountDto;
+import ru.chsergeig.shoppy.dto.admin.AccountDto;
 import ru.chsergeig.shoppy.jooq.enums.Status;
 import ru.chsergeig.shoppy.jooq.tables.pojos.Accounts;
 import ru.chsergeig.shoppy.mapping.AccountMapper;
-import ru.chsergeig.shoppy.service.AccountService;
+import ru.chsergeig.shoppy.service.admin.AccountService;
 
 import java.util.List;
 import java.util.stream.Collectors;

@@ -3,11 +3,11 @@ package ru.chsergeig.shoppy.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.chsergeig.shoppy.dao.OrderRepository;
-import ru.chsergeig.shoppy.dto.OrderDTO;
+import ru.chsergeig.shoppy.dto.admin.OrderDto;
 import ru.chsergeig.shoppy.jooq.enums.Status;
 import ru.chsergeig.shoppy.jooq.tables.pojos.Orders;
 import ru.chsergeig.shoppy.mapping.OrderMapper;
-import ru.chsergeig.shoppy.service.OrderService;
+import ru.chsergeig.shoppy.service.admin.OrderService;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,7 +21,7 @@ public class OrderServiceImpl implements OrderService {
 
 
     @Override
-    public List<OrderDTO> getAllOrders() {
+    public List<OrderDto> getAllOrders() {
         List<Orders> orders = orderRepository.fetchByStatus(Status.ADDED, Status.ACTIVE, Status.DISABLED);
         return orders.stream()
                 .map(orderMapper::map)
@@ -29,21 +29,21 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderDTO addOrder(String info) {
+    public OrderDto addOrder(String info) {
         Orders pojo = new Orders(null, info, Status.ADDED);
         orderRepository.insert(pojo);
         return orderMapper.map(pojo);
     }
 
     @Override
-    public OrderDTO addOrder(OrderDTO dto) {
+    public OrderDto addOrder(OrderDto dto) {
         Orders pojo = orderMapper.map(dto);
         orderRepository.insert(pojo);
         return orderMapper.map(pojo);
     }
 
     @Override
-    public OrderDTO updateOrder(OrderDTO dto) {
+    public OrderDto updateOrder(OrderDto dto) {
         Orders pojo = orderMapper.map(dto);
         orderRepository.update(pojo);
         return orderMapper.map(pojo);

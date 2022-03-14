@@ -1,0 +1,19 @@
+package ru.chsergeig.shoppy.service.admin;
+
+import ru.chsergeig.shoppy.dto.admin.OrderDto;
+
+import java.util.List;
+
+public interface OrderService {
+
+    List<OrderDto> getAllOrders();
+
+    OrderDto addOrder(String info);
+
+    OrderDto addOrder(OrderDto dto);
+
+    OrderDto updateOrder(OrderDto dto);
+
+    Integer deleteOrder(Integer id);
+
+}

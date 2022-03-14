@@ -1,13 +1,14 @@
-package ru.chsergeig.shoppy.dto;
+package ru.chsergeig.shoppy.dto.admin;
 
 import lombok.Data;
 import ru.chsergeig.shoppy.jooq.enums.Status;
 
 @Data
-public class OrderDTO {
+public class AccountDto {
 
     public Integer id;
-    public String info;
+    public String name;
+    public String password;
     public Status status;
 
 }

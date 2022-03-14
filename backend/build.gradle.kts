@@ -27,12 +27,14 @@ dependencies {
     implementation(group = "org.springframework.boot", name = "spring-boot-starter")
     implementation(group = "org.springframework.boot", name = "spring-boot-starter-actuator")
     implementation(group = "org.springframework.boot", name = "spring-boot-starter-jooq")
+    implementation(group = "org.springframework.boot", name = "spring-boot-starter-security")
     implementation(group = "org.springframework.boot", name = "spring-boot-starter-web")
 
     testImplementation(group = "org.springframework.boot", name = "spring-boot-starter-test")
 
-//    implementation(group = "io.springfox", name = "springfox-boot-starter", version = "3.0.0")
-//    implementation(group = "io.springfox", name = "springfox-swagger-ui", version = "3.0.0")
+    implementation(group = "io.jsonwebtoken", name ="jjwt", version = "0.9.1")
+    implementation(group = "io.springfox", name = "springfox-boot-starter", version = "3.0.0")
+    implementation(group = "io.springfox", name = "springfox-swagger-ui", version = "3.0.0")
 
     implementation(group = "org.liquibase", name = "liquibase-core", version = LIQUIBASE_VERSION)
     implementation(group = "org.mapstruct", name = "mapstruct", version = MAPSTRUCT_VERSION)

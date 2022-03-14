@@ -13,6 +13,7 @@ import org.jooq.impl.SchemaImpl;
 
 import ru.chsergeig.shoppy.jooq.tables.Accounts;
 import ru.chsergeig.shoppy.jooq.tables.AccountsOrders;
+import ru.chsergeig.shoppy.jooq.tables.AccountsRoles;
 import ru.chsergeig.shoppy.jooq.tables.Goods;
 import ru.chsergeig.shoppy.jooq.tables.Orders;
 import ru.chsergeig.shoppy.jooq.tables.OrdersGoods;
@@ -40,6 +41,11 @@ public class Public extends SchemaImpl {
      * The table <code>public.accounts_orders</code>.
      */
     public final AccountsOrders ACCOUNTS_ORDERS = AccountsOrders.ACCOUNTS_ORDERS;
+
+    /**
+     * The table <code>public.accounts_roles</code>.
+     */
+    public final AccountsRoles ACCOUNTS_ROLES = AccountsRoles.ACCOUNTS_ROLES;
 
     /**
      * The table <code>public.goods</code>.
@@ -74,6 +80,7 @@ public class Public extends SchemaImpl {
         return Arrays.asList(
             Accounts.ACCOUNTS,
             AccountsOrders.ACCOUNTS_ORDERS,
+            AccountsRoles.ACCOUNTS_ROLES,
             Goods.GOODS,
             Orders.ORDERS,
             OrdersGoods.ORDERS_GOODS

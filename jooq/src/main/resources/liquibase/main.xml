@@ -4,5 +4,6 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
 
     <include file="changelog/00-01-init.sql" relativeToChangelogFile="true"/>
+    <include file="changelog/00-02-create-role-model.sql" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

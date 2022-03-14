@@ -3,9 +3,11 @@ package ru.chsergeig.shoppy.gradle.task
 import com.bmuschko.gradle.docker.tasks.AbstractDockerRemoteApiTask
 import com.github.dockerjava.api.model.Image
 import org.gradle.api.provider.Property
+import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Internal
 
+@CacheableTask
 open class GetDockerImageIdTask : AbstractDockerRemoteApiTask() {
 
     @Input

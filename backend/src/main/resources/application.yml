@@ -10,10 +10,9 @@ spring:
   datasource:
     name: pgShoppy
     generateUniqueName: false
-    url: jdbc:postgresql://localhost:5433/shoppy
+    url: jdbc:postgresql://localhost:5432/shoppy
     username: shoppy
     password: shoppy
-    platform: all
     driverClassName: org.postgresql.Driver
   liquibase:
     change-log: classpath:/liquibase/main.xml
@@ -21,7 +20,7 @@ spring:
     user: shoppy
     password: shoppy
     contexts: dml, ddl
-    url: jdbc:postgresql://localhost:5433/shoppy
+    url: jdbc:postgresql://localhost:5432/shoppy
   jooq:
     sql-dialect: POSTGRES
   mvc:
@@ -33,3 +32,14 @@ management:
     web:
       exposure:
         include: health,info
+
+shoppy:
+  security:
+    jwt:
+      authorization-header: 'X-Authorization'
+      # should be stored safely as can be used to decrypt jwt tokens
+      secret: 'lecD0V5LD8iGBqZ98RrYKs9YVRCxFo5UZV7u6QJNemSpv9SPZB5lqswhEkranZCi'
+      expiration-in-seconds: 86400
+    user:
+      login: 'admin'
+      password: 'password'

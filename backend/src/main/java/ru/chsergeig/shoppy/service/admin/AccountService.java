@@ -1,6 +1,6 @@
-package ru.chsergeig.shoppy.service;
+package ru.chsergeig.shoppy.service.admin;
 
-import ru.chsergeig.shoppy.dto.AccountDto;
+import ru.chsergeig.shoppy.dto.admin.AccountDto;
 
 import java.util.List;
 

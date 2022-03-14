@@ -22,7 +22,7 @@ public class JooqConfiguration {
     @Bean
     @Primary
     public DefaultDSLContext dsl(
-            @Autowired org.jooq.Configuration configuration
+            org.jooq.Configuration configuration
     ) {
         return new DefaultDSLContext(configuration);
     }
@@ -30,7 +30,7 @@ public class JooqConfiguration {
     @Bean
     @Primary
     public org.jooq.Configuration configuration(
-            @Autowired DataSourceConnectionProvider dataSourceConnectionProvider
+            DataSourceConnectionProvider dataSourceConnectionProvider
     ) {
         DefaultConfiguration jooqConfiguration = new DefaultConfiguration();
         jooqConfiguration.set(dataSourceConnectionProvider);

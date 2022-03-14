@@ -6,6 +6,7 @@ package ru.chsergeig.shoppy.jooq;
 
 import ru.chsergeig.shoppy.jooq.tables.Accounts;
 import ru.chsergeig.shoppy.jooq.tables.AccountsOrders;
+import ru.chsergeig.shoppy.jooq.tables.AccountsRoles;
 import ru.chsergeig.shoppy.jooq.tables.Goods;
 import ru.chsergeig.shoppy.jooq.tables.Orders;
 import ru.chsergeig.shoppy.jooq.tables.OrdersGoods;
@@ -26,6 +27,11 @@ public class Tables {
      * The table <code>public.accounts_orders</code>.
      */
     public static final AccountsOrders ACCOUNTS_ORDERS = AccountsOrders.ACCOUNTS_ORDERS;
+
+    /**
+     * The table <code>public.accounts_roles</code>.
+     */
+    public static final AccountsRoles ACCOUNTS_ROLES = AccountsRoles.ACCOUNTS_ROLES;
 
     /**
      * The table <code>public.goods</code>.

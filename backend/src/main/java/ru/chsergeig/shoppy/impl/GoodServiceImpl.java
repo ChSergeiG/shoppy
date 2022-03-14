@@ -4,11 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.chsergeig.shoppy.dao.GoodRepository;
-import ru.chsergeig.shoppy.dto.GoodDTO;
+import ru.chsergeig.shoppy.dto.admin.GoodDto;
 import ru.chsergeig.shoppy.jooq.enums.Status;
 import ru.chsergeig.shoppy.jooq.tables.pojos.Goods;
 import ru.chsergeig.shoppy.mapping.GoodMapper;
-import ru.chsergeig.shoppy.service.GoodService;
+import ru.chsergeig.shoppy.service.admin.GoodService;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,7 +21,7 @@ public class GoodServiceImpl implements GoodService {
     private final GoodMapper goodMapper;
 
     @Override
-    public List<GoodDTO> getAllGoods() {
+    public List<GoodDto> getAllGoods() {
         List<Goods> goods = goodRepository.fetchByStatus(Status.ADDED, Status.ACTIVE, Status.DISABLED);
         return goods.stream()
                 .map(goodMapper::map)
@@ -29,21 +29,21 @@ public class GoodServiceImpl implements GoodService {
     }
 
     @Override
-    public GoodDTO addGood(String name) {
+    public GoodDto addGood(String name) {
         Goods pojo = new Goods(null, name, null, Status.ADDED);
         goodRepository.insert(pojo);
         return goodMapper.map(pojo);
     }
 
     @Override
-    public GoodDTO addGood(GoodDTO dto) {
+    public GoodDto addGood(GoodDto dto) {
         Goods pojo = goodMapper.map(dto);
         goodRepository.insert(pojo);
         return goodMapper.map(pojo);
     }
 
     @Override
-    public GoodDTO updateGood(GoodDTO dto) {
+    public GoodDto updateGood(GoodDto dto) {
         Goods pojo = goodMapper.map(dto);
         goodRepository.update(pojo);
         return goodMapper.map(pojo);
