@@ -25,6 +25,4 @@ public class CommonController {
         return ResponseEntity.ok(Status.values());
     }
 
-
-
 }

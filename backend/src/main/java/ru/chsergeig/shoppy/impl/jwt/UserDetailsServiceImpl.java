@@ -11,6 +11,7 @@ import ru.chsergeig.shoppy.jooq.enums.AccountRole;
 import ru.chsergeig.shoppy.jooq.tables.pojos.Accounts;
 import ru.chsergeig.shoppy.model.JwtUserDetails;
 
+import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,7 +27,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) {
         List<Accounts> accounts = accountRepository.fetchByLogin(username);
         if (accounts == null || accounts.isEmpty()) {
-            return null;
+            throw new UserPrincipalNotFoundException(username);
         }
         List<AccountRole> roles = accountRepository.fetchRolesByLogin(username);
         return new JwtUserDetails(

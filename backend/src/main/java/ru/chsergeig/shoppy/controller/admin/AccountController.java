@@ -1,5 +1,9 @@
 package ru.chsergeig.shoppy.controller.admin;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.Authorization;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +32,15 @@ public class AccountController {
 
     private final AccountService accountService;
 
+    @Operation(
+            summary = "Get all not removed accounts",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "All good"),
+                    @ApiResponse(responseCode = "401", description = "Need authorization"),
+                    @ApiResponse(responseCode = "499", description = "Error in backend"),
+                    @ApiResponse(responseCode = "500", description = "Error in wrapper")
+            }
+    )
     @GetMapping("get_all")
     public ResponseEntity<List<AccountDto>> getAllAccounts() {
         try {
@@ -41,6 +54,15 @@ public class AccountController {
         }
     }
 
+    @Operation(
+            summary = "Create default account",
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "Account created"),
+                    @ApiResponse(responseCode = "401", description = "Need authorization"),
+                    @ApiResponse(responseCode = "499", description = "Cant create account"),
+                    @ApiResponse(responseCode = "500", description = "Error in wrapper")
+            }
+    )
     @PutMapping("{login}")
     public ResponseEntity<AccountDto> addDefaultAccount(
             @PathVariable String login
@@ -56,6 +78,15 @@ public class AccountController {
         }
     }
 
+    @Operation(
+            summary = "Create account",
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "Account created"),
+                    @ApiResponse(responseCode = "401", description = "Need authorization"),
+                    @ApiResponse(responseCode = "499", description = "Cant create account"),
+                    @ApiResponse(responseCode = "500", description = "Error in wrapper")
+            }
+    )
     @PostMapping("add")
     public ResponseEntity<AccountDto> addAccountPost(
             @RequestBody AccountDto dto
@@ -71,6 +102,15 @@ public class AccountController {
         }
     }
 
+    @Operation(
+            summary = "Update existing account",
+            responses = {
+                    @ApiResponse(responseCode = "202", description = "Account updated"),
+                    @ApiResponse(responseCode = "401", description = "Need authorization"),
+                    @ApiResponse(responseCode = "499", description = "Cant update account"),
+                    @ApiResponse(responseCode = "500", description = "Error in wrapper")
+            }
+    )
     @PostMapping("update")
     public ResponseEntity<AccountDto> updateAccount(
             @RequestBody AccountDto dto
@@ -86,6 +126,15 @@ public class AccountController {
         }
     }
 
+    @Operation(
+            summary = "Delete existing account",
+            responses = {
+                    @ApiResponse(responseCode = "202", description = "Account deleted"),
+                    @ApiResponse(responseCode = "401", description = "Need authorization"),
+                    @ApiResponse(responseCode = "499", description = "Cant create account"),
+                    @ApiResponse(responseCode = "500", description = "Error in wrapper")
+            }
+    )
     @DeleteMapping("{login}")
     public ResponseEntity<Integer> deleteAccount(
             @PathVariable String login

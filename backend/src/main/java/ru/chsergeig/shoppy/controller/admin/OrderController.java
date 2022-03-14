@@ -1,5 +1,7 @@
 package ru.chsergeig.shoppy.controller.admin;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +30,15 @@ public class OrderController {
 
     private final OrderService orderService;
 
+    @Operation(
+            summary = "Get all not removed orders",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "All good"),
+                    @ApiResponse(responseCode = "401", description = "Need authorization"),
+                    @ApiResponse(responseCode = "499", description = "Error in backend"),
+                    @ApiResponse(responseCode = "500", description = "Error in wrapper")
+            }
+    )
     @GetMapping("get_all")
     public ResponseEntity<List<OrderDto>> getAllOrders() {
         try {
@@ -41,6 +52,15 @@ public class OrderController {
         }
     }
 
+    @Operation(
+            summary = "Create default order",
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "Order created"),
+                    @ApiResponse(responseCode = "401", description = "Need authorization"),
+                    @ApiResponse(responseCode = "499", description = "Cant create order"),
+                    @ApiResponse(responseCode = "500", description = "Error in wrapper")
+            }
+    )
     @PutMapping("{info}")
     public ResponseEntity<OrderDto> addDefaultOrder(
             @PathVariable String info
@@ -56,6 +76,15 @@ public class OrderController {
         }
     }
 
+    @Operation(
+            summary = "Create order",
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "Order created"),
+                    @ApiResponse(responseCode = "401", description = "Need authorization"),
+                    @ApiResponse(responseCode = "499", description = "Cant create order"),
+                    @ApiResponse(responseCode = "500", description = "Error in wrapper")
+            }
+    )
     @PostMapping("add")
     public ResponseEntity<OrderDto> addOrderPost(
             @RequestBody OrderDto dto
@@ -71,6 +100,15 @@ public class OrderController {
         }
     }
 
+    @Operation(
+            summary = "Update existing order",
+            responses = {
+                    @ApiResponse(responseCode = "202", description = "Order updated"),
+                    @ApiResponse(responseCode = "401", description = "Need authorization"),
+                    @ApiResponse(responseCode = "499", description = "Cant update order"),
+                    @ApiResponse(responseCode = "500", description = "Error in wrapper")
+            }
+    )
     @PostMapping("update")
     public ResponseEntity<OrderDto> updateOrder(
             @RequestBody OrderDto dto
@@ -86,6 +124,15 @@ public class OrderController {
         }
     }
 
+    @Operation(
+            summary = "Delete existing order",
+            responses = {
+                    @ApiResponse(responseCode = "202", description = "Order deleted"),
+                    @ApiResponse(responseCode = "401", description = "Need authorization"),
+                    @ApiResponse(responseCode = "499", description = "Cant create order"),
+                    @ApiResponse(responseCode = "500", description = "Error in wrapper")
+            }
+    )
     @DeleteMapping("{id}")
     public ResponseEntity<Integer> deleteOrder(
             @PathVariable Integer id

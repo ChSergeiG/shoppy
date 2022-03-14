@@ -1,5 +1,7 @@
 package ru.chsergeig.shoppy.controller.jwt;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -21,6 +23,14 @@ public class JwtAuthenticationController {
 
     private final AuthenticationService authenticationService;
 
+    @Operation(
+            summary = "Do login",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "All good"),
+                    @ApiResponse(responseCode = "401", description = "Need authorization"),
+                    @ApiResponse(responseCode = "500", description = "Error in wrapper")
+            }
+    )
     @PostMapping(
             value = "/login",
             consumes = MediaType.APPLICATION_JSON_VALUE,

@@ -1,5 +1,7 @@
 package ru.chsergeig.shoppy.controller.admin;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +30,15 @@ public class GoodController {
 
     private final GoodService goodsService;
 
+    @Operation(
+            summary = "Get all not removed goods",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "All good"),
+                    @ApiResponse(responseCode = "401", description = "Need authorization"),
+                    @ApiResponse(responseCode = "499", description = "Error in backend"),
+                    @ApiResponse(responseCode = "500", description = "Error in wrapper")
+            }
+    )
     @GetMapping("get_all")
     public ResponseEntity<List<GoodDto>> getAllGoods() {
         try {
@@ -41,6 +52,15 @@ public class GoodController {
         }
     }
 
+    @Operation(
+            summary = "Create default godo",
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "Good created"),
+                    @ApiResponse(responseCode = "401", description = "Need authorization"),
+                    @ApiResponse(responseCode = "499", description = "Cant create good"),
+                    @ApiResponse(responseCode = "500", description = "Error in wrapper")
+            }
+    )
     @PutMapping("{name}")
     public ResponseEntity<GoodDto> addDefaultGood(
             @PathVariable String name
@@ -56,6 +76,15 @@ public class GoodController {
         }
     }
 
+    @Operation(
+            summary = "Create good",
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "Good created"),
+                    @ApiResponse(responseCode = "401", description = "Need authorization"),
+                    @ApiResponse(responseCode = "499", description = "Cant create good"),
+                    @ApiResponse(responseCode = "500", description = "Error in wrapper")
+            }
+    )
     @PostMapping("add")
     public ResponseEntity<GoodDto> addGoodPost(
             @RequestBody GoodDto dto
@@ -71,6 +100,15 @@ public class GoodController {
         }
     }
 
+    @Operation(
+            summary = "Update existing good",
+            responses = {
+                    @ApiResponse(responseCode = "202", description = "Good updated"),
+                    @ApiResponse(responseCode = "401", description = "Need authorization"),
+                    @ApiResponse(responseCode = "499", description = "Cant update good"),
+                    @ApiResponse(responseCode = "500", description = "Error in wrapper")
+            }
+    )
     @PostMapping("update")
     public ResponseEntity<GoodDto> updateGood(
             @RequestBody GoodDto dto
@@ -86,6 +124,15 @@ public class GoodController {
         }
     }
 
+    @Operation(
+            summary = "Delete existing good",
+            responses = {
+                    @ApiResponse(responseCode = "202", description = "Good deleted"),
+                    @ApiResponse(responseCode = "401", description = "Need authorization"),
+                    @ApiResponse(responseCode = "499", description = "Cant create good"),
+                    @ApiResponse(responseCode = "500", description = "Error in wrapper")
+            }
+    )
     @DeleteMapping("{article}")
     public ResponseEntity<Integer> deleteGood(
             @PathVariable Integer article
