@@ -23,22 +23,22 @@ export async function getAccounts(): Promise<AxiosResponse<IAccount[]>> {
 
 export async function createNewDefaultAccount(login: string): Promise<AxiosResponse<void>> {
     return client()
-        .put(`/admin/account/${login}`);
+        .put(`/admin/account/${login}`, {}, {headers: {"X-Authorization": localStorage.getItem(STORED_JWT_TOKEN_KEY) || ""}});
 }
 
-export async function createNewAccount(accountToCreate: IAccount): Promise<AxiosResponse<void>> {
+export async function createNewAccount(accountToCreate: IAccount): Promise<AxiosResponse<IAccount>> {
     return client()
-        .post("/admin/account/add", accountToCreate);
+        .post("/admin/account/add", accountToCreate, {headers: {"X-Authorization": localStorage.getItem(STORED_JWT_TOKEN_KEY) || ""}});
 }
 
-export async function updateExistingAccount(accountToUpdate: IAccount): Promise<AxiosResponse<string>> {
+export async function updateExistingAccount(accountToUpdate: IAccount): Promise<AxiosResponse<IAccount>> {
     return client()
-        .post("/admin/account/update", accountToUpdate);
+        .post("/admin/account/update", accountToUpdate, {headers: {"X-Authorization": localStorage.getItem(STORED_JWT_TOKEN_KEY) || ""}});
 }
 
-export async function deleteExistingAccount(accountToDelete: IAccount): Promise<AxiosResponse> {
+export async function deleteExistingAccount(accountToDelete: IAccount): Promise<AxiosResponse<number>> {
     return client()
-        .delete(`/admin/account/${accountToDelete.login}`);
+        .delete(`/admin/account/${accountToDelete.login}`, {headers: {"X-Authorization": localStorage.getItem(STORED_JWT_TOKEN_KEY) || ""}});
 }
 
 //////////////////////////
@@ -52,22 +52,22 @@ export async function getGoods(): Promise<AxiosResponse<IGood[]>> {
 
 export async function createNewDefaultGood(name: string): Promise<AxiosResponse<IGood>> {
     return client()
-        .put(`/admin/good/${name}`);
+        .put(`/admin/good/${name}`, {}, {headers: {"X-Authorization": localStorage.getItem(STORED_JWT_TOKEN_KEY) || ""}});
 }
 
 export async function createNewGood(goodToCreate: IGood): Promise<AxiosResponse<IGood>> {
     return client()
-        .post("/admin/good/add", goodToCreate);
+        .post("/admin/good/add", goodToCreate, {headers: {"X-Authorization": localStorage.getItem(STORED_JWT_TOKEN_KEY) || ""}});
 }
 
 export async function updateExistingGood(goodToUpdate: IGood): Promise<AxiosResponse<IGood>> {
     return client()
-        .post("/admin/good/update", goodToUpdate);
+        .post("/admin/good/update", goodToUpdate, {headers: {"X-Authorization": localStorage.getItem(STORED_JWT_TOKEN_KEY) || ""}});
 }
 
 export async function deleteExistingGood(goodToDelete: IGood): Promise<AxiosResponse<number>> {
     return client()
-        .delete(`/admin/good/${goodToDelete.article}`);
+        .delete(`/admin/good/${goodToDelete.article}`, {headers: {"X-Authorization": localStorage.getItem(STORED_JWT_TOKEN_KEY) || ""}});
 }
 
 ///////////////////////////
@@ -79,24 +79,24 @@ export async function getOrders(): Promise<AxiosResponse<IOrder[]>> {
         .get("/admin/order/get_all", {headers: {"X-Authorization": localStorage.getItem(STORED_JWT_TOKEN_KEY) || ""}});
 }
 
-export async function createNewDefaultOrder(info: string): Promise<AxiosResponse<void>> {
+export async function createNewDefaultOrder(info: string): Promise<AxiosResponse<IOrder>> {
     return client()
-        .put(`/admin/order/${info}`);
+        .put(`/admin/order/${info}`, {}, {headers: {"X-Authorization": localStorage.getItem(STORED_JWT_TOKEN_KEY) || ""}});
 }
 
-export async function createNewOrder(orderToCreate: IOrder): Promise<AxiosResponse<void>> {
+export async function createNewOrder(orderToCreate: IOrder): Promise<AxiosResponse<IOrder>> {
     return client()
-        .post("/admin/order/add", orderToCreate);
+        .post("/admin/order/add", orderToCreate, {headers: {"X-Authorization": localStorage.getItem(STORED_JWT_TOKEN_KEY) || ""}});
 }
 
-export async function updateExistingOrder(orderToUpdate: IOrder): Promise<AxiosResponse<string>> {
+export async function updateExistingOrder(orderToUpdate: IOrder): Promise<AxiosResponse<IOrder>> {
     return client()
-        .post("/admin/order/update", orderToUpdate);
+        .post("/admin/order/update", orderToUpdate, {headers: {"X-Authorization": localStorage.getItem(STORED_JWT_TOKEN_KEY) || ""}});
 }
 
-export async function deleteExistingOrder(orderToDelete: IOrder): Promise<AxiosResponse<void>> {
+export async function deleteExistingOrder(orderToDelete: IOrder): Promise<AxiosResponse<number>> {
     return client()
-        .delete(`/admin/order/${orderToDelete.id}`);
+        .delete(`/admin/order/${orderToDelete.id}`, {headers: {"X-Authorization": localStorage.getItem(STORED_JWT_TOKEN_KEY) || ""}});
 }
 
 /////////////////////////////////////
