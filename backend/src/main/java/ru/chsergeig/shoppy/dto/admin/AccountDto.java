@@ -6,9 +6,10 @@ import ru.chsergeig.shoppy.jooq.enums.Status;
 @Data
 public class AccountDto {
 
-    public Integer id;
-    public String name;
-    public String password;
-    public Status status;
+    private Integer id;
+    private String login;
+    private String password;
+    private Boolean salted;
+    private Status status;
 
 }

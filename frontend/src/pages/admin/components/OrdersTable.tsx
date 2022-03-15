@@ -14,23 +14,16 @@ import {
     TableRow
 } from "@mui/material";
 import floppyIcon from "../../../img/floppy.svg";
-import binIcon from "../../../img/bin.svg";
 import refreshIcon from "../../../img/refresh.svg";
-import {
-    createNewAccount,
-    deleteExistingAccount,
-    getStatuses,
-    getAccounts,
-    updateExistingAccount,
-    JWT_TOKEN_COOKIE_KEY
-} from "../../../utils/API";
+import {createNewOrder, deleteExistingOrder, getOrders, getStatuses, updateExistingOrder} from "../../../utils/API";
 import type {IStatus} from "../../../../types/IStatus";
-import type {IAdminTableRow, IAdminTableState, IAccount} from "../../../../types/AdminTypes";
-import Cookies from "universal-cookie";
+import type {IAdminTableRow, IAdminTableState, IOrder} from "../../../../types/AdminTypes";
 
-class AccountsTable extends React.Component<{}, IAdminTableState> {
+type OrdersTableProps = {};
 
-    constructor(props: {}) {
+class OrdersTable extends React.Component<OrdersTableProps, IAdminTableState> {
+
+    constructor(props: OrdersTableProps) {
         super(props);
         this.state = {
             ...this.state,
@@ -40,29 +33,21 @@ class AccountsTable extends React.Component<{}, IAdminTableState> {
         };
     }
 
-    createRow = (user: IAccount, statuses: IStatus[]) => {
+    createRow = (order: IOrder, statuses: IStatus[]) => {
         return (
-            <TableRow key={user.id}>
-                <TableCell>{user.id}</TableCell>
+            <TableRow key={order.id}>
+                <TableCell>{order.id}</TableCell>
                 <TableCell>
                     <Input
                         fullWidth={true}
-                        defaultValue={user.name}
-                        onChange={(e) => user.name = e.target.value}
-                    />
-                </TableCell>
-                <TableCell>
-                    <Input
-                        fullWidth={true}
-                        defaultValue={user.password}
-                        type={'password'}
-                        onChange={(e) => user.password = e.target.value}
+                        defaultValue={order.info}
+                        onChange={(e) => order.info = e.target.value}
                     />
                 </TableCell>
                 <TableCell>
                     <Select
-                        value={user.status}
-                        onChange={(e) => this.handleSelectorChange(e, user)}
+                        value={order.status}
+                        onChange={(e) => this.handleSelectorChange(e, order)}
                     >
                         {
                             statuses.map(item => (
@@ -79,17 +64,12 @@ class AccountsTable extends React.Component<{}, IAdminTableState> {
                 <TableCell align={"center"}>
                     <ButtonGroup>
                         <Button
-                            onClick={() => this.saveUser(user)}
+                            onClick={() => this.saveOrder(order)}
                         >
                             <img src={floppyIcon} height={16} width={16} alt='save'/>
                         </Button>
                         <Button
-                            onClick={() => this.removeUser(user)}
-                        >
-                            <img src={binIcon} height={16} width={16} alt='remove'/>
-                        </Button>
-                        <Button
-                            onClick={() => this.refreshUser(user)}
+                            onClick={() => this.refreshOrder(order)}
                         >
                             <img src={refreshIcon} height={16} width={16} alt='refresh'/>
                         </Button>
@@ -104,7 +84,7 @@ class AccountsTable extends React.Component<{}, IAdminTableState> {
             <TableRow key="new">
                 <TableCell colSpan={5} align={"center"}>
                     <Button
-                        onClick={() => this.newUser()}
+                        onClick={() => this.newOrder()}
                     >
                         +
                     </Button>
@@ -113,11 +93,11 @@ class AccountsTable extends React.Component<{}, IAdminTableState> {
         );
     }
 
-    createNewRow = (user: IAccount) => {
-        return this.createRow(user, this.state.statuses)
+    createNewRow = (order: IOrder) => {
+        return this.createRow(order, this.state.statuses)
     }
 
-    handleSelectorChange = (e: SelectChangeEvent, row: IAccount) => {
+    handleSelectorChange = (e: SelectChangeEvent, row: IOrder) => {
         const selectedStatus = (e.target.value as IStatus);
 
         this.setState((prevState) => {
@@ -132,52 +112,49 @@ class AccountsTable extends React.Component<{}, IAdminTableState> {
         });
     }
 
-    async saveUser(user: IAccount) {
-        if (user.id === undefined) {
-            await createNewAccount(user);
+    async saveOrder(order: IOrder) {
+        if (order === undefined || order.id === undefined) {
+            await createNewOrder(order);
         } else {
-            await updateExistingAccount(user);
+            await updateExistingOrder(order);
         }
     }
 
-    async removeUser(user: IAccount) {
-        if (user !== undefined) {
-            await deleteExistingAccount(user);
+    async removeOrder(order: IOrder) {
+        if (order !== undefined && order.id !== undefined) {
+            await deleteExistingOrder(order);
         }
     }
 
-    async refreshUser(user: IAccount) {
+    async refreshOrder(order: IOrder) {
 
     }
 
-    newUser = () => {
+    newOrder = () => {
         this.setState(prev => {
             const rows = prev.rows;
-            let newUser: IAccount = {
+            let newOrder: IOrder = {
                 id: undefined,
-                name: '',
-                password: '',
+                info: '',
                 status: 'ADDED'
             };
             rows.push({
                 number: 0xfff8,
                 key: '',
-                content: newUser,
-                renderedContent: this.createNewRow(newUser)
+                content: newOrder,
+                renderedContent: this.createNewRow(newOrder)
             })
             return {...prev, rows};
         })
     }
 
     async componentDidMount() {
-        const cookies = new Cookies();
-        const token = cookies.get(JWT_TOKEN_COOKIE_KEY);
-        let accountResponse = await getAccounts(token);
+        let userResponse = await getOrders();
         let statuses = await getStatuses();
-        let rows: IAdminTableRow[] = accountResponse.data.map(r => {
+        let rows: IAdminTableRow[] = userResponse.data.map(r => {
             return {
                 number: (r.id !== undefined ? r.id : -1),
-                key: r.name,
+                key: r.id + r.info,
                 content: r,
                 renderedContent: this.createRow(r, statuses.data)
             }
@@ -205,8 +182,7 @@ class AccountsTable extends React.Component<{}, IAdminTableState> {
                     <TableHead>
                         <TableRow>
                             <TableCell width={50}>ID</TableCell>
-                            <TableCell>Login</TableCell>
-                            <TableCell>Password</TableCell>
+                            <TableCell>Info</TableCell>
                             <TableCell>Status</TableCell>
                             <TableCell width={200} align={"center"}>Actions</TableCell>
                         </TableRow>
@@ -222,6 +198,7 @@ class AccountsTable extends React.Component<{}, IAdminTableState> {
                 </Table>
         );
     }
+
 }
 
-export default AccountsTable;
+export default OrdersTable;

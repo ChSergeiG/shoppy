@@ -14,22 +14,17 @@ import {
     TableRow
 } from "@mui/material";
 import floppyIcon from "../../../img/floppy.svg";
+import binIcon from "../../../img/bin.svg";
 import refreshIcon from "../../../img/refresh.svg";
-import {
-    createNewOrder,
-    deleteExistingOrder,
-    getOrders,
-    getStatuses,
-    JWT_TOKEN_COOKIE_KEY,
-    updateExistingOrder
-} from "../../../utils/API";
+import {createNewGood, deleteExistingGood, getGoods, getStatuses, updateExistingGood} from "../../../utils/API";
+import type {IAdminTableRow, IAdminTableState, IGood} from "../../../../types/AdminTypes";
 import type {IStatus} from "../../../../types/IStatus";
-import type {IAdminTableRow, IAdminTableState, IOrder} from "../../../../types/AdminTypes";
-import Cookies from "universal-cookie";
 
-class OrdersTable extends React.Component<{}, IAdminTableState> {
+type GoodsTableProps = {};
 
-    constructor(props: {}) {
+class GoodsTable extends React.Component<GoodsTableProps, IAdminTableState> {
+
+    constructor(props: GoodsTableProps) {
         super(props);
         this.state = {
             ...this.state,
@@ -39,21 +34,33 @@ class OrdersTable extends React.Component<{}, IAdminTableState> {
         };
     }
 
-    createRow = (order: IOrder, statuses: IStatus[]) => {
+    createRow = (good: IGood, statuses: IStatus[]) => {
         return (
-            <TableRow key={order.id}>
-                <TableCell>{order.id}</TableCell>
+            <TableRow key={good.id}>
+                <TableCell>{good.id}</TableCell>
                 <TableCell>
                     <Input
                         fullWidth={true}
-                        defaultValue={order.info}
-                        onChange={(e) => order.info = e.target.value}
+                        defaultValue={good.name}
+                        onChange={(e) => good.name = e.target.value}
+                    />
+                </TableCell>
+                <TableCell>
+                    <Input
+                        fullWidth={true}
+                        defaultValue={good.article}
+                        onChange={(e) => {
+                            try {
+                                good.article = parseInt(e.target.value)
+                            } catch (ignore) {
+                            }
+                        }}
                     />
                 </TableCell>
                 <TableCell>
                     <Select
-                        value={order.status}
-                        onChange={(e) => this.handleSelectorChange(e, order)}
+                        value={good.status}
+                        onChange={(e) => this.handleSelectorChange(e, good)}
                     >
                         {
                             statuses.map(item => (
@@ -70,12 +77,17 @@ class OrdersTable extends React.Component<{}, IAdminTableState> {
                 <TableCell align={"center"}>
                     <ButtonGroup>
                         <Button
-                            onClick={() => this.saveOrder(order)}
+                            onClick={() => this.saveGood(good)}
                         >
                             <img src={floppyIcon} height={16} width={16} alt='save'/>
                         </Button>
                         <Button
-                            onClick={() => this.refreshOrder(order)}
+                            onClick={() => this.removeGood(good)}
+                        >
+                            <img src={binIcon} height={16} width={16} alt='remove'/>
+                        </Button>
+                        <Button
+                            onClick={() => this.refreshGood(good)}
                         >
                             <img src={refreshIcon} height={16} width={16} alt='refresh'/>
                         </Button>
@@ -90,7 +102,7 @@ class OrdersTable extends React.Component<{}, IAdminTableState> {
             <TableRow key="new">
                 <TableCell colSpan={5} align={"center"}>
                     <Button
-                        onClick={() => this.newOrder()}
+                        onClick={() => this.newGood()}
                     >
                         +
                     </Button>
@@ -99,11 +111,11 @@ class OrdersTable extends React.Component<{}, IAdminTableState> {
         );
     }
 
-    createNewRow = (order: IOrder) => {
-        return this.createRow(order, this.state.statuses)
+    createNewRow = (good: IGood) => {
+        return this.createRow(good, this.state.statuses)
     }
 
-    handleSelectorChange = (e: SelectChangeEvent, row: IOrder) => {
+    handleSelectorChange = (e: SelectChangeEvent, row: IGood) => {
         const selectedStatus = (e.target.value as IStatus);
 
         this.setState((prevState) => {
@@ -118,51 +130,50 @@ class OrdersTable extends React.Component<{}, IAdminTableState> {
         });
     }
 
-    async saveOrder(order: IOrder) {
-        if (order === undefined || order.id === undefined) {
-            await createNewOrder(order);
+    async saveGood(good: IGood) {
+        if (good.id === undefined) {
+            await createNewGood(good);
         } else {
-            await updateExistingOrder(order);
+            await updateExistingGood(good);
         }
     }
 
-    async removeOrder(order: IOrder) {
-        if (order !== undefined && order.id !== undefined) {
-            await deleteExistingOrder(order);
+    async removeGood(good: IGood) {
+        if (good !== undefined) {
+            await deleteExistingGood(good);
         }
     }
 
-    async refreshOrder(order: IOrder) {
+    async refreshGood(god: IGood) {
 
     }
 
-    newOrder = () => {
+    newGood = () => {
         this.setState(prev => {
             const rows = prev.rows;
-            let newOrder: IOrder = {
+            let newGood: IGood = {
                 id: undefined,
-                info: '',
+                name: '',
+                article: undefined,
                 status: 'ADDED'
             };
             rows.push({
                 number: 0xfff8,
                 key: '',
-                content: newOrder,
-                renderedContent: this.createNewRow(newOrder)
+                content: newGood,
+                renderedContent: this.createNewRow(newGood)
             })
             return {...prev, rows};
         })
     }
 
     async componentDidMount() {
-        const cookies = new Cookies();
-        const token = cookies.get(JWT_TOKEN_COOKIE_KEY);
-        let userResponse = await getOrders(token);
+        let goodsResponse = await getGoods();
         let statuses = await getStatuses();
-        let rows: IAdminTableRow[] = userResponse.data.map(r => {
+        let rows: IAdminTableRow[] = goodsResponse.data.map(r => {
             return {
                 number: (r.id !== undefined ? r.id : -1),
-                key: r.id + r.info,
+                key: r.id + ' ' + r.article,
                 content: r,
                 renderedContent: this.createRow(r, statuses.data)
             }
@@ -190,7 +201,8 @@ class OrdersTable extends React.Component<{}, IAdminTableState> {
                     <TableHead>
                         <TableRow>
                             <TableCell width={50}>ID</TableCell>
-                            <TableCell>Info</TableCell>
+                            <TableCell>Name</TableCell>
+                            <TableCell>Article</TableCell>
                             <TableCell>Status</TableCell>
                             <TableCell width={200} align={"center"}>Actions</TableCell>
                         </TableRow>
@@ -206,7 +218,6 @@ class OrdersTable extends React.Component<{}, IAdminTableState> {
                 </Table>
         );
     }
-
 }
 
-export default OrdersTable;
+export default GoodsTable;

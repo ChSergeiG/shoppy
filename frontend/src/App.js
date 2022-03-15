@@ -7,9 +7,12 @@ class App extends Component {
     render() {
         return (
             <>
-                <ButtonBar items={[
-                    <Link to="/admin/orders">{"\u26BF"}</Link>
-                ]}/>
+                <ButtonBar
+                    items={[
+                        <Link to="/admin/orders">{"\u26BF"}</Link>
+                    ]}
+                    authorized={false}
+                />
                 <h2>Main Page</h2>
             </>
         );

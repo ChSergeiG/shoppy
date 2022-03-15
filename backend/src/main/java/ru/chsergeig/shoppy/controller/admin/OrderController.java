@@ -25,7 +25,7 @@ import java.util.List;
 @RequestMapping("/admin/order")
 @RestController
 @Secured("ROLE_ADMIN")
-@CrossOrigin(origins = {"http://localhost:8080"})
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class OrderController {
 
     private final OrderService orderService;

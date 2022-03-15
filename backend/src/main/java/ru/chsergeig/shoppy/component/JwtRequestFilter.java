@@ -1,6 +1,7 @@
 package ru.chsergeig.shoppy.component;
 
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -43,6 +44,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 log.warn("Illegal JWT token value");
             } catch (ExpiredJwtException eje) {
                 log.warn("JWT token expired");
+            } catch (MalformedJwtException ignore) {
             }
         }
         if (login != null && SecurityContextHolder.getContext().getAuthentication() == null) {

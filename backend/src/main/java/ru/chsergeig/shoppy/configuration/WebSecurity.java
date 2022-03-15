@@ -11,7 +11,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -38,7 +37,9 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     protected void configure(
             HttpSecurity httpSecurity
     ) throws Exception {
-        httpSecurity.csrf().disable()
+        httpSecurity
+                .cors().and()
+                .csrf().disable()
                 .authorizeRequests().antMatchers("/admin/**").authenticated()
                 .anyRequest().permitAll()
                 .and().exceptionHandling().authenticationEntryPoint(authenticationEntryPoint)

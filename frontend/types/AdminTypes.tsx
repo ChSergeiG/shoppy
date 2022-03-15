@@ -15,8 +15,9 @@ export type IOrder = {
 
 export type IAccount = {
     id: number | undefined;
-    name: string;
+    login: string;
     password: string;
+    salted: boolean;
     status: IStatus;
 };
 
