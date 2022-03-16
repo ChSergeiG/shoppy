@@ -4,6 +4,7 @@ import {Link} from "react-router-dom";
 import AuthorizationOverlay from "./components/AuthorizationOverlay";
 import {Button} from "@mui/material";
 import {STORED_JWT_TOKEN_VALIDITY_KEY} from "../../utils/API";
+import {ShopSnackBar} from "../../components/ShopSnackBar";
 
 type AdminPageState = {
     authorized: boolean;
@@ -49,9 +50,9 @@ export class AdminPage extends Component<AdminPageProps, AdminPageState> {
                 />
                 {authorized
                     ? this.props.component
-                    : <AuthorizationOverlay
-                        onClose={() => console.log('closed')}
-                    />}
+                    : <AuthorizationOverlay/>
+                }
+                <ShopSnackBar/>
             </>
         );
     }

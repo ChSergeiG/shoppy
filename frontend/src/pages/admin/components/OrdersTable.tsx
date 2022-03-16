@@ -1,6 +1,13 @@
 import React from "react";
 import {Input, TableCell, TableHead, TableRow} from "@mui/material";
-import {createNewOrder, deleteExistingOrder, getOrders, updateExistingOrder} from "../../../utils/API";
+import {
+    createNewOrder,
+    deleteExistingOrder,
+    getGood,
+    getOrder,
+    getOrders,
+    updateExistingOrder
+} from "../../../utils/API";
 import type {IOrder} from "../../../../types/AdminTypes";
 import AbstractAdminTable from "./AbstractAdminTable";
 
@@ -27,11 +34,11 @@ class OrdersTable extends React.Component {
     ): JSX.Element => {
         switch (columnNumber) {
             case 0: {
-                return (<TableCell>{order.id}</TableCell>)
+                return (<TableCell key="id">{order.id}</TableCell>)
             }
             case 1: {
                 return (
-                    <TableCell>
+                    <TableCell key="info">
                         <Input
                             fullWidth={true}
                             defaultValue={order.info}
@@ -47,7 +54,7 @@ class OrdersTable extends React.Component {
                 return (<>{actionsSelectorCallback(order)}</>);
             }
             default: {
-                return (<TableCell/>);
+                return (<TableCell key="default"/>);
             }
         }
     }
@@ -71,6 +78,8 @@ class OrdersTable extends React.Component {
                 createCallback={createNewOrder}
                 updateCallback={updateExistingOrder}
                 deleteCallback={deleteExistingOrder}
+                refreshCallback={(data) => getOrder(data.id)}
+
             />
         );
     }

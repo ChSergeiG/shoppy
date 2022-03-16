@@ -29,6 +29,16 @@ public class GoodServiceImpl implements GoodService {
     }
 
     @Override
+    public GoodDto getGoodById(Long id) {
+        List<Goods> goods = goodRepository.fetchById(id.intValue());
+        if (goods.isEmpty()) {
+            return null;
+        } else {
+            return goodMapper.map(goods.get(0));
+        }
+    }
+
+    @Override
     public GoodDto addGood(String name) {
         Goods pojo = new Goods(null, name, null, Status.ADDED);
         goodRepository.insert(pojo);

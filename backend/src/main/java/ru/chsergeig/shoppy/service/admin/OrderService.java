@@ -8,6 +8,8 @@ public interface OrderService {
 
     List<OrderDto> getAllOrders();
 
+    OrderDto getOrderById(Long id);
+
     OrderDto addOrder(String info);
 
     OrderDto addOrder(OrderDto dto);

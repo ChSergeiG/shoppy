@@ -1,6 +1,6 @@
 import React from "react";
 import {Input, TableCell, TableHead, TableRow} from "@mui/material";
-import {createNewGood, deleteExistingGood, getGoods, updateExistingGood} from "../../../utils/API";
+import {createNewGood, deleteExistingGood, getAccount, getGood, getGoods, updateExistingGood} from "../../../utils/API";
 import type {IGood} from "../../../../types/AdminTypes";
 import AbstractAdminTable from "./AbstractAdminTable";
 
@@ -23,16 +23,17 @@ class GoodsTable extends React.Component {
     createBodyCell = (
         columnNumber: number,
         good: IGood,
+
         statusSelectorCallback: (good: IGood) => JSX.Element,
         actionsSelectorCallback: (good: IGood) => JSX.Element
     ): JSX.Element => {
         switch (columnNumber) {
             case 0: {
-                return (<TableCell>{good.id}</TableCell>)
+                return (<TableCell key="id">{good.id}</TableCell>)
             }
             case 1: {
                 return (
-                    <TableCell>
+                    <TableCell key="name">
                         <Input
                             fullWidth={true}
                             defaultValue={good.name}
@@ -43,7 +44,7 @@ class GoodsTable extends React.Component {
             }
             case 2: {
                 return (
-                    <TableCell>
+                    <TableCell key="article">
                         <Input
                             fullWidth={true}
                             defaultValue={good.article}
@@ -64,7 +65,7 @@ class GoodsTable extends React.Component {
                 return (<>{actionsSelectorCallback(good)}</>);
             }
             default: {
-                return (<TableCell/>);
+                return (<TableCell key="default"/>);
             }
         }
     }
@@ -89,6 +90,7 @@ class GoodsTable extends React.Component {
                 createCallback={createNewGood}
                 updateCallback={updateExistingGood}
                 deleteCallback={deleteExistingGood}
+                refreshCallback={(data) => getGood(data.id)}
             />
         );
     }

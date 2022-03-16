@@ -29,6 +29,16 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public OrderDto getOrderById(Long id) {
+        List<Orders> orders = orderRepository.fetchById(id.intValue());
+        if (orders.isEmpty()) {
+            return null;
+        } else {
+            return orderMapper.map(orders.get(0));
+        }
+    }
+
+    @Override
     public OrderDto addOrder(String info) {
         Orders pojo = new Orders(null, info, Status.ADDED);
         orderRepository.insert(pojo);

@@ -1,6 +1,12 @@
 import React from "react";
 import {Input, TableCell, TableHead, TableRow} from "@mui/material";
-import {createNewAccount, deleteExistingAccount, getAccounts, updateExistingAccount} from "../../../utils/API";
+import {
+    createNewAccount,
+    deleteExistingAccount,
+    getAccount,
+    getAccounts,
+    updateExistingAccount
+} from "../../../utils/API";
 import type {IAccount} from "../../../../types/AdminTypes";
 import AbstractAdminTable from "./AbstractAdminTable";
 
@@ -28,11 +34,11 @@ class AccountsTable extends React.Component {
     ): JSX.Element => {
         switch (columnNumber) {
             case 0: {
-                return (<TableCell>{account.id}</TableCell>)
+                return (<TableCell key="id">{account.id}</TableCell>)
             }
             case 1: {
                 return (
-                    <TableCell>
+                    <TableCell key="login">
                         <Input
                             fullWidth={true}
                             defaultValue={account.login}
@@ -43,12 +49,11 @@ class AccountsTable extends React.Component {
             }
             case 2: {
                 return (
-                    <TableCell>
+                    <TableCell key="password">
                         <Input
                             fullWidth={true}
                             defaultValue={account.password}
-                            type={'password'}
-                            onChange={(e) => account.password = e.target.value}
+                            type={'password'} onChange={(e) => account.password = e.target.value}
                         />
                     </TableCell>
                 );
@@ -60,7 +65,7 @@ class AccountsTable extends React.Component {
                 return (<>{actionsSelectorCallback(account)}</>);
             }
             default: {
-                return (<TableCell/>);
+                return (<TableCell key="default"/>);
             }
         }
     }
@@ -86,6 +91,7 @@ class AccountsTable extends React.Component {
                 createCallback={createNewAccount}
                 updateCallback={updateExistingAccount}
                 deleteCallback={deleteExistingAccount}
+                refreshCallback={(data) => getAccount(data.login)}
             />
         );
     }

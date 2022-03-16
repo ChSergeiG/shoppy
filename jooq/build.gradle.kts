@@ -1,3 +1,4 @@
+import com.bmuschko.gradle.docker.domain.LivenessProbe
 import com.bmuschko.gradle.docker.tasks.container.DockerCreateContainer
 import com.bmuschko.gradle.docker.tasks.container.DockerStartContainer
 import com.bmuschko.gradle.docker.tasks.container.DockerStopContainer
@@ -5,7 +6,6 @@ import com.bmuschko.gradle.docker.tasks.image.DockerPullImage
 import ru.chsergeig.shoppy.gradle.LIQUIBASE_VERSION
 import ru.chsergeig.shoppy.gradle.SOURCE_COMPATIBILITY
 import ru.chsergeig.shoppy.gradle.task.CheckDockerContainerHealthy
-import ru.chsergeig.shoppy.gradle.task.CheckDockerContainerHealthy.CheckLevel
 import ru.chsergeig.shoppy.gradle.task.GetDockerImageIdTask
 import ru.chsergeig.shoppy.gradle.task.JooqGenerateClasses
 import java.util.concurrent.atomic.AtomicReference
@@ -80,9 +80,7 @@ tasks {
     val waitPostgresContainer = register<CheckDockerContainerHealthy>("waitPostgresContainer") {
         dependsOn(startPostgresContainer)
         containerId.set(createPostgresContainer.get().containerId)
-        taskTimeout.set(30)
-        checkInterval.set(1)
-        checkLevel.set(CheckLevel.LOW)
+        livenessProbe(logContains = "database system is ready to accept connections")
     }
 
     val stopPostgresContainer = register<DockerStopContainer>("stopPostgresContainer") {

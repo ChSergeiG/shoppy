@@ -5,30 +5,33 @@ import App from "./App"
 import {AdminPage} from "./pages/admin/admin.page";
 import {AccountsTable, GoodsTable, OrdersTable} from "./pages/admin";
 import {getProbeLogin, STORED_JWT_TOKEN_KEY, STORED_JWT_TOKEN_VALIDITY_KEY} from "./utils/API";
+import {SnackBarContext, SnackBarProvider} from "./snackBarContext";
 
 ReactDOM.render(
-    <BrowserRouter>
-        <Routes>
-            <Route path="/" element={<App/>}/>
-            <Route path="/admin">
-                <Route path="accounts" element={
-                    <AdminPage component={
-                        <AccountsTable/>
+    <SnackBarProvider>
+        <BrowserRouter>
+            <Routes>
+                <Route path="/" element={<App/>}/>
+                <Route path="/admin">
+                    <Route path="accounts" element={
+                        <AdminPage component={
+                            <AccountsTable/>
+                        }/>
                     }/>
-                }/>
-                <Route path="goods" element={
-                    <AdminPage component={
-                        <GoodsTable/>
+                    <Route path="goods" element={
+                        <AdminPage component={
+                            <GoodsTable/>
+                        }/>
                     }/>
-                }/>
-                <Route path="orders" element={
-                    <AdminPage component={
-                        <OrdersTable/>
+                    <Route path="orders" element={
+                        <AdminPage component={
+                            <OrdersTable/>
+                        }/>
                     }/>
-                }/>
-            </Route>
-        </Routes>
-    </BrowserRouter>,
+                </Route>
+            </Routes>
+        </BrowserRouter>
+    </SnackBarProvider>,
     document.getElementById('root')
 )
 

@@ -3,7 +3,6 @@ import {Alert, Button, Dialog, DialogContent, DialogTitle, TextField} from "@mui
 import {getProbeLogin, postLogin, STORED_JWT_TOKEN_KEY, STORED_JWT_TOKEN_VALIDITY_KEY} from "../../../utils/API";
 
 type AuthorizationOverlayProps = {
-    onClose: () => void;
 }
 
 type AuthorizationOverlayState = {
@@ -30,7 +29,6 @@ class AuthorizationOverlay extends Component<AuthorizationOverlayProps, Authoriz
 
     handleSubmit = async (e: any) => {
         const tokenResponse = await postLogin({...this.state});
-        console.log(tokenResponse)
         this.setState({...this.state, authorized: false});
         if (tokenResponse.data.token) {
             const probeResponse = await getProbeLogin(tokenResponse.data.token);

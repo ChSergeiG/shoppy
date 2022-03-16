@@ -13,52 +13,31 @@ import {
 } from "@mui/material";
 import {getStatuses} from "../../../utils/API";
 import type {IStatus} from "../../../../types/IStatus";
-import type {IAdminContent} from "../../../../types/AdminTypes";
+import type {
+    IAbstractAdminProps,
+    IAbstractAdminState,
+    IAdminContent,
+    IAdminTableRow
+} from "../../../../types/AdminTypes";
 import floppyIcon from "../../../img/floppy.svg";
 import refreshIcon from "../../../img/refresh.svg";
 import binIcon from "../../../img/bin.svg";
-
-type AbstractAdminProps<T extends IAdminContent> = {
-    getDataCallback: () => Promise<{ data: T[] }>;
-    idExtractor: (data: T) => number | undefined;
-    keyExtractor: (data: T) => string;
-    headerRowBuilder: () => JSX.Element;
-    bodyCellCreator: (
-        columnNumber: number,
-        data: T,
-        statusSelectorCallback: (data: T) => JSX.Element,
-        actionsSelectorCallback: (data: T) => JSX.Element
-    ) => JSX.Element;
-    columns: number;
-    newEntityCreator: () => T;
-    createCallback: (data: T) => Promise<{ data: T }>;
-    updateCallback: (data: T) => Promise<{ data: T }>;
-    deleteCallback: (data: T) => Promise<{}>;
-    refreshCallback?: (data: T) => Promise<{ data: T[] }>;
-};
-
-type AbstractAdminState<T extends IAdminContent> = {
-    isLoading: boolean;
-    statuses: IStatus[];
-    rows: AdminTableRow<T>[];
-};
-
-/**
- * Represents extended container of entity
- */
-type AdminTableRow<T> = {
-    // table row number
-    number: number | undefined;
-    // unique key to identify row
-    key: string;
-    // which object this row accords
-    content: T | undefined;
-}
+import {
+    SNACKBAR_EVENT_KEY,
+    SNACKBAR_MESSAGE_SEVERITY_KEY,
+    SNACKBAR_MESSAGE_VALUE_KEY
+} from "../../../components/ShopSnackBar";
+import type {IResponseType} from "../../../../types/IResponseType";
+import {SnackBarContext} from "../../../snackBarContext";
 
 class AbstractAdminTable<T extends IAdminContent>
-    extends React.Component<AbstractAdminProps<T>, AbstractAdminState<T>> {
+    extends React.Component<IAbstractAdminProps<T>, IAbstractAdminState<T>> {
 
-    constructor(props: AbstractAdminProps<T>) {
+    static contextType = SnackBarContext;
+    // @ts-ignore
+    context!: React.ContextType<typeof SnackBarContext>
+
+    constructor(props: IAbstractAdminProps<T>) {
         super(props);
         this.state = {
             isLoading: true,
@@ -76,7 +55,7 @@ class AbstractAdminTable<T extends IAdminContent>
 
         let dataResponse = await getDataCallback();
         let statuses = await getStatuses();
-        let rows: AdminTableRow<T>[] = dataResponse.data.map(r => {
+        let rows: IAdminTableRow<T>[] = dataResponse.data.map(r => {
             let id = idExtractor(r);
             return {
                 number: id !== undefined ? id : -1,
@@ -93,7 +72,7 @@ class AbstractAdminTable<T extends IAdminContent>
     };
 
     createPlusRow = () => {
-        const {columns, newEntityCreator, idExtractor, keyExtractor} = this.props;
+        const {columns, newEntityCreator, keyExtractor} = this.props;
         return (
             <TableRow key="new">
                 <TableCell colSpan={columns} align={"center"}>
@@ -105,7 +84,7 @@ class AbstractAdminTable<T extends IAdminContent>
                                 rows: [
                                     ...this.state.rows,
                                     {
-                                        number: idExtractor(newEntity),
+                                        number: 0xffff,
                                         key: keyExtractor(newEntity),
                                         content: newEntity
                                     }
@@ -122,8 +101,9 @@ class AbstractAdminTable<T extends IAdminContent>
 
     renderStatusSelectorCell = (data: T) => {
         const {statuses} = this.state;
+
         return (
-            <TableCell>
+            <TableCell key="status-selector">
                 <Select
                     value={data.status}
                     onChange={(e) => this.handleSelectorChange(e, data)}
@@ -144,21 +124,58 @@ class AbstractAdminTable<T extends IAdminContent>
     };
 
     renderActionsSelectorCell = (data: T) => {
+        const {idExtractor, keyExtractor} = this.props;
+        const {rows} = this.state;
         return (
-            <TableCell align={"center"}>
+            <TableCell align={"center"} key="action-buttons">
                 <ButtonGroup>
                     <Button
-                        onClick={() => this.saveEntity(data)}
+                        onClick={async () => {
+                            const newEntity = await this.saveEntity(data)
+                                .catch((r) => {
+                                    this.context.setValues?.({message: r.response.data, color: "warning"})
+                                });
+                            if (!newEntity || !newEntity.data) {
+                                return;
+                            }
+
+                            const newRows = rows.filter(r => r.content !== data);
+                            newRows.push({
+                                number: idExtractor(newEntity.data),
+                                key: keyExtractor(newEntity.data),
+                                content: newEntity.data
+                            });
+                            this.setState({...this.state, rows: newRows});
+                            this.context.setValues?.({message: "success", color: "success"})
+                        }}
                     >
                         <img src={floppyIcon} height={16} width={16} alt='save'/>
                     </Button>
                     <Button
-                        onClick={() => this.removeEntity(data)}
+                        onClick={async () => {
+                            await this.removeEntity(data);
+                        }}
                     >
                         <img src={binIcon} height={16} width={16} alt='remove'/>
                     </Button>
                     <Button
-                        onClick={() => this.refreshEntity(data)}
+                        onClick={async () => {
+                            const newEntity = await this.refreshEntity(data);
+                            if (newEntity === undefined) {
+                                return;
+                            }
+                            if (newEntity.status === 499) {
+                                sessionStorage.setItem(SNACKBAR_MESSAGE_VALUE_KEY, JSON.stringify(newEntity.data));
+                            }
+                            const newRows = rows.filter(r => r.content !== data);
+                            newRows.push({
+                                number: idExtractor(newEntity.data),
+                                key: keyExtractor(newEntity.data),
+                                content: newEntity.data
+                            });
+                            this.setState({...this.state, rows: newRows});
+                            window.dispatchEvent(new Event(SNACKBAR_EVENT_KEY));
+                        }}
                     >
                         <img src={refreshIcon} height={16} width={16} alt='refresh'/>
                     </Button>
@@ -166,7 +183,6 @@ class AbstractAdminTable<T extends IAdminContent>
             </TableCell>
         );
     };
-
 
     handleSelectorChange = (e: SelectChangeEvent, row: T) => {
         const selectedStatus = (e.target.value as IStatus);
@@ -177,16 +193,16 @@ class AbstractAdminTable<T extends IAdminContent>
                 }
                 return r;
             });
-            return {...prevState, rows: updatedRows};
+            return {...prevState, rows: updatedRows.filter(r => r.content && r.content.status !== "REMOVED")};
         });
     }
 
-    async saveEntity(entity: T) {
+    async saveEntity(entity: T): Promise<IResponseType<T>> {
         const {createCallback, updateCallback} = this.props;
         if (entity.id === undefined) {
-            await createCallback(entity);
+            return await createCallback(entity);
         } else {
-            await updateCallback(entity);
+            return await updateCallback(entity);
         }
     }
 
@@ -195,14 +211,17 @@ class AbstractAdminTable<T extends IAdminContent>
         if (entity !== undefined) {
             await deleteCallback(entity);
         }
+        this.setState({...this.state, rows: this.state.rows.filter(r => r.content !== entity)});
     }
 
-    async refreshEntity(entity: T) {
+    async refreshEntity(entity: T): Promise<IResponseType<T> | undefined> {
         const {refreshCallback} = this.props;
         if (entity && refreshCallback) {
-            await refreshCallback(entity);
+            return await refreshCallback(entity);
         }
+        return undefined;
     }
+
 
     render() {
         const {keyExtractor, headerRowBuilder, bodyCellCreator, columns} = this.props;
@@ -240,5 +259,7 @@ class AbstractAdminTable<T extends IAdminContent>
     }
 
 }
+
+AbstractAdminTable.contextType = SnackBarContext;
 
 export default AbstractAdminTable;

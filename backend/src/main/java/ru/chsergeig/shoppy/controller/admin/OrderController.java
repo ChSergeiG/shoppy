@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 import ru.chsergeig.shoppy.dto.admin.OrderDto;
+import ru.chsergeig.shoppy.exception.ControllerException;
 import ru.chsergeig.shoppy.service.admin.OrderService;
 
 import java.util.List;
@@ -44,9 +44,34 @@ public class OrderController {
         try {
             return ResponseEntity.ok(orderService.getAllOrders());
         } catch (Exception e) {
-            throw new ResponseStatusException(
+            throw new ControllerException(
                     499,
-                    "Cant get orders list: " + e.getLocalizedMessage(),
+                    "Cant get orders list",
+                    e
+            );
+        }
+    }
+
+    @Operation(
+            summary = "Get good by id",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "All good"),
+                    @ApiResponse(responseCode = "401", description = "Need authorization"),
+                    @ApiResponse(responseCode = "499", description = "Error in backend"),
+                    @ApiResponse(responseCode = "500", description = "Error in wrapper")
+            }
+    )
+
+    @GetMapping("{id}")
+    public ResponseEntity<OrderDto> getGood(
+            @PathVariable("id") Long id
+    ) {
+        try {
+            return ResponseEntity.ok(orderService.getOrderById(id));
+        } catch (Exception e) {
+            throw new ControllerException(
+                    499,
+                    "Cant get order by id",
                     e
             );
         }
@@ -68,9 +93,9 @@ public class OrderController {
         try {
             return ResponseEntity.status(HttpStatus.CREATED).body(orderService.addOrder(info));
         } catch (Exception e) {
-            throw new ResponseStatusException(
+            throw new ControllerException(
                     499,
-                    "Cant create new order: " + e.getLocalizedMessage(),
+                    "Cant create new order",
                     e
             );
         }
@@ -92,9 +117,9 @@ public class OrderController {
         try {
             return ResponseEntity.status(HttpStatus.CREATED).body(orderService.addOrder(dto));
         } catch (Exception e) {
-            throw new ResponseStatusException(
+            throw new ControllerException(
                     499,
-                    "Cant create new order: " + e.getLocalizedMessage(),
+                    "Cant create new order",
                     e
             );
         }
@@ -116,9 +141,9 @@ public class OrderController {
         try {
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(orderService.updateOrder(dto));
         } catch (Exception e) {
-            throw new ResponseStatusException(
+            throw new ControllerException(
                     499,
-                    "Cant update order: " + e.getLocalizedMessage(),
+                    "Cant update order",
                     e
             );
         }
@@ -140,9 +165,9 @@ public class OrderController {
         try {
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(orderService.deleteOrder(id));
         } catch (Exception e) {
-            throw new ResponseStatusException(
+            throw new ControllerException(
                     499,
-                    "Cant delete order: " + e.getLocalizedMessage(),
+                    "Cant delete order",
                     e
             );
         }

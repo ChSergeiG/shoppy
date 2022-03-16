@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 import ru.chsergeig.shoppy.dto.admin.AccountDto;
+import ru.chsergeig.shoppy.exception.ControllerException;
 import ru.chsergeig.shoppy.service.admin.AccountService;
 
 import java.util.List;
@@ -44,9 +44,33 @@ public class AccountController {
         try {
             return ResponseEntity.ok(accountService.getAllAccounts());
         } catch (Exception e) {
-            throw new ResponseStatusException(
+            throw new ControllerException(
                     499,
-                    "Cant get accounts list: " + e.getLocalizedMessage(),
+                    "Cant get accounts list",
+                    e
+            );
+        }
+    }
+
+    @Operation(
+            summary = "Get account by id",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "All good"),
+                    @ApiResponse(responseCode = "401", description = "Need authorization"),
+                    @ApiResponse(responseCode = "499", description = "Error in backend"),
+                    @ApiResponse(responseCode = "500", description = "Error in wrapper")
+            }
+    )
+    @GetMapping("{login}")
+    public ResponseEntity<AccountDto> getAccount(
+            @PathVariable("login") String login
+    ) {
+        try {
+            return ResponseEntity.ok(accountService.getAccountByLogin(login));
+        } catch (Exception e) {
+            throw new ControllerException(
+                    499,
+                    "Cant get account by id",
                     e
             );
         }
@@ -68,9 +92,9 @@ public class AccountController {
         try {
             return ResponseEntity.status(HttpStatus.CREATED).body(accountService.addAccount(login));
         } catch (Exception e) {
-            throw new ResponseStatusException(
+            throw new ControllerException(
                     499,
-                    "Cant create new account: " + e.getLocalizedMessage(),
+                    "Cant create new account",
                     e
             );
         }
@@ -92,9 +116,9 @@ public class AccountController {
         try {
             return ResponseEntity.status(HttpStatus.CREATED).body(accountService.addAccount(dto));
         } catch (Exception e) {
-            throw new ResponseStatusException(
+            throw new ControllerException(
                     499,
-                    "Cant create new account: " + e.getLocalizedMessage(),
+                    "Cant create new account",
                     e
             );
         }
@@ -116,9 +140,9 @@ public class AccountController {
         try {
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(accountService.updateAccount(dto));
         } catch (Exception e) {
-            throw new ResponseStatusException(
+            throw new ControllerException(
                     499,
-                    "Cant update account: " + e.getLocalizedMessage(),
+                    "Cant update account",
                     e
             );
         }
@@ -140,9 +164,9 @@ public class AccountController {
         try {
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(accountService.deleteAccount(login));
         } catch (Exception e) {
-            throw new ResponseStatusException(
+            throw new ControllerException(
                     499,
-                    "Cant delete account: " + e.getLocalizedMessage(),
+                    "Cant delete account",
                     e
             );
         }

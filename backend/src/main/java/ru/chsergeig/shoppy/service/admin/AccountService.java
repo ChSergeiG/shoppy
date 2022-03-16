@@ -8,6 +8,8 @@ public interface AccountService {
 
     List<AccountDto> getAllAccounts();
 
+    AccountDto getAccountByLogin(String login);
+
     AccountDto addAccount(String name);
 
     AccountDto addAccount(AccountDto dto);

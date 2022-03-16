@@ -28,6 +28,12 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    public AccountDto getAccountByLogin(String login) {
+        List<Accounts> users = accountRepository.fetchByLogin(login);
+        return users.isEmpty() ? null : accountMapper.map(users.get(0));
+    }
+
+    @Override
     public AccountDto addAccount(String name) {
         Accounts pojo = new Accounts(null, name, null, false, Status.ADDED);
         accountRepository.insert(pojo);

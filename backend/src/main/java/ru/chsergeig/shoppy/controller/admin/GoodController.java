@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 import ru.chsergeig.shoppy.dto.admin.GoodDto;
+import ru.chsergeig.shoppy.exception.ControllerException;
 import ru.chsergeig.shoppy.service.admin.GoodService;
 
 import java.util.List;
@@ -44,16 +44,40 @@ public class GoodController {
         try {
             return ResponseEntity.ok(goodsService.getAllGoods());
         } catch (Exception e) {
-            throw new ResponseStatusException(
+            throw new ControllerException(
                     499,
-                    "Cant get goods list: " + e.getLocalizedMessage(),
+                    "Cant get goods list",
                     e
             );
         }
     }
 
     @Operation(
-            summary = "Create default godo",
+            summary = "Get good by id",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "All good"),
+                    @ApiResponse(responseCode = "401", description = "Need authorization"),
+                    @ApiResponse(responseCode = "499", description = "Error in backend"),
+                    @ApiResponse(responseCode = "500", description = "Error in wrapper")
+            }
+    )
+    @GetMapping("{id}")
+    public ResponseEntity<GoodDto> getGood(
+            @PathVariable("id") Long id
+    ) {
+        try {
+            return ResponseEntity.ok(goodsService.getGoodById(id));
+        } catch (Exception e) {
+            throw new ControllerException(
+                    499,
+                    "Cant get good by id",
+                    e
+            );
+        }
+    }
+
+    @Operation(
+            summary = "Create default good",
             responses = {
                     @ApiResponse(responseCode = "201", description = "Good created"),
                     @ApiResponse(responseCode = "401", description = "Need authorization"),
@@ -68,9 +92,9 @@ public class GoodController {
         try {
             return ResponseEntity.status(HttpStatus.CREATED).body(goodsService.addGood(name));
         } catch (Exception e) {
-            throw new ResponseStatusException(
+            throw new ControllerException(
                     499,
-                    "Cant create new good: " + e.getLocalizedMessage(),
+                    "Cant create new good",
                     e
             );
         }
@@ -92,9 +116,9 @@ public class GoodController {
         try {
             return ResponseEntity.status(HttpStatus.CREATED).body(goodsService.addGood(dto));
         } catch (Exception e) {
-            throw new ResponseStatusException(
+            throw new ControllerException(
                     499,
-                    "Cant create new good: " + e.getLocalizedMessage(),
+                    "Cant create new good",
                     e
             );
         }
@@ -116,9 +140,9 @@ public class GoodController {
         try {
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(goodsService.updateGood(dto));
         } catch (Exception e) {
-            throw new ResponseStatusException(
+            throw new ControllerException(
                     499,
-                    "Cant update good: " + e.getLocalizedMessage(),
+                    "Cant update good",
                     e
             );
         }
@@ -140,9 +164,9 @@ public class GoodController {
         try {
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(goodsService.deleteGood(article));
         } catch (Exception e) {
-            throw new ResponseStatusException(
+            throw new ControllerException(
                     499,
-                    "Cant delete good: " + e.getLocalizedMessage(),
+                    "Cant delete good",
                     e
             );
         }

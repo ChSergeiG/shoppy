@@ -8,6 +8,8 @@ public interface GoodService {
 
     List<GoodDto> getAllGoods();
 
+    GoodDto getGoodById(Long id);
+
     GoodDto addGood(String name);
 
     GoodDto addGood(GoodDto dto);

@@ -1,9 +1,12 @@
 import axios, {AxiosInstance, AxiosResponse} from "axios";
 import type {IAccount, IGood, IJwtRequest, IJwtResponse, IOrder} from "../../types/AdminTypes";
 import type {IStatus} from "../../types/IStatus";
+import type {IResponseType} from "../../types/IResponseType";
+
 
 export const STORED_JWT_TOKEN_KEY = "STORED_JWT_TOKEN_KEY";
 export const STORED_JWT_TOKEN_VALIDITY_KEY = "STORED_JWT_TOKEN_VALIDITY_KEY";
+
 
 function client(): AxiosInstance {
     return axios.create({
@@ -16,27 +19,32 @@ function client(): AxiosInstance {
 // admin/AccountController //
 /////////////////////////////
 
-export async function getAccounts(): Promise<AxiosResponse<IAccount[]>> {
+export async function getAccounts(): Promise<IResponseType<IAccount[]>> {
     return client()
         .get("/admin/account/get_all", {headers: {"X-Authorization": localStorage.getItem(STORED_JWT_TOKEN_KEY) || ""}});
 }
 
-export async function createNewDefaultAccount(login: string): Promise<AxiosResponse<void>> {
+export async function getAccount(login: string): Promise<IResponseType<IAccount>> {
+    return client()
+        .get(`/admin/account/${login}`, {headers: {"X-Authorization": localStorage.getItem(STORED_JWT_TOKEN_KEY) || ""}});
+}
+
+export async function createNewDefaultAccount(login: string): Promise<IResponseType<void>> {
     return client()
         .put(`/admin/account/${login}`, {}, {headers: {"X-Authorization": localStorage.getItem(STORED_JWT_TOKEN_KEY) || ""}});
 }
 
-export async function createNewAccount(accountToCreate: IAccount): Promise<AxiosResponse<IAccount>> {
+export async function createNewAccount(accountToCreate: IAccount): Promise<IResponseType<IAccount>> {
     return client()
         .post("/admin/account/add", accountToCreate, {headers: {"X-Authorization": localStorage.getItem(STORED_JWT_TOKEN_KEY) || ""}});
 }
 
-export async function updateExistingAccount(accountToUpdate: IAccount): Promise<AxiosResponse<IAccount>> {
+export async function updateExistingAccount(accountToUpdate: IAccount): Promise<IResponseType<IAccount>> {
     return client()
         .post("/admin/account/update", accountToUpdate, {headers: {"X-Authorization": localStorage.getItem(STORED_JWT_TOKEN_KEY) || ""}});
 }
 
-export async function deleteExistingAccount(accountToDelete: IAccount): Promise<AxiosResponse<number>> {
+export async function deleteExistingAccount(accountToDelete: IAccount): Promise<IResponseType<number>> {
     return client()
         .delete(`/admin/account/${accountToDelete.login}`, {headers: {"X-Authorization": localStorage.getItem(STORED_JWT_TOKEN_KEY) || ""}});
 }
@@ -48,6 +56,11 @@ export async function deleteExistingAccount(accountToDelete: IAccount): Promise<
 export async function getGoods(): Promise<AxiosResponse<IGood[]>> {
     return client()
         .get("/admin/good/get_all", {headers: {"X-Authorization": localStorage.getItem(STORED_JWT_TOKEN_KEY) || ""}});
+}
+
+export async function getGood(id: number | undefined): Promise<AxiosResponse<IGood> | undefined> {
+    return client()
+        .get(`/admin/good/${id}`, {headers: {"X-Authorization": localStorage.getItem(STORED_JWT_TOKEN_KEY) || ""}});
 }
 
 export async function createNewDefaultGood(name: string): Promise<AxiosResponse<IGood>> {
@@ -78,6 +91,12 @@ export async function getOrders(): Promise<AxiosResponse<IOrder[]>> {
     return client()
         .get("/admin/order/get_all", {headers: {"X-Authorization": localStorage.getItem(STORED_JWT_TOKEN_KEY) || ""}});
 }
+
+export async function getOrder(id: number | undefined): Promise<AxiosResponse<IOrder> | undefined> {
+    return client()
+        .get(`/admin/order/${id}`, {headers: {"X-Authorization": localStorage.getItem(STORED_JWT_TOKEN_KEY) || ""}});
+}
+
 
 export async function createNewDefaultOrder(info: string): Promise<AxiosResponse<IOrder>> {
     return client()
