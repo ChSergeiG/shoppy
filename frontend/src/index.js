@@ -4,11 +4,12 @@ import {BrowserRouter, Route, Routes} from "react-router-dom"
 import App from "./App"
 import {AdminPage} from "./pages/admin/admin.page";
 import {AccountsTable, GoodsTable, OrdersTable} from "./pages/admin";
-import {getProbeLogin, STORED_JWT_TOKEN_KEY, STORED_JWT_TOKEN_VALIDITY_KEY} from "./utils/API";
-import {SnackBarContext, SnackBarProvider} from "./snackBarContext";
+import {ApplicationContextProvider} from "./applicationContext";
+import {ShopSnackBar} from "./components/ShopSnackBar";
 
 ReactDOM.render(
-    <SnackBarProvider>
+    <ApplicationContextProvider>
+        <ShopSnackBar/>
         <BrowserRouter>
             <Routes>
                 <Route path="/" element={<App/>}/>
@@ -31,18 +32,6 @@ ReactDOM.render(
                 </Route>
             </Routes>
         </BrowserRouter>
-    </SnackBarProvider>,
+    </ApplicationContextProvider>,
     document.getElementById('root')
 )
-
-setInterval(async () => {
-    const token = localStorage.getItem(STORED_JWT_TOKEN_KEY);
-    if (token) {
-        const validityResponse = await getProbeLogin(token);
-        if (validityResponse) {
-            localStorage.setItem(STORED_JWT_TOKEN_VALIDITY_KEY, validityResponse.data ? "VALID" : "INVALID");
-        }
-    } else {
-        localStorage.setItem(STORED_JWT_TOKEN_VALIDITY_KEY, "INVALID");
-    }
-}, 5_000);

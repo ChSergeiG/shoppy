@@ -88,14 +88,14 @@ public class GoodsDao extends DAOImpl<GoodsRecord, ru.chsergeig.shoppy.jooq.tabl
      * Fetch records that have <code>article BETWEEN lowerInclusive AND
      * upperInclusive</code>
      */
-    public List<ru.chsergeig.shoppy.jooq.tables.pojos.Goods> fetchRangeOfArticle(Integer lowerInclusive, Integer upperInclusive) {
+    public List<ru.chsergeig.shoppy.jooq.tables.pojos.Goods> fetchRangeOfArticle(String lowerInclusive, String upperInclusive) {
         return fetchRange(Goods.GOODS.ARTICLE, lowerInclusive, upperInclusive);
     }
 
     /**
      * Fetch records that have <code>article IN (values)</code>
      */
-    public List<ru.chsergeig.shoppy.jooq.tables.pojos.Goods> fetchByArticle(Integer... values) {
+    public List<ru.chsergeig.shoppy.jooq.tables.pojos.Goods> fetchByArticle(String... values) {
         return fetch(Goods.GOODS.ARTICLE, values);
     }
 

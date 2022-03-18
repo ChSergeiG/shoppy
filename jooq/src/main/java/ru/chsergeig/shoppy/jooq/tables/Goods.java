@@ -59,7 +59,7 @@ public class Goods extends TableImpl<GoodsRecord> {
     /**
      * The column <code>public.goods.article</code>.
      */
-    public final TableField<GoodsRecord, Integer> ARTICLE = createField(DSL.name("article"), SQLDataType.INTEGER, this, "");
+    public final TableField<GoodsRecord, String> ARTICLE = createField(DSL.name("article"), SQLDataType.VARCHAR(1024), this, "");
 
     /**
      * The column <code>public.goods.status</code>.
@@ -145,7 +145,7 @@ public class Goods extends TableImpl<GoodsRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row4<Integer, String, Integer, Status> fieldsRow() {
+    public Row4<Integer, String, String, Status> fieldsRow() {
         return (Row4) super.fieldsRow();
     }
 }

@@ -16,6 +16,6 @@ public interface GoodService {
 
     GoodDto updateGood(GoodDto dto);
 
-    Integer deleteGood(Integer article);
+    Integer deleteGood(String article);
 
 }

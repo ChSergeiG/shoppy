@@ -3,9 +3,11 @@ package ru.chsergeig.shoppy.controller.jwt;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import org.jooq.tools.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -46,9 +48,18 @@ public class JwtAuthenticationController {
     public ResponseEntity<ResponseDto> doLogin(
             @RequestBody RequestDto requestDto
     ) {
-        return ResponseEntity.ok(
-                authenticationService.authenticate(requestDto.getLogin(), requestDto.getPassword())
-        );
+        try {
+            return ResponseEntity.ok(
+                    authenticationService.authenticate(requestDto.getLogin(), requestDto.getPassword())
+            );
+        } catch (AuthenticationException ae) {
+            if (StringUtils.isBlank(ae.getLocalizedMessage())) {
+                throw new InsufficientAuthenticationException("Cant authenticate user", ae);
+            }
+            throw ae;
+        } catch (Exception e) {
+            throw new InsufficientAuthenticationException("Cant authenticate user", e);
+        }
     }
 
     @Operation(

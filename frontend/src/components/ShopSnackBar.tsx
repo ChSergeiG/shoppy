@@ -1,33 +1,28 @@
-import {Alert, AlertColor, Snackbar} from "@mui/material";
+import {Alert, Snackbar} from "@mui/material";
 import React, {useContext, useEffect, useState} from "react";
-import {SnackBarContext} from "../snackBarContext";
+import {ApplicationContext} from "../applicationContext";
 
 type ISnackbarState = {
     isOpened: boolean;
 };
 
-export const SNACKBAR_MESSAGE_VALUE_KEY = "SNACKBAR_MESSAGE_VALUE_KEY";
-export const SNACKBAR_MESSAGE_SEVERITY_KEY = "SNACKBAR_MESSAGE_VALUE_KEY";
-export const SNACKBAR_EVENT_KEY = "SNACKBAR_EVENT_KEY";
-
 export const ShopSnackBar: React.FC = () => {
     const [state, setState] = useState<ISnackbarState>();
-    const context = useContext(SnackBarContext);
+    const context = useContext(ApplicationContext);
 
     useEffect(() => {
         if (context.message) {
-            setState({isOpened: true})
+            setState({...state, isOpened: true})
         }
     }, [context.message]);
-
     return (
         <Snackbar
             anchorOrigin={{vertical: 'bottom', horizontal: 'left'}}
-            open={state && state.isOpened}
-            onClose={() => state && setState({...state, isOpened: false})}
+            open={state?.isOpened}
+            onClose={() => setState?.({...state, isOpened: false})}
         >
             <Alert
-                onClose={() => state && setState({...state, isOpened: false})}
+                onClose={() => setState?.({...state, isOpened: false})}
                 severity={context.color}
             >
                 {context.message}

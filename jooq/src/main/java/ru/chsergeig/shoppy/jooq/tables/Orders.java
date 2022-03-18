@@ -54,7 +54,7 @@ public class Orders extends TableImpl<OrdersRecord> {
     /**
      * The column <code>public.orders.info</code>.
      */
-    public final TableField<OrdersRecord, String> INFO = createField(DSL.name("info"), SQLDataType.VARCHAR(16384).defaultValue(DSL.field("''::character varying", SQLDataType.VARCHAR)), this, "");
+    public final TableField<OrdersRecord, String> INFO = createField(DSL.name("info"), SQLDataType.VARCHAR(2048).defaultValue(DSL.field("''::character varying", SQLDataType.VARCHAR)), this, "");
 
     /**
      * The column <code>public.orders.status</code>.

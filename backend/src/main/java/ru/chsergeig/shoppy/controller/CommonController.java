@@ -8,10 +8,11 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.chsergeig.shoppy.jooq.enums.AccountRole;
 import ru.chsergeig.shoppy.jooq.enums.Status;
 
 @RequiredArgsConstructor
-@RequestMapping("/")
+@RequestMapping("/common")
 @RestController
 @CrossOrigin
 public class CommonController {
@@ -22,9 +23,20 @@ public class CommonController {
                     @ApiResponse(responseCode = "200", description = "All good")
             }
     )
-    @GetMapping("statuses")
-    public ResponseEntity<Status[]> getAll() {
+    @GetMapping("enum/statuses")
+    public ResponseEntity<Status[]> getAllStatuses() {
         return ResponseEntity.ok(Status.values());
+    }
+
+    @Operation(
+            summary = "Get available role to assign account",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "All good")
+            }
+    )
+    @GetMapping("enum/account-roles")
+    public ResponseEntity<AccountRole[]> getAllRoles() {
+        return ResponseEntity.ok(AccountRole.values());
     }
 
 }

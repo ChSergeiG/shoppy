@@ -1,10 +1,12 @@
 import type {IStatus} from "./IStatus";
 import type {IResponseType} from "./IResponseType";
+import type {IApplicationContext} from "./IApplicationContextType";
+import type {IAccountRole} from "./IAccountRole";
 
 export type IGood = {
     id: number | undefined;
     name: string;
-    article: number | undefined;
+    article: string | undefined;
     status: IStatus;
 };
 
@@ -20,6 +22,7 @@ export type IAccount = {
     password: string;
     salted: boolean;
     status: IStatus;
+    roles: IAccountRole[];
 };
 
 export type IAdminContent = IGood | IOrder | IAccount
@@ -39,11 +42,12 @@ export type IAdminTableRow<T> = {
 export type IAbstractAdminState<T extends IAdminContent> = {
     isLoading: boolean;
     statuses: IStatus[];
+    accountRoles: IAccountRole[];
     rows: IAdminTableRow<T>[];
 };
 
 export type IAbstractAdminProps<T extends IAdminContent> = {
-    getDataCallback: () => Promise<IResponseType<T[]>>;
+    getDataCallback: (context: IApplicationContext) => Promise<IResponseType<T[]>>;
     idExtractor: (data: T) => number | undefined;
     keyExtractor: (data: T) => string;
     headerRowBuilder: () => JSX.Element;
@@ -51,14 +55,15 @@ export type IAbstractAdminProps<T extends IAdminContent> = {
         columnNumber: number,
         data: T,
         statusSelectorCallback: (data: T) => JSX.Element,
-        actionsSelectorCallback: (data: T) => JSX.Element
+        actionsSelectorCallback: (data: T) => JSX.Element,
+        accountRoles: IAccountRole[]
     ) => JSX.Element;
     columns: number;
     newEntityCreator: () => T;
-    createCallback: (data: T) => Promise<IResponseType<T>>;
-    updateCallback: (data: T) => Promise<IResponseType<T>>;
-    deleteCallback: (data: T) => Promise<IResponseType<{}>>;
-    refreshCallback?: (data: T) => Promise<IResponseType<T> | undefined>;
+    createCallback: (context: IApplicationContext, data: T) => Promise<IResponseType<T>>;
+    updateCallback: (context: IApplicationContext, data: T) => Promise<IResponseType<T>>;
+    deleteCallback: (context: IApplicationContext, data: T) => Promise<IResponseType<{}>>;
+    refreshCallback?: (context: IApplicationContext, data: T) => Promise<IResponseType<T> | undefined>;
 };
 
 export type IJwtRequest = {

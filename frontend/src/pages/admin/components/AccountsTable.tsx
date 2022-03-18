@@ -1,5 +1,5 @@
 import React from "react";
-import {Input, TableCell, TableHead, TableRow} from "@mui/material";
+import {Autocomplete, Input, TableCell, TableHead, TableRow, TextField} from "@mui/material";
 import {
     createNewAccount,
     deleteExistingAccount,
@@ -9,6 +9,7 @@ import {
 } from "../../../utils/API";
 import type {IAccount} from "../../../../types/AdminTypes";
 import AbstractAdminTable from "./AbstractAdminTable";
+import type {IAccountRole} from "../../../../types/IAccountRole";
 
 class AccountsTable extends React.Component {
 
@@ -19,6 +20,7 @@ class AccountsTable extends React.Component {
                     <TableCell width={50}>ID</TableCell>
                     <TableCell>Login</TableCell>
                     <TableCell>Password</TableCell>
+                    <TableCell>Group</TableCell>
                     <TableCell>Status</TableCell>
                     <TableCell width={200} align={"center"}>Actions</TableCell>
                 </TableRow>
@@ -30,7 +32,8 @@ class AccountsTable extends React.Component {
         columnNumber: number,
         account: IAccount,
         statusSelectorCallback: (account: IAccount) => JSX.Element,
-        actionsSelectorCallback: (account: IAccount) => JSX.Element
+        actionsSelectorCallback: (account: IAccount) => JSX.Element,
+        accountRoles: IAccountRole[]
     ): JSX.Element => {
         switch (columnNumber) {
             case 0: {
@@ -42,7 +45,7 @@ class AccountsTable extends React.Component {
                         <Input
                             fullWidth={true}
                             defaultValue={account.login}
-                            onChange={(e) => account.login = e.target.value}
+                            onChange={(e) => {}}
                         />
                     </TableCell>
                 );
@@ -53,15 +56,32 @@ class AccountsTable extends React.Component {
                         <Input
                             fullWidth={true}
                             defaultValue={account.password}
-                            type={'password'} onChange={(e) => account.password = e.target.value}
+                            type={'password'}
+                            onChange={(e) => {}}
                         />
                     </TableCell>
                 );
             }
             case 3: {
-                return (<>{statusSelectorCallback(account)}</>);
+                return (
+                    <TableCell>
+                        <Autocomplete
+                            getOptionLabel={(option: IAccountRole) => option.toUpperCase()}
+                            onChange={(e, v) => {
+                            }}
+                            options={accountRoles || []}
+                            renderInput={(params) => <TextField {...params} variant="outlined" fullWidth/>}
+                            value={account.roles}
+                            fullWidth
+                            multiple
+                        />
+                    </TableCell>
+                );
             }
             case 4: {
+                return (<>{statusSelectorCallback(account)}</>);
+            }
+            case 5: {
                 return (<>{actionsSelectorCallback(account)}</>);
             }
             default: {
@@ -78,20 +98,21 @@ class AccountsTable extends React.Component {
                 keyExtractor={(r) => r.login}
                 headerRowBuilder={this.createHeaderRow}
                 bodyCellCreator={this.createBodyCell}
-                columns={5}
+                columns={6}
                 newEntityCreator={() => {
                     return {
                         id: undefined,
                         login: '',
                         password: '',
                         salted: false,
-                        status: 'ADDED'
+                        status: 'ADDED',
+                        roles: []
                     }
                 }}
                 createCallback={createNewAccount}
                 updateCallback={updateExistingAccount}
                 deleteCallback={deleteExistingAccount}
-                refreshCallback={(data) => getAccount(data.login)}
+                refreshCallback={(context, data) => getAccount(context, data.login)}
             />
         );
     }

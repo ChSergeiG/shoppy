@@ -19,7 +19,7 @@ public class Goods implements Serializable {
 
     private Integer id;
     private String  name;
-    private Integer article;
+    private String  article;
     private Status  status;
 
     public Goods() {}
@@ -34,7 +34,7 @@ public class Goods implements Serializable {
     public Goods(
         Integer id,
         String  name,
-        Integer article,
+        String  article,
         Status  status
     ) {
         this.id = id;
@@ -76,14 +76,14 @@ public class Goods implements Serializable {
     /**
      * Getter for <code>public.goods.article</code>.
      */
-    public Integer getArticle() {
+    public String getArticle() {
         return this.article;
     }
 
     /**
      * Setter for <code>public.goods.article</code>.
      */
-    public Goods setArticle(Integer article) {
+    public Goods setArticle(String article) {
         this.article = article;
         return this;
     }

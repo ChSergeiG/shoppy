@@ -1,15 +1,9 @@
 import React from "react";
 import {Input, TableCell, TableHead, TableRow} from "@mui/material";
-import {
-    createNewOrder,
-    deleteExistingOrder,
-    getGood,
-    getOrder,
-    getOrders,
-    updateExistingOrder
-} from "../../../utils/API";
+import {createNewOrder, deleteExistingOrder, getOrder, getOrders, updateExistingOrder} from "../../../utils/API";
 import type {IOrder} from "../../../../types/AdminTypes";
 import AbstractAdminTable from "./AbstractAdminTable";
+import type {IAccountRole} from "../../../../types/IAccountRole";
 
 class OrdersTable extends React.Component {
 
@@ -30,7 +24,8 @@ class OrdersTable extends React.Component {
         columnNumber: number,
         order: IOrder,
         statusSelectorCallback: (order: IOrder) => JSX.Element,
-        actionsSelectorCallback: (order: IOrder) => JSX.Element
+        actionsSelectorCallback: (order: IOrder) => JSX.Element,
+        accountRoles: IAccountRole[]
     ): JSX.Element => {
         switch (columnNumber) {
             case 0: {
@@ -42,7 +37,7 @@ class OrdersTable extends React.Component {
                         <Input
                             fullWidth={true}
                             defaultValue={order.info}
-                            onChange={(e) => order.info = e.target.value}
+                            onChange={(e) => {}}
                         />
                     </TableCell>
                 );
@@ -78,7 +73,7 @@ class OrdersTable extends React.Component {
                 createCallback={createNewOrder}
                 updateCallback={updateExistingOrder}
                 deleteCallback={deleteExistingOrder}
-                refreshCallback={(data) => getOrder(data.id)}
+                refreshCallback={(context, data) => getOrder(context, data.id)}
 
             />
         );

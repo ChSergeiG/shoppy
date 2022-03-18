@@ -1,100 +1,86 @@
-import React, {Component} from "react";
-import {Alert, Button, Dialog, DialogContent, DialogTitle, TextField} from "@mui/material";
-import {getProbeLogin, postLogin, STORED_JWT_TOKEN_KEY, STORED_JWT_TOKEN_VALIDITY_KEY} from "../../../utils/API";
-
-type AuthorizationOverlayProps = {
-}
+import React, {useContext, useEffect, useState} from "react";
+import {Button, Dialog, DialogContent, DialogTitle, TextField} from "@mui/material";
+import {postLogin} from "../../../utils/API";
+import {ApplicationContext, verifyAuthorization} from "../../../applicationContext";
 
 type AuthorizationOverlayState = {
-    authorized: boolean;
     login: string;
     password: string;
-    jwtToken?: string;
 };
 
-class AuthorizationOverlay extends Component<AuthorizationOverlayProps, AuthorizationOverlayState> {
+export const LOCAL_STORAGE_JWT_KEY = "LOCAL_STORAGE_JWT_KEY";
 
-    constructor(props: AuthorizationOverlayProps) {
-        super(props);
-        this.state = {
-            authorized: false,
-            login: '',
-            password: ''
-        };
+const AuthorizationOverlay: React.FC = () => {
+
+    const context = useContext(ApplicationContext);
+
+    const [state, setState] = useState<AuthorizationOverlayState>({
+        login: "",
+        password: "",
+    });
+
+    useEffect(() => {
+        verifyAuthorization(context).then(_ => {
+        });
+    }, [context.token]);
+
+    const handleChange = ({target: {name, value}}: React.ChangeEvent<HTMLInputElement>) => {
+        setState({...state, [name]: value});
     }
 
-    handleChange = ({target: {name, value}}: React.ChangeEvent<HTMLInputElement>) => {
-        this.setState({...this.state, [name]: value});
-    }
-
-    handleSubmit = async (e: any) => {
-        const tokenResponse = await postLogin({...this.state});
-        this.setState({...this.state, authorized: false});
-        if (tokenResponse.data.token) {
-            const probeResponse = await getProbeLogin(tokenResponse.data.token);
-            if (probeResponse && probeResponse.data) {
-                localStorage.setItem(STORED_JWT_TOKEN_KEY, tokenResponse.data.token);
-                localStorage.setItem(STORED_JWT_TOKEN_VALIDITY_KEY, "VALID");
-            } else {
-                localStorage.setItem(STORED_JWT_TOKEN_KEY, "");
-                localStorage.setItem(STORED_JWT_TOKEN_VALIDITY_KEY, "INVALID");
-            }
-            this.setState({...this.state, authorized: probeResponse && probeResponse.data});
+    const handleSubmit = async (e: any) => {
+        const tokenResponse = await postLogin({...state})
+            .catch((r) => {
+                context.setAuthorized?.(false);
+                context.setSnackBarValues?.({message: new Date() + " " + r.response.data, color: "error"});
+            });
+        if (tokenResponse !== undefined) {
+            context.setToken?.(tokenResponse.data.token);
         }
         e.preventDefault();
     }
 
-    render() {
-        const {authorized, login, password, jwtToken} = this.state;
-
-        return (!authorized &&
-            <Dialog
-                id="login-dialog"
-                aria-labelledby="login-dialog"
-                open={!authorized}
+    return (
+        <Dialog
+            id="login-dialog"
+            aria-labelledby="login-dialog"
+            open={!context.authorized}
+        >
+            <DialogTitle
+                id="login-dialog-title"
             >
-                <DialogTitle
-                    id="login-dialog-title"
+                Enter login info
+            </DialogTitle>
+            <DialogContent>
+                <TextField
+                    label="Login"
+                    name="login"
+                    onChange={handleChange}
+                    value={state.login}
+                    variant="outlined"
+                    fullWidth
+                />
+                <TextField
+                    label="Password"
+                    name="password"
+                    type={"password"}
+                    onChange={handleChange}
+                    value={state.password}
+                    variant="outlined"
+                    fullWidth
+                />
+                <Button
+                    color="primary"
+                    type="submit"
+                    variant="contained"
+                    disabled={!state.login || !state.password}
+                    onClick={handleSubmit}
                 >
-                    Enter login info
-                </DialogTitle>
-                <DialogContent>
-
-                    {!jwtToken && authorized && <Alert
-                        severity="error"
-                    >
-                        {authorized}
-                    </Alert>}
-                    <TextField
-                        label="Login"
-                        name="login"
-                        onChange={this.handleChange}
-                        value={login}
-                        variant="outlined"
-                        fullWidth
-                    />
-                    <TextField
-                        label="Password"
-                        name="password"
-                        type={"password"}
-                        onChange={this.handleChange}
-                        value={password}
-                        variant="outlined"
-                        fullWidth
-                    />
-                    <Button
-                        color="primary"
-                        type="submit"
-                        variant="contained"
-                        disabled={!login || !password}
-                        onClick={this.handleSubmit}
-                    >
-                        Login
-                    </Button>
-                </DialogContent>
-            </Dialog>
-        );
-    }
-}
+                    Login
+                </Button>
+            </DialogContent>
+        </Dialog>
+    );
+};
 
 export default AuthorizationOverlay;

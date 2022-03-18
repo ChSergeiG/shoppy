@@ -1,1 +1,1 @@
-export type IStatus = "ADDED" | "ACTIVE" | "REMOVED" | "DISABLED"
+export type IStatus = "ADDED" | "ACTIVE" | "REMOVED" | "DISABLED";

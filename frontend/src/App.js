@@ -9,9 +9,8 @@ class App extends Component {
             <>
                 <ButtonBar
                     items={[
-                        <Link to="/admin/orders">{"\u26BF"}</Link>
+                        {element: (<Link to="/admin/orders">{"\u26BF"}</Link>), adminButton: true}
                     ]}
-                    authorized={false}
                 />
                 <h2>Main Page</h2>
             </>

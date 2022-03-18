@@ -61,7 +61,7 @@ public class GoodServiceImpl implements GoodService {
 
     @Override
     @Transactional
-    public Integer deleteGood(Integer article) {
+    public Integer deleteGood(String article) {
         List<Goods> goods = goodRepository.fetchByArticle(article);
         goods.forEach(g -> g.setStatus(Status.REMOVED));
         goodRepository.update(goods);

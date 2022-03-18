@@ -11,7 +11,7 @@ import {
     TableCell,
     TableRow
 } from "@mui/material";
-import {getStatuses} from "../../../utils/API";
+import {getAccountRoles, getStatuses} from "../../../utils/API";
 import type {IStatus} from "../../../../types/IStatus";
 import type {
     IAbstractAdminProps,
@@ -22,40 +22,50 @@ import type {
 import floppyIcon from "../../../img/floppy.svg";
 import refreshIcon from "../../../img/refresh.svg";
 import binIcon from "../../../img/bin.svg";
-import {
-    SNACKBAR_EVENT_KEY,
-    SNACKBAR_MESSAGE_SEVERITY_KEY,
-    SNACKBAR_MESSAGE_VALUE_KEY
-} from "../../../components/ShopSnackBar";
 import type {IResponseType} from "../../../../types/IResponseType";
-import {SnackBarContext} from "../../../snackBarContext";
+import {ApplicationContext, verifyAuthorization} from "../../../applicationContext";
 
 class AbstractAdminTable<T extends IAdminContent>
     extends React.Component<IAbstractAdminProps<T>, IAbstractAdminState<T>> {
 
-    static contextType = SnackBarContext;
+    static contextType = ApplicationContext;
     // @ts-ignore
-    context!: React.ContextType<typeof SnackBarContext>
+    context!: React.ContextType<typeof ApplicationContext>
 
     constructor(props: IAbstractAdminProps<T>) {
         super(props);
         this.state = {
             isLoading: true,
+            accountRoles: [],
             statuses: [],
             rows: []
         };
     };
 
     async componentDidMount() {
+        await verifyAuthorization(this.context);
+        await this.loadData();
+        let accountRoles = await getAccountRoles();
+        let statuses = await getStatuses();
+        this.setState({
+            ...this.state,
+            statuses: statuses.data,
+            accountRoles: accountRoles.data
+        });
+    };
+
+    async loadData() {
         const {
             getDataCallback,
             idExtractor,
             keyExtractor,
         } = this.props;
-
-        let dataResponse = await getDataCallback();
-        let statuses = await getStatuses();
-        let rows: IAdminTableRow<T>[] = dataResponse.data.map(r => {
+        this.setState({...this.state, isLoading: true});
+        let dataResponse = await getDataCallback(this.context)
+            .catch((r) => {
+                this.context.setSnackBarValues?.({message: new Date() + " " + r.response.data, color: "error"});
+            });
+        let rows: IAdminTableRow<T>[] | undefined = dataResponse?.data.map(r => {
             let id = idExtractor(r);
             return {
                 number: id !== undefined ? id : -1,
@@ -66,10 +76,9 @@ class AbstractAdminTable<T extends IAdminContent>
         this.setState({
             ...this.state,
             isLoading: false,
-            statuses: statuses.data,
-            rows: rows
+            rows: rows || []
         });
-    };
+    }
 
     createPlusRow = () => {
         const {columns, newEntityCreator, keyExtractor} = this.props;
@@ -133,7 +142,7 @@ class AbstractAdminTable<T extends IAdminContent>
                         onClick={async () => {
                             const newEntity = await this.saveEntity(data)
                                 .catch((r) => {
-                                    this.context.setValues?.({message: r.response.data, color: "warning"})
+                                    this.context.setSnackBarValues?.({message: r.response.data, color: "warning"})
                                 });
                             if (!newEntity || !newEntity.data) {
                                 return;
@@ -146,7 +155,7 @@ class AbstractAdminTable<T extends IAdminContent>
                                 content: newEntity.data
                             });
                             this.setState({...this.state, rows: newRows});
-                            this.context.setValues?.({message: "success", color: "success"})
+                            this.context.setSnackBarValues?.({message: "success", color: "success"})
                         }}
                     >
                         <img src={floppyIcon} height={16} width={16} alt='save'/>
@@ -165,7 +174,13 @@ class AbstractAdminTable<T extends IAdminContent>
                                 return;
                             }
                             if (newEntity.status === 499) {
-                                sessionStorage.setItem(SNACKBAR_MESSAGE_VALUE_KEY, JSON.stringify(newEntity.data));
+                                this.context.setSnackBarValues?.({
+                                    message: JSON.stringify(newEntity.data),
+                                    color: "error"
+                                });
+                            }
+                            if (typeof newEntity.data === "string") {
+                                return
                             }
                             const newRows = rows.filter(r => r.content !== data);
                             newRows.push({
@@ -174,7 +189,6 @@ class AbstractAdminTable<T extends IAdminContent>
                                 content: newEntity.data
                             });
                             this.setState({...this.state, rows: newRows});
-                            window.dispatchEvent(new Event(SNACKBAR_EVENT_KEY));
                         }}
                     >
                         <img src={refreshIcon} height={16} width={16} alt='refresh'/>
@@ -200,32 +214,31 @@ class AbstractAdminTable<T extends IAdminContent>
     async saveEntity(entity: T): Promise<IResponseType<T>> {
         const {createCallback, updateCallback} = this.props;
         if (entity.id === undefined) {
-            return await createCallback(entity);
+            return await createCallback(this.context, entity);
         } else {
-            return await updateCallback(entity);
+            return await updateCallback(this.context, entity);
         }
     }
 
     async removeEntity(entity: T) {
         const {deleteCallback} = this.props;
         if (entity !== undefined) {
-            await deleteCallback(entity);
+            await deleteCallback(this.context, entity);
         }
         this.setState({...this.state, rows: this.state.rows.filter(r => r.content !== entity)});
     }
 
-    async refreshEntity(entity: T): Promise<IResponseType<T> | undefined> {
+    async refreshEntity(entity: T): Promise<IResponseType<T | string> | undefined> {
         const {refreshCallback} = this.props;
         if (entity && refreshCallback) {
-            return await refreshCallback(entity);
+            return await refreshCallback(this.context, entity);
         }
         return undefined;
     }
 
-
     render() {
         const {keyExtractor, headerRowBuilder, bodyCellCreator, columns} = this.props;
-        const {isLoading} = this.state;
+        const {isLoading, accountRoles} = this.state;
         return (
             isLoading === undefined || isLoading ?
                 <CircularProgress/> :
@@ -244,7 +257,8 @@ class AbstractAdminTable<T extends IAdminContent>
                                                     value,
                                                     r.content,
                                                     this.renderStatusSelectorCell,
-                                                    this.renderActionsSelectorCell
+                                                    this.renderActionsSelectorCell,
+                                                    accountRoles
                                                 )
                                                 : <TableCell/>
                                             )
@@ -260,6 +274,6 @@ class AbstractAdminTable<T extends IAdminContent>
 
 }
 
-AbstractAdminTable.contextType = SnackBarContext;
+AbstractAdminTable.contextType = ApplicationContext;
 
 export default AbstractAdminTable;

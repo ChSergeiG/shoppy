@@ -159,7 +159,7 @@ public class GoodController {
     )
     @DeleteMapping("{article}")
     public ResponseEntity<Integer> deleteGood(
-            @PathVariable Integer article
+            @PathVariable String article
     ) {
         try {
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(goodsService.deleteGood(article));
