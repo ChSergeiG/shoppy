@@ -27,9 +27,10 @@ class ButtonBar extends Component<ButtonBarProps, {}> {
                     adminButton: true,
                     element: (
                         <Button
-                            color='warning'
+                            color="warning"
                             onClick={() => {
                                 this.context.setAuthorized?.(false);
+                                this.context.setToken?.("");
                                 localStorage.setItem(LOCAL_STORAGE_JWT_KEY, "");
                             }}
                         >

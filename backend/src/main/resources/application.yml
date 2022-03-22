@@ -41,6 +41,7 @@ shoppy:
     jwt:
       authorization-header: 'X-Authorization'
       # should be stored safely as can be used to decrypt jwt tokens
+      # here is only an example
       secret: 'lecD0V5LD8iGBqZ98RrYKs9YVRCxFo5UZV7u6QJNemSpv9SPZB5lqswhEkranZCi'
       expiration-in-seconds: 86400
     user:

@@ -9,6 +9,10 @@ export type IApplicationContext = {
     authorized: boolean;
     setAuthorized?: (authorized: boolean) => void;
 
+    // admin filtering
+    adminFilter?: string;
+    setAdminFilter?: (filter: string) => void;
+
     // snackbar
     message: string;
     color: AlertColor;

@@ -12,11 +12,12 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row2;
+import org.jooq.Row3;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
+import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
 import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
@@ -56,6 +57,11 @@ public class OrdersGoods extends TableImpl<OrdersGoodsRecord> {
      * The column <code>public.orders_goods.good_id</code>.
      */
     public final TableField<OrdersGoodsRecord, Integer> GOOD_ID = createField(DSL.name("good_id"), SQLDataType.INTEGER.nullable(false).identity(true), this, "");
+
+    /**
+     * The column <code>public.orders_goods.count</code>.
+     */
+    public final TableField<OrdersGoodsRecord, Long> COUNT = createField(DSL.name("count"), SQLDataType.BIGINT.nullable(false).defaultValue(DSL.field("0", SQLDataType.BIGINT)), this, "");
 
     private OrdersGoods(Name alias, Table<OrdersGoodsRecord> aliased) {
         this(alias, aliased, null);
@@ -98,6 +104,11 @@ public class OrdersGoods extends TableImpl<OrdersGoodsRecord> {
     @Override
     public Identity<OrdersGoodsRecord, Integer> getIdentity() {
         return (Identity<OrdersGoodsRecord, Integer>) super.getIdentity();
+    }
+
+    @Override
+    public UniqueKey<OrdersGoodsRecord> getPrimaryKey() {
+        return Keys.ORDER_ID_GOOD_ID_PK;
     }
 
     @Override
@@ -155,11 +166,11 @@ public class OrdersGoods extends TableImpl<OrdersGoodsRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row2 type methods
+    // Row3 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row2<Integer, Integer> fieldsRow() {
-        return (Row2) super.fieldsRow();
+    public Row3<Integer, Integer, Long> fieldsRow() {
+        return (Row3) super.fieldsRow();
     }
 }

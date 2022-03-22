@@ -14,10 +14,12 @@ import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
+import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
 import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
+import ru.chsergeig.shoppy.jooq.Keys;
 import ru.chsergeig.shoppy.jooq.Public;
 import ru.chsergeig.shoppy.jooq.enums.AccountRole;
 import ru.chsergeig.shoppy.jooq.tables.records.AccountsRolesRecord;
@@ -95,6 +97,11 @@ public class AccountsRoles extends TableImpl<AccountsRolesRecord> {
     @Override
     public Identity<AccountsRolesRecord, Integer> getIdentity() {
         return (Identity<AccountsRolesRecord, Integer>) super.getIdentity();
+    }
+
+    @Override
+    public UniqueKey<AccountsRolesRecord> getPrimaryKey() {
+        return Keys.ACCOUNT_ID_ROLE_PK;
     }
 
     @Override

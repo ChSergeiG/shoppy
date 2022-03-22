@@ -9,7 +9,16 @@ class App extends Component {
             <>
                 <ButtonBar
                     items={[
-                        {element: (<Link to="/admin/orders">{"\u26BF"}</Link>), adminButton: true}
+                        {
+                            element: (
+                                <Link
+                                    to="/admin/orders"
+                                    style={{textDecoration: "none"}}
+                                >
+                                    🔑
+                                </Link>
+                            ), adminButton: true
+                        }
                     ]}
                 />
                 <h2>Main Page</h2>

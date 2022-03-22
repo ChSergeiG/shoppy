@@ -22,41 +22,32 @@ export type IAccount = {
     password: string;
     salted: boolean;
     status: IStatus;
-    roles: IAccountRole[];
+    accountRoles: IAccountRole[];
 };
 
 export type IAdminContent = IGood | IOrder | IAccount
-
-/**
- * Represents extended container of entity
- */
-export type IAdminTableRow<T> = {
-    // table row number
-    number: number | undefined;
-    // unique key to identify row
-    key: string;
-    // which object this row accords
-    content: T | undefined;
-}
 
 export type IAbstractAdminState<T extends IAdminContent> = {
     isLoading: boolean;
     statuses: IStatus[];
     accountRoles: IAccountRole[];
-    rows: IAdminTableRow<T>[];
+    rows: T[];
+    filter?: string;
+    sortBy: string;
+    sortDirection?: boolean;
 };
 
 export type IAbstractAdminProps<T extends IAdminContent> = {
     getDataCallback: (context: IApplicationContext) => Promise<IResponseType<T[]>>;
-    idExtractor: (data: T) => number | undefined;
-    keyExtractor: (data: T) => string;
     headerRowBuilder: () => JSX.Element;
     bodyCellCreator: (
         columnNumber: number,
         data: T,
+        idCellCallback: (data: T) => JSX.Element,
         statusSelectorCallback: (data: T) => JSX.Element,
         actionsSelectorCallback: (data: T) => JSX.Element,
-        accountRoles: IAccountRole[]
+        accountRoles: IAccountRole[],
+        stateUpdater: (entity: T, name: string, ...args: any[]) => void
     ) => JSX.Element;
     columns: number;
     newEntityCreator: () => T;
@@ -64,6 +55,7 @@ export type IAbstractAdminProps<T extends IAdminContent> = {
     updateCallback: (context: IApplicationContext, data: T) => Promise<IResponseType<T>>;
     deleteCallback: (context: IApplicationContext, data: T) => Promise<IResponseType<{}>>;
     refreshCallback?: (context: IApplicationContext, data: T) => Promise<IResponseType<T> | undefined>;
+    filterCallback?: (data: T, filter?: string) => boolean;
 };
 
 export type IJwtRequest = {

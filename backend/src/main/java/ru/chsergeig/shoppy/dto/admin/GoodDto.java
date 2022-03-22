@@ -8,7 +8,7 @@ public class GoodDto {
 
     public Integer id;
     public String name;
-    public Integer article;
+    public String article;
     public Status status;
 
 }

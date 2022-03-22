@@ -39,12 +39,13 @@ export const ApplicationContextProvider: React.FC<React.PropsWithChildren<{}>> =
 
     const [token, setToken] = React.useState<string>("");
     const [authorized, setAuthorized] = React.useState<boolean>(false);
+    const [adminFilter, setAdminFilter] =  React.useState<string>("");
 
     const [message, setMessage] = React.useState<string>("");
     const [color, setColor] = React.useState<AlertColor>("success");
 
     const setValues: IApplicationContext["setSnackBarValues"] = ({message, color}) => {
-        setMessage(message);
+        setMessage(`[${crypto.randomUUID()}] ${message}`);
         setColor(color);
     };
 
@@ -52,10 +53,9 @@ export const ApplicationContextProvider: React.FC<React.PropsWithChildren<{}>> =
         <ApplicationContext.Provider
             children={props.children}
             value={{
-                token, setToken: (value) => {
-                    setToken(value);
-                },
+                token, setToken,
                 authorized, setAuthorized,
+                adminFilter, setAdminFilter,
                 message, color, setSnackBarValues: setValues
             }}
         />

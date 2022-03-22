@@ -4,6 +4,7 @@ import {Link} from "react-router-dom";
 import AuthorizationOverlay from "./components/AuthorizationOverlay";
 import {Button} from "@mui/material";
 import {ApplicationContext} from "../../applicationContext";
+import SearchField from "./components/SearchField";
 
 type AdminPageProps = {
     component: JSX.Element;
@@ -35,6 +36,7 @@ export class AdminPage extends Component<AdminPageProps, AdminPageState> {
                         {element: (<Button><Link to="/admin/orders">Orders</Link></Button>), adminButton: true}
                     ]}
                 />
+                <SearchField/>
                 {this.props.component}
             </>)
             : (<AuthorizationOverlay/>);

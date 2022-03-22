@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.chsergeig.shoppy.dao.AccountRepository;
+import ru.chsergeig.shoppy.dao.AccountRoleRepository;
 import ru.chsergeig.shoppy.jooq.enums.AccountRole;
 import ru.chsergeig.shoppy.jooq.tables.pojos.Accounts;
 import ru.chsergeig.shoppy.model.JwtUserDetails;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final AccountRepository accountRepository;
+    private final AccountRoleRepository accountRoleRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -29,7 +31,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         if (accounts == null || accounts.isEmpty()) {
             throw new UserPrincipalNotFoundException(username);
         }
-        List<AccountRole> roles = accountRepository.fetchRolesByLogin(username);
+        List<AccountRole> roles = accountRoleRepository.fetchRolesByLogin(username);
         return new JwtUserDetails(
                 accounts.get(0).getId().longValue(),
                 accounts.get(0).getLogin(),

@@ -17,20 +17,24 @@ public class OrdersGoods implements Serializable {
 
     private Integer orderId;
     private Integer goodId;
+    private Long    count;
 
     public OrdersGoods() {}
 
     public OrdersGoods(OrdersGoods value) {
         this.orderId = value.orderId;
         this.goodId = value.goodId;
+        this.count = value.count;
     }
 
     public OrdersGoods(
         Integer orderId,
-        Integer goodId
+        Integer goodId,
+        Long    count
     ) {
         this.orderId = orderId;
         this.goodId = goodId;
+        this.count = count;
     }
 
     /**
@@ -63,12 +67,28 @@ public class OrdersGoods implements Serializable {
         return this;
     }
 
+    /**
+     * Getter for <code>public.orders_goods.count</code>.
+     */
+    public Long getCount() {
+        return this.count;
+    }
+
+    /**
+     * Setter for <code>public.orders_goods.count</code>.
+     */
+    public OrdersGoods setCount(Long count) {
+        this.count = count;
+        return this;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("OrdersGoods (");
 
         sb.append(orderId);
         sb.append(", ").append(goodId);
+        sb.append(", ").append(count);
 
         sb.append(")");
         return sb.toString();

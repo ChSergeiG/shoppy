@@ -24,13 +24,15 @@ class GoodsTable extends React.Component {
     createBodyCell = (
         columnNumber: number,
         good: IGood,
-        statusSelectorCallback: (good: IGood) => JSX.Element,
-        actionsSelectorCallback: (good: IGood) => JSX.Element,
-        accountRoles: IAccountRole[]
+        idCellCallback: (_: IGood) => JSX.Element,
+        statusSelectorCallback: (_: IGood) => JSX.Element,
+        actionsSelectorCallback: (_: IGood) => JSX.Element,
+        accountRoles: IAccountRole[],
+        stateUpdater: (_: IGood, name: string, ...args: any[]) => void
     ): JSX.Element => {
         switch (columnNumber) {
             case 0: {
-                return (<TableCell key="id">{good.id}</TableCell>)
+                return idCellCallback(good);
             }
             case 1: {
                 return (
@@ -38,7 +40,9 @@ class GoodsTable extends React.Component {
                         <Input
                             fullWidth={true}
                             defaultValue={good.name}
-                            onChange={(e) => {}}
+                            onChange={(e) => {
+                                stateUpdater(good, "name", e);
+                            }}
                         />
                     </TableCell>
                 );
@@ -49,7 +53,9 @@ class GoodsTable extends React.Component {
                         <Input
                             fullWidth={true}
                             defaultValue={good.article}
-                            onChange={(e) =>{}}
+                            onChange={(e) => {
+                                stateUpdater(good, "article", e);
+                            }}
                         />
                     </TableCell>
                 );
@@ -70,8 +76,6 @@ class GoodsTable extends React.Component {
         return (
             <AbstractAdminTable
                 getDataCallback={getGoods}
-                idExtractor={(r) => (r.id !== undefined ? r.id : -1)}
-                keyExtractor={(r) => (r.id + ' ' + r.article)}
                 headerRowBuilder={this.createHeaderRow}
                 bodyCellCreator={this.createBodyCell}
                 columns={5}

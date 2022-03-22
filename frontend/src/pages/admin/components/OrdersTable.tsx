@@ -23,13 +23,15 @@ class OrdersTable extends React.Component {
     createBodyCell = (
         columnNumber: number,
         order: IOrder,
+        idCellCallback: (_: IOrder) => JSX.Element,
         statusSelectorCallback: (order: IOrder) => JSX.Element,
         actionsSelectorCallback: (order: IOrder) => JSX.Element,
-        accountRoles: IAccountRole[]
+        accountRoles: IAccountRole[],
+        stateUpdater: (entity: IOrder, name: string, ...args: any[]) => void
     ): JSX.Element => {
         switch (columnNumber) {
             case 0: {
-                return (<TableCell key="id">{order.id}</TableCell>)
+                return idCellCallback(order);
             }
             case 1: {
                 return (
@@ -37,7 +39,9 @@ class OrdersTable extends React.Component {
                         <Input
                             fullWidth={true}
                             defaultValue={order.info}
-                            onChange={(e) => {}}
+                            onChange={(e) => {
+                                stateUpdater(order, "info", e);
+                            }}
                         />
                     </TableCell>
                 );
@@ -58,8 +62,6 @@ class OrdersTable extends React.Component {
         return (
             <AbstractAdminTable
                 getDataCallback={getOrders}
-                idExtractor={(r) => (r.id !== undefined ? r.id : -1)}
-                keyExtractor={(r) => (r.id + r.info)}
                 headerRowBuilder={this.createHeaderRow}
                 bodyCellCreator={this.createBodyCell}
                 columns={5}

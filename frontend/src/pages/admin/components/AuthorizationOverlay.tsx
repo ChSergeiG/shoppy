@@ -1,7 +1,8 @@
 import React, {useContext, useEffect, useState} from "react";
-import {Button, Dialog, DialogContent, DialogTitle, TextField} from "@mui/material";
+import {Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField} from "@mui/material";
 import {postLogin} from "../../../utils/API";
 import {ApplicationContext, verifyAuthorization} from "../../../applicationContext";
+import {Link} from "react-router-dom";
 
 type AuthorizationOverlayState = {
     login: string;
@@ -29,6 +30,7 @@ const AuthorizationOverlay: React.FC = () => {
     }
 
     const handleSubmit = async (e: any) => {
+        e.preventDefault();
         const tokenResponse = await postLogin({...state})
             .catch((r) => {
                 context.setAuthorized?.(false);
@@ -37,7 +39,6 @@ const AuthorizationOverlay: React.FC = () => {
         if (tokenResponse !== undefined) {
             context.setToken?.(tokenResponse.data.token);
         }
-        e.preventDefault();
     }
 
     return (
@@ -46,39 +47,58 @@ const AuthorizationOverlay: React.FC = () => {
             aria-labelledby="login-dialog"
             open={!context.authorized}
         >
-            <DialogTitle
-                id="login-dialog-title"
+            <form
+                onSubmit={handleSubmit}
+                autoComplete="off"
             >
-                Enter login info
-            </DialogTitle>
-            <DialogContent>
-                <TextField
-                    label="Login"
-                    name="login"
-                    onChange={handleChange}
-                    value={state.login}
-                    variant="outlined"
-                    fullWidth
-                />
-                <TextField
-                    label="Password"
-                    name="password"
-                    type={"password"}
-                    onChange={handleChange}
-                    value={state.password}
-                    variant="outlined"
-                    fullWidth
-                />
-                <Button
-                    color="primary"
-                    type="submit"
-                    variant="contained"
-                    disabled={!state.login || !state.password}
-                    onClick={handleSubmit}
+                <DialogTitle
+                    id="login-dialog-title"
                 >
-                    Login
-                </Button>
-            </DialogContent>
+                    Enter login info
+                </DialogTitle>
+                <DialogContent>
+                    <TextField
+                        label="Login"
+                        name="login"
+                        onChange={handleChange}
+                        value={state.login}
+                        variant="outlined"
+                        fullWidth
+                    />
+                    <TextField
+                        label="Password"
+                        name="password"
+                        type={"password"}
+                        onChange={handleChange}
+                        value={state.password}
+                        variant="outlined"
+                        fullWidth
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button
+                        color="secondary"
+                        type="button"
+                        variant="outlined"
+                    >
+                        <Link
+                            to="/"
+                            style={{textDecoration: "none"}}
+                        >
+                            Cancel
+                        </Link>
+                    </Button>
+                    <Button
+                        color="primary"
+                        type="submit"
+                        variant="contained"
+                        disabled={!state.login || !state.password}
+                        onClick={handleSubmit}
+                    >
+                        Login
+                    </Button>
+                </DialogActions>
+            </form>
         </Dialog>
     );
 };

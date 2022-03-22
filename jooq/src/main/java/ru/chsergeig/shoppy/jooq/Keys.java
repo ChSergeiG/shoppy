@@ -12,11 +12,13 @@ import org.jooq.impl.Internal;
 
 import ru.chsergeig.shoppy.jooq.tables.Accounts;
 import ru.chsergeig.shoppy.jooq.tables.AccountsOrders;
+import ru.chsergeig.shoppy.jooq.tables.AccountsRoles;
 import ru.chsergeig.shoppy.jooq.tables.Goods;
 import ru.chsergeig.shoppy.jooq.tables.Orders;
 import ru.chsergeig.shoppy.jooq.tables.OrdersGoods;
 import ru.chsergeig.shoppy.jooq.tables.records.AccountsOrdersRecord;
 import ru.chsergeig.shoppy.jooq.tables.records.AccountsRecord;
+import ru.chsergeig.shoppy.jooq.tables.records.AccountsRolesRecord;
 import ru.chsergeig.shoppy.jooq.tables.records.GoodsRecord;
 import ru.chsergeig.shoppy.jooq.tables.records.OrdersGoodsRecord;
 import ru.chsergeig.shoppy.jooq.tables.records.OrdersRecord;
@@ -34,8 +36,11 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     public static final UniqueKey<AccountsRecord> ACCOUNT_PK = Internal.createUniqueKey(Accounts.ACCOUNTS, DSL.name("account_pk"), new TableField[] { Accounts.ACCOUNTS.ID }, true);
+    public static final UniqueKey<AccountsOrdersRecord> ACCOUNT_ID_ORDER_ID_PK = Internal.createUniqueKey(AccountsOrders.ACCOUNTS_ORDERS, DSL.name("account_id_order_id_pk"), new TableField[] { AccountsOrders.ACCOUNTS_ORDERS.ACCOUNT_ID, AccountsOrders.ACCOUNTS_ORDERS.ORDER_ID }, true);
+    public static final UniqueKey<AccountsRolesRecord> ACCOUNT_ID_ROLE_PK = Internal.createUniqueKey(AccountsRoles.ACCOUNTS_ROLES, DSL.name("account_id_role_pk"), new TableField[] { AccountsRoles.ACCOUNTS_ROLES.ACCOUNT_ID, AccountsRoles.ACCOUNTS_ROLES.ROLE }, true);
     public static final UniqueKey<GoodsRecord> GOOD_PK = Internal.createUniqueKey(Goods.GOODS, DSL.name("good_pk"), new TableField[] { Goods.GOODS.ID }, true);
     public static final UniqueKey<OrdersRecord> ORDER_PK = Internal.createUniqueKey(Orders.ORDERS, DSL.name("order_pk"), new TableField[] { Orders.ORDERS.ID }, true);
+    public static final UniqueKey<OrdersGoodsRecord> ORDER_ID_GOOD_ID_PK = Internal.createUniqueKey(OrdersGoods.ORDERS_GOODS, DSL.name("order_id_good_id_pk"), new TableField[] { OrdersGoods.ORDERS_GOODS.ORDER_ID, OrdersGoods.ORDERS_GOODS.GOOD_ID }, true);
 
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions

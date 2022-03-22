@@ -1,8 +1,7 @@
-import React from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {
     Button,
     ButtonGroup,
-    CircularProgress,
     MenuItem,
     Select,
     SelectChangeEvent,
@@ -12,18 +11,13 @@ import {
     TableRow
 } from "@mui/material";
 import {getAccountRoles, getStatuses} from "../../../utils/API";
-import type {IStatus} from "../../../../types/IStatus";
-import type {
-    IAbstractAdminProps,
-    IAbstractAdminState,
-    IAdminContent,
-    IAdminTableRow
-} from "../../../../types/AdminTypes";
+import type {IAbstractAdminProps, IAbstractAdminState, IAdminContent} from "../../../../types/AdminTypes";
 import floppyIcon from "../../../img/floppy.svg";
 import refreshIcon from "../../../img/refresh.svg";
 import binIcon from "../../../img/bin.svg";
 import type {IResponseType} from "../../../../types/IResponseType";
 import {ApplicationContext, verifyAuthorization} from "../../../applicationContext";
+import Spinner from "./Spinner";
 
 class AbstractAdminTable<T extends IAdminContent>
     extends React.Component<IAbstractAdminProps<T>, IAbstractAdminState<T>> {
@@ -38,9 +32,11 @@ class AbstractAdminTable<T extends IAdminContent>
             isLoading: true,
             accountRoles: [],
             statuses: [],
-            rows: []
+            rows: [],
+            sortBy: "",
         };
     };
+
 
     async componentDidMount() {
         await verifyAuthorization(this.context);
@@ -55,24 +51,13 @@ class AbstractAdminTable<T extends IAdminContent>
     };
 
     async loadData() {
-        const {
-            getDataCallback,
-            idExtractor,
-            keyExtractor,
-        } = this.props;
+        const {getDataCallback,} = this.props;
         this.setState({...this.state, isLoading: true});
         let dataResponse = await getDataCallback(this.context)
             .catch((r) => {
                 this.context.setSnackBarValues?.({message: new Date() + " " + r.response.data, color: "error"});
             });
-        let rows: IAdminTableRow<T>[] | undefined = dataResponse?.data.map(r => {
-            let id = idExtractor(r);
-            return {
-                number: id !== undefined ? id : -1,
-                key: keyExtractor(r),
-                content: r
-            }
-        });
+        let rows: T[] | undefined = dataResponse?.data;
         this.setState({
             ...this.state,
             isLoading: false,
@@ -81,7 +66,7 @@ class AbstractAdminTable<T extends IAdminContent>
     }
 
     createPlusRow = () => {
-        const {columns, newEntityCreator, keyExtractor} = this.props;
+        const {columns, newEntityCreator} = this.props;
         return (
             <TableRow key="new">
                 <TableCell colSpan={columns} align={"center"}>
@@ -90,15 +75,9 @@ class AbstractAdminTable<T extends IAdminContent>
                             const newEntity = newEntityCreator();
                             this.setState({
                                 ...this.state,
-                                rows: [
-                                    ...this.state.rows,
-                                    {
-                                        number: 0xffff,
-                                        key: keyExtractor(newEntity),
-                                        content: newEntity
-                                    }
-                                ]
+                                rows: [...this.state.rows, newEntity]
                             });
+                            console.log(this.state)
                         }}
                     >
                         +
@@ -106,6 +85,86 @@ class AbstractAdminTable<T extends IAdminContent>
                 </TableCell>
             </TableRow>
         );
+    };
+
+    renderSaveButton = (data: T) => {
+        const {rows} = this.state;
+        return (
+            <Button
+                onClick={async () => {
+                    const newEntity = await this.saveEntity(data)
+                        .catch((r) => {
+                            this.context.setSnackBarValues?.({message: r.response.data, color: "warning"})
+                        });
+                    if (!newEntity || !newEntity.data) {
+                        return;
+                    }
+
+                    const newRows = rows.filter(r => r !== data);
+                    newRows.push(newEntity.data);
+                    this.setState({...this.state, rows: newRows});
+                    this.context.setSnackBarValues?.({message: "success", color: "success"})
+                }}
+            >
+                <img src={floppyIcon} height={16} width={16} alt='save'/>
+            </Button>
+        );
+    };
+
+    renderRemoveButton = (data: T) => {
+        return (
+            <Button
+                onClick={async () => {
+                    await this.removeEntity(data)
+                        .catch((r) => {
+                            this.context.setSnackBarValues?.({
+                                message: "Cant remove entity: " + r.response.data,
+                                color: "warning"
+                            })
+                        });
+                }}
+            >
+                <img src={binIcon} height={16} width={16} alt='remove'/>
+            </Button>
+        );
+    };
+
+    renderRefreshButton = (data: T) => {
+        const {rows} = this.state;
+        return (
+            <Button
+                onClick={async () => {
+                    const newEntity = await this.refreshEntity(data)
+                        .catch((r) => {
+                            this.context.setSnackBarValues?.({
+                                message: "Cant refresh entity: " + r.response.data,
+                                color: "warning"
+                            })
+                        });
+                    if (newEntity === undefined) {
+                        return;
+                    }
+                    if (newEntity.status === 499) {
+                        this.context.setSnackBarValues?.({
+                            message: JSON.stringify(newEntity.data),
+                            color: "error"
+                        });
+                    }
+                    if (typeof newEntity.data === "string") {
+                        return
+                    }
+                    const newRows = rows.filter(r => r !== data);
+                    newRows.push(newEntity.data);
+                    this.setState({...this.state, rows: newRows});
+                }}
+            >
+                <img src={refreshIcon} height={16} width={16} alt='refresh'/>
+            </Button>
+        );
+    };
+
+    renderIdCell = (data: T) => {
+        return (<TableCell key={data.id}>{data.id}</TableCell>);
     };
 
     renderStatusSelectorCell = (data: T) => {
@@ -133,83 +192,20 @@ class AbstractAdminTable<T extends IAdminContent>
     };
 
     renderActionsSelectorCell = (data: T) => {
-        const {idExtractor, keyExtractor} = this.props;
-        const {rows} = this.state;
         return (
             <TableCell align={"center"} key="action-buttons">
                 <ButtonGroup>
-                    <Button
-                        onClick={async () => {
-                            const newEntity = await this.saveEntity(data)
-                                .catch((r) => {
-                                    this.context.setSnackBarValues?.({message: r.response.data, color: "warning"})
-                                });
-                            if (!newEntity || !newEntity.data) {
-                                return;
-                            }
-
-                            const newRows = rows.filter(r => r.content !== data);
-                            newRows.push({
-                                number: idExtractor(newEntity.data),
-                                key: keyExtractor(newEntity.data),
-                                content: newEntity.data
-                            });
-                            this.setState({...this.state, rows: newRows});
-                            this.context.setSnackBarValues?.({message: "success", color: "success"})
-                        }}
-                    >
-                        <img src={floppyIcon} height={16} width={16} alt='save'/>
-                    </Button>
-                    <Button
-                        onClick={async () => {
-                            await this.removeEntity(data);
-                        }}
-                    >
-                        <img src={binIcon} height={16} width={16} alt='remove'/>
-                    </Button>
-                    <Button
-                        onClick={async () => {
-                            const newEntity = await this.refreshEntity(data);
-                            if (newEntity === undefined) {
-                                return;
-                            }
-                            if (newEntity.status === 499) {
-                                this.context.setSnackBarValues?.({
-                                    message: JSON.stringify(newEntity.data),
-                                    color: "error"
-                                });
-                            }
-                            if (typeof newEntity.data === "string") {
-                                return
-                            }
-                            const newRows = rows.filter(r => r.content !== data);
-                            newRows.push({
-                                number: idExtractor(newEntity.data),
-                                key: keyExtractor(newEntity.data),
-                                content: newEntity.data
-                            });
-                            this.setState({...this.state, rows: newRows});
-                        }}
-                    >
-                        <img src={refreshIcon} height={16} width={16} alt='refresh'/>
-                    </Button>
+                    {this.renderSaveButton(data)}
+                    {this.renderRemoveButton(data)}
+                    {this.renderRefreshButton(data)}
                 </ButtonGroup>
             </TableCell>
         );
     };
 
     handleSelectorChange = (e: SelectChangeEvent, row: T) => {
-        const selectedStatus = (e.target.value as IStatus);
-        this.setState((prevState) => {
-            let updatedRows = prevState.rows.map((r) => {
-                if (r.content === row) {
-                    r.content.status = selectedStatus;
-                }
-                return r;
-            });
-            return {...prevState, rows: updatedRows.filter(r => r.content && r.content.status !== "REMOVED")};
-        });
-    }
+        this.stateUpdater(row, "status", e);
+    };
 
     async saveEntity(entity: T): Promise<IResponseType<T>> {
         const {createCallback, updateCallback} = this.props;
@@ -225,7 +221,7 @@ class AbstractAdminTable<T extends IAdminContent>
         if (entity !== undefined) {
             await deleteCallback(this.context, entity);
         }
-        this.setState({...this.state, rows: this.state.rows.filter(r => r.content !== entity)});
+        this.setState({...this.state, rows: this.state.rows.filter(r => r !== entity)});
     }
 
     async refreshEntity(entity: T): Promise<IResponseType<T | string> | undefined> {
@@ -236,29 +232,50 @@ class AbstractAdminTable<T extends IAdminContent>
         return undefined;
     }
 
-    render() {
-        const {keyExtractor, headerRowBuilder, bodyCellCreator, columns} = this.props;
-        const {isLoading, accountRoles} = this.state;
+    stateUpdater = (entity: T, name: string, ...args: any[]) => {
+        this.setState((prevState) => {
+            const newState = {...prevState, rows: prevState.rows.filter(r => r !== entity)};
+            const newRow = prevState.rows.filter(r => r === entity)?.[0];
+            if (newRow) {
+                if (args?.length === 1) {
+                    // @ts-ignore
+                    newRow[name] = args?.[0].target.value;
+                } else if (args?.length === 2) {
+                    // @ts-ignore
+                    newRow[name] = args?.[1]
+                }
+            }
+            newState.rows.push(newRow);
+            return newState;
+        });
+    };
+
+    render()  {
+        const {filterCallback, headerRowBuilder, bodyCellCreator, columns} = this.props;
+        const {isLoading, accountRoles, filter} = this.state;
         return (
             isLoading === undefined || isLoading ?
-                <CircularProgress/> :
+                <Spinner/> :
                 <Table>
                     {headerRowBuilder()}
                     <TableBody>
                         {
                             this.state.rows
-                                .sort((l, r) =>
-                                    (l.number !== undefined ? l.number : 0) - (r.number !== undefined ? r.number : 0))
-                                .map(r => r.content &&
-                                    <TableRow key={keyExtractor(r.content)}>
+                                .filter(r => !!r)
+                                .filter((r) => filterCallback?.(r, filter))
+                                .sort((r1, r2) => (r1 && r1.id ? r1.id : 0xffff) - (r2 && r2.id ? r2.id : 0xffff))
+                                .map(r =>
+                                    <TableRow>
                                         {
-                                            [...Array(columns).keys()].map((value) => !!r.content
+                                            [...Array(columns).keys()].map((value) => !!r
                                                 ? bodyCellCreator(
                                                     value,
-                                                    r.content,
+                                                    r,
+                                                    this.renderIdCell,
                                                     this.renderStatusSelectorCell,
                                                     this.renderActionsSelectorCell,
-                                                    accountRoles
+                                                    accountRoles,
+                                                    this.stateUpdater
                                                 )
                                                 : <TableCell/>
                                             )
@@ -271,9 +288,6 @@ class AbstractAdminTable<T extends IAdminContent>
                 </Table>
         );
     }
-
 }
-
-AbstractAdminTable.contextType = ApplicationContext;
 
 export default AbstractAdminTable;

@@ -17,12 +17,38 @@ class AccountsTable extends React.Component {
         return (
             <TableHead>
                 <TableRow>
-                    <TableCell width={50}>ID</TableCell>
-                    <TableCell>Login</TableCell>
-                    <TableCell>Password</TableCell>
-                    <TableCell>Group</TableCell>
-                    <TableCell>Status</TableCell>
-                    <TableCell width={200} align={"center"}>Actions</TableCell>
+                    <TableCell
+                        width="7%"
+                        align="center"
+                    >
+                        ID
+                    </TableCell>
+                    <TableCell
+                        width="15%"
+                    >
+                        Login
+                    </TableCell>
+                    <TableCell
+                        width="15%"
+                    >
+                        Password
+                    </TableCell>
+                    <TableCell
+                        width="23%"
+                    >
+                        Group
+                    </TableCell>
+                    <TableCell
+                        width="7%"
+                    >
+                        Status
+                    </TableCell>
+                    <TableCell
+                        width="15%"
+                        align="center"
+                    >
+                        Actions
+                    </TableCell>
                 </TableRow>
             </TableHead>
         );
@@ -31,13 +57,15 @@ class AccountsTable extends React.Component {
     createBodyCell = (
         columnNumber: number,
         account: IAccount,
-        statusSelectorCallback: (account: IAccount) => JSX.Element,
-        actionsSelectorCallback: (account: IAccount) => JSX.Element,
-        accountRoles: IAccountRole[]
+        idCellCallback: (_: IAccount) => JSX.Element,
+        statusSelectorCallback: (_: IAccount) => JSX.Element,
+        actionsSelectorCallback: (_: IAccount) => JSX.Element,
+        accountRoles: IAccountRole[],
+        stateUpdater: (_: IAccount, name: string, ...args: any[]) => void
     ): JSX.Element => {
         switch (columnNumber) {
             case 0: {
-                return (<TableCell key="id">{account.id}</TableCell>)
+                return idCellCallback(account);
             }
             case 1: {
                 return (
@@ -45,7 +73,9 @@ class AccountsTable extends React.Component {
                         <Input
                             fullWidth={true}
                             defaultValue={account.login}
-                            onChange={(e) => {}}
+                            onChange={(e) => {
+                                stateUpdater(account, "login", e);
+                            }}
                         />
                     </TableCell>
                 );
@@ -57,7 +87,9 @@ class AccountsTable extends React.Component {
                             fullWidth={true}
                             defaultValue={account.password}
                             type={'password'}
-                            onChange={(e) => {}}
+                            onChange={(e) => {
+                                stateUpdater(account, "password", e);
+                            }}
                         />
                     </TableCell>
                 );
@@ -67,11 +99,10 @@ class AccountsTable extends React.Component {
                     <TableCell>
                         <Autocomplete
                             getOptionLabel={(option: IAccountRole) => option.toUpperCase()}
-                            onChange={(e, v) => {
-                            }}
-                            options={accountRoles || []}
+                            onChange={(e, v) => stateUpdater(account, "accountRoles", e, v)}
+                            options={accountRoles}
                             renderInput={(params) => <TextField {...params} variant="outlined" fullWidth/>}
-                            value={account.roles}
+                            value={account.accountRoles || []}
                             fullWidth
                             multiple
                         />
@@ -90,12 +121,17 @@ class AccountsTable extends React.Component {
         }
     }
 
+    filterAccount = (data: IAccount, filter?: string): boolean => {
+        if (!filter || filter.trim() === "") {
+            return true;
+        }
+        return data.login.toLowerCase().includes(filter.toLowerCase());
+    };
+
     render() {
         return (
             <AbstractAdminTable
                 getDataCallback={getAccounts}
-                idExtractor={(r) => (r.id !== undefined ? r.id : -1)}
-                keyExtractor={(r) => r.login}
                 headerRowBuilder={this.createHeaderRow}
                 bodyCellCreator={this.createBodyCell}
                 columns={6}
@@ -106,13 +142,14 @@ class AccountsTable extends React.Component {
                         password: '',
                         salted: false,
                         status: 'ADDED',
-                        roles: []
-                    }
+                        accountRoles: []
+                    };
                 }}
                 createCallback={createNewAccount}
                 updateCallback={updateExistingAccount}
                 deleteCallback={deleteExistingAccount}
                 refreshCallback={(context, data) => getAccount(context, data.login)}
+                filterCallback={this.filterAccount}
             />
         );
     }
