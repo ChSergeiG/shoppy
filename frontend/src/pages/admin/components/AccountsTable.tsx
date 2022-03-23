@@ -6,6 +6,7 @@ import {ApplicationContext} from "../../../applicationContext";
 import Spinner from "./Spinner";
 import {getAccounts} from "../../../utils/API";
 import {
+    checkFilterCondition,
     commonCreateBodyRow,
     commonCreateHeaderRow,
     commonCreatePlusRow,
@@ -25,8 +26,6 @@ const AccountsTable: React.FC<IAdminTableProps<IAccount>> = (props) => {
         sortBy: "",
     });
 
-    setInterval(() => {console.log(state)}, 1000)
-
     const createHeaderRow = () => commonCreateHeaderRow(
         "header-IAccount",
         [
@@ -44,17 +43,12 @@ const AccountsTable: React.FC<IAdminTableProps<IAccount>> = (props) => {
                 fullWidth={true}
                 defaultValue={entity.login}
                 onChange={(e) => {
-                    console.log("+++")
-
-                    const index = state.rows.indexOf(entity);
-                    const newRows = [...state.rows];
-                    newRows[index] = {...state.rows[index], login: e.target.value};
-                    setState({
-                        ...state,
-                        rows: newRows
+                    setState(prevState => {
+                        const index = prevState.rows.indexOf(entity);
+                        const newRows = [...prevState.rows];
+                        newRows[index] = {...prevState.rows[index], login: e.target.value};
+                        return {...prevState, rows: newRows};
                     });
-                    console.log("+++")
-
                 }}
             />
         );
@@ -65,17 +59,14 @@ const AccountsTable: React.FC<IAdminTableProps<IAccount>> = (props) => {
             <Input
                 fullWidth={true}
                 defaultValue={entity.password}
-                // type={'password'}
+                type={'password'}
                 onChange={(e) => {
-                    console.log("+++")
-                    const index = state.rows.indexOf(entity);
-                    const newRows = [...state.rows];
-                    newRows[index] = {...state.rows[index], password: e.target.value};
-                    setState({
-                        ...state,
-                        rows: newRows
+                    setState(prevState => {
+                        const index = prevState.rows.indexOf(entity);
+                        const newRows = [...prevState.rows];
+                        newRows[index] = {...prevState.rows[index], password: e.target.value};
+                        return {...prevState, rows: newRows};
                     });
-                    console.log("+++")
                 }}
             />
         );
@@ -86,6 +77,12 @@ const AccountsTable: React.FC<IAdminTableProps<IAccount>> = (props) => {
             <Autocomplete
                 getOptionLabel={(option: IAccountRole) => option.toUpperCase()}
                 onChange={(e, v) => {
+                    setState(prevState => {
+                        const index = prevState.rows.indexOf(entity);
+                        const newRows = [...prevState.rows];
+                        newRows[index] = {...prevState.rows[index], accountRoles: v};
+                        return {...prevState, rows: newRows};
+                    });
                 }}
                 options={context.accountRoles}
                 renderInput={(params) => <TextField {...params} variant="outlined" fullWidth/>}
@@ -126,7 +123,7 @@ const AccountsTable: React.FC<IAdminTableProps<IAccount>> = (props) => {
     };
 
     const createBodyRow = (entity: IAccount) => commonCreateBodyRow(
-        entity.login,
+        `row-${state.rows.indexOf(entity)}`,
         [
             {columnNumber: 0, key: "id", content: entity.id},
             {columnNumber: 1, key: "login", content: renderLoginInput(entity)},
@@ -152,7 +149,10 @@ const AccountsTable: React.FC<IAdminTableProps<IAccount>> = (props) => {
                         {createHeaderRow()}
                     </TableHead>
                     <TableBody>
-                        {state.rows.map(r => createBodyRow(r))}
+                        {state.rows
+                            .filter(r => checkFilterCondition(context.adminFilter, r.login))
+                            .sort((r1, r2) => (r1.id ? r1.id : 0xffff) - (r2.id ? r2.id : 0xffff))
+                            .map(r => createBodyRow(r))}
                         {
                             commonCreatePlusRow<IAccount>(
                                 props.columns,

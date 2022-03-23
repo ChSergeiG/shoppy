@@ -1,15 +1,17 @@
 import React, {useEffect, useState} from "react";
-import {ButtonGroup, Input, MenuItem, Select, Table, TableBody} from "@mui/material";
+import {Input, MenuItem, Select, Table, TableBody, TableHead} from "@mui/material";
 import type {IAdminTableProps, IAdminTableState, IOrder} from "../../../../types/AdminTypes";
 import {ApplicationContext} from "../../../applicationContext";
 import Spinner from "./Spinner";
 import {
+    checkFilterCondition,
     commonCreateBodyRow,
     commonCreateHeaderRow,
     commonCreatePlusRow,
     commonRenderActionsInput
 } from "../../../utils/admin-tables";
 import {getOrders} from "../../../utils/API";
+import type {IStatus} from "../../../../types/IStatus";
 
 const OrdersTable: React.FC<IAdminTableProps<IOrder>> = (props) => {
 
@@ -58,6 +60,13 @@ const OrdersTable: React.FC<IAdminTableProps<IOrder>> = (props) => {
             <Select
                 value={entity.status}
                 onChange={(e) => {
+                    setState({
+                        ...state,
+                        rows: [
+                            ...state.rows.filter(r => r !== entity),
+                            {...entity, status: (e.target.value) as IStatus}
+                        ]
+                    })
                 }}
                 defaultValue={""}
             >
@@ -86,11 +95,13 @@ const OrdersTable: React.FC<IAdminTableProps<IOrder>> = (props) => {
                 <Spinner/>
             ) : (
                 <Table>
-                    {createHeaderRow()}
+                    <TableHead>
+                        {createHeaderRow()}
+                    </TableHead>
                     <TableBody>
                         {
                             state.rows
-                                // .filter((r) => props.filterCallback?.(r) || r.id === undefined)
+                                .filter(r => checkFilterCondition(context.adminFilter, r.info))
                                 .sort((r1, r2) => (r1 && r1.id ? r1.id : 0xffff) - (r2 && r2.id ? r2.id : 0xffff))
                                 .map(r => createBodyRow(r as IOrder))
                         }

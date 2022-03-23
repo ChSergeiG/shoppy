@@ -90,12 +90,22 @@ export const commonRenderActionsInput = <T extends IAdminContent>(
         <ButtonGroup>
             <Button
                 onClick={async () => {
-                    const newEntity = await props.createCallback(context, entity)
-                        .catch((r) => {
-                            context.setSnackBarValues?.({message: r.response.data, color: "warning"})
-                        });
-                    if (!newEntity || !newEntity.data) {
-                        return;
+                    if (entity.id) {
+                        const newEntity = await props.updateCallback(context, entity)
+                            .catch((r) => {
+                                context.setSnackBarValues?.({message: r.response.data, color: "warning"})
+                            });
+                        if (!newEntity || !newEntity.data) {
+                            return;
+                        }
+                    } else {
+                        const newEntity = await props.createCallback(context, entity)
+                            .catch((r) => {
+                                context.setSnackBarValues?.({message: r.response.data, color: "warning"})
+                            });
+                        if (!newEntity || !newEntity.data) {
+                            return;
+                        }
                     }
                     context.setSnackBarValues?.({message: "success", color: "success"})
                 }}
@@ -141,3 +151,9 @@ export const commonRenderActionsInput = <T extends IAdminContent>(
     );
 };
 
+export const checkFilterCondition = (findFor?: string, ...findIn: (string | undefined)[]): boolean => {
+    if (findFor === undefined || findFor.trim().length === 0) {
+        return true;
+    }
+    return findIn?.some(fi => fi?.toLowerCase().includes(findFor.toLowerCase()));
+};

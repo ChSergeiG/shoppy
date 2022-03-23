@@ -1,15 +1,17 @@
 import React, {useEffect, useState} from "react";
-import {Input, MenuItem, Select, Table, TableBody} from "@mui/material";
+import {Input, MenuItem, Select, Table, TableBody, TableHead} from "@mui/material";
 import type {IAdminTableProps, IAdminTableState, IGood} from "../../../../types/AdminTypes";
 import {ApplicationContext} from "../../../applicationContext";
 import Spinner from "./Spinner";
 import {
+    checkFilterCondition,
     commonCreateBodyRow,
     commonCreateHeaderRow,
     commonCreatePlusRow,
     commonRenderActionsInput
 } from "../../../utils/admin-tables";
 import {getGoods} from "../../../utils/API";
+import type {IStatus} from "../../../../types/IStatus";
 
 const GoodsTable: React.FC<IAdminTableProps<IGood>> = (props) => {
 
@@ -51,6 +53,12 @@ const GoodsTable: React.FC<IAdminTableProps<IGood>> = (props) => {
                 fullWidth={true}
                 defaultValue={entity.name}
                 onChange={(e) => {
+                    setState(prevState => {
+                        const index = prevState.rows.indexOf(entity);
+                        const newRows = [...prevState.rows];
+                        newRows[index] = {...prevState.rows[index], name: e.target.value};
+                        return {...prevState, rows: newRows};
+                    });
                 }}
             />
         );
@@ -62,6 +70,12 @@ const GoodsTable: React.FC<IAdminTableProps<IGood>> = (props) => {
                 fullWidth={true}
                 defaultValue={entity.article}
                 onChange={(e) => {
+                    setState(prevState => {
+                        const index = prevState.rows.indexOf(entity);
+                        const newRows = [...prevState.rows];
+                        newRows[index] = {...prevState.rows[index], article: e.target.value};
+                        return {...prevState, rows: newRows};
+                    });
                 }}
             />
         );
@@ -72,6 +86,13 @@ const GoodsTable: React.FC<IAdminTableProps<IGood>> = (props) => {
             <Select
                 value={entity.status}
                 onChange={(e) => {
+                    setState({
+                        ...state,
+                        rows: [
+                            ...state.rows.filter(r => r !== entity),
+                            {...entity, status: (e.target.value) as IStatus}
+                        ]
+                    })
                 }}
                 defaultValue={""}
             >
@@ -100,11 +121,13 @@ const GoodsTable: React.FC<IAdminTableProps<IGood>> = (props) => {
                 <Spinner/>
             ) : (
                 <Table>
-                    {createHeaderRow()}
+                    <TableHead>
+                        {createHeaderRow()}
+                    </TableHead>
                     <TableBody>
                         {
                             state.rows
-                                // .filter((r) => props.filterCallback?.(r) || r.id === undefined)
+                                .filter(r => checkFilterCondition(context.adminFilter, r.name, r.article))
                                 .sort((r1, r2) => (r1 && r1.id ? r1.id : 0xffff) - (r2 && r2.id ? r2.id : 0xffff))
                                 .map(r => createBodyRow(r))
                         }
