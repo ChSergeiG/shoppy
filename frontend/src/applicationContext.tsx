@@ -3,12 +3,16 @@ import type {AlertColor} from "@mui/material";
 import type {IApplicationContext} from "../types/IApplicationContextType";
 import {LOCAL_STORAGE_JWT_KEY} from "./pages/admin/components/AuthorizationOverlay";
 import {getProbeLogin} from "./utils/API";
+import type {IStatus} from "../types/IStatus";
+import type {IAccountRole} from "../types/IAccountRole";
 
 export const ApplicationContext = React.createContext<IApplicationContext>({
     token: "",
     authorized: false,
     message: "",
     color: "success",
+    statuses: [],
+    accountRoles: [],
 });
 
 export const verifyAuthorization = async (context: IApplicationContext): Promise<void> => {
@@ -39,10 +43,13 @@ export const ApplicationContextProvider: React.FC<React.PropsWithChildren<{}>> =
 
     const [token, setToken] = React.useState<string>("");
     const [authorized, setAuthorized] = React.useState<boolean>(false);
-    const [adminFilter, setAdminFilter] =  React.useState<string>("");
+    const [adminFilter, setAdminFilter] = React.useState<string>("");
 
     const [message, setMessage] = React.useState<string>("");
     const [color, setColor] = React.useState<AlertColor>("success");
+
+    const [statuses, setStatuses] = React.useState<IStatus[]>([]);
+    const [accountRoles, setAccountRoles] = React.useState<IAccountRole[]>([]);
 
     const setValues: IApplicationContext["setSnackBarValues"] = ({message, color}) => {
         setMessage(`[${crypto.randomUUID()}] ${message}`);
@@ -56,7 +63,8 @@ export const ApplicationContextProvider: React.FC<React.PropsWithChildren<{}>> =
                 token, setToken,
                 authorized, setAuthorized,
                 adminFilter, setAdminFilter,
-                message, color, setSnackBarValues: setValues
+                message, color, setSnackBarValues: setValues,
+                statuses, setStatuses, accountRoles, setAccountRoles
             }}
         />
     );

@@ -1,33 +1,78 @@
-import React, {Component} from "react";
+import React, {PropsWithChildren, useContext} from "react";
 import ButtonBar from "../../components/ButtonBar";
-import {Link} from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 import AuthorizationOverlay from "./components/AuthorizationOverlay";
 import {Button} from "@mui/material";
-import {ApplicationContext} from "../../applicationContext";
 import SearchField from "./components/SearchField";
+import {AccountsTable, GoodsTable, OrdersTable} from ".";
+import type {IAccount, IAdminContent, IAdminTableProps, IGood, IOrder} from "../../../types/AdminTypes";
+import {
+    createNewAccount,
+    createNewGood,
+    createNewOrder,
+    deleteExistingAccount,
+    deleteExistingGood,
+    deleteExistingOrder,
+    getAccount,
+    getAccounts,
+    getGood,
+    getGoods,
+    getOrder,
+    getOrders,
+    updateExistingAccount,
+    updateExistingGood,
+    updateExistingOrder
+} from "src/utils/API";
+import {ApplicationContext} from "../../applicationContext";
 
-type AdminPageProps = {
-    component: JSX.Element;
-}
+const AdminPage = <T extends IAdminContent>() => {
 
-type AdminPageState = {
-    authorized: boolean;
-}
+    const params = useParams();
 
-export class AdminPage extends Component<AdminPageProps, AdminPageState> {
+    const context = useContext(ApplicationContext);
 
-    static contextType = ApplicationContext;
-    // @ts-ignore
-    context!: React.ContextType<typeof ApplicationContext>
+    const resolveTable = (): JSX.Element => {
+        switch (params.table) {
+            case "accounts" :
+                const accountsProps: PropsWithChildren<IAdminTableProps<IAccount>> = {
+                    getDataCallback: (c) => getAccounts(c),
+                    createCallback: (c, e) => createNewAccount(c, e),
+                    updateCallback: (c, e) => updateExistingAccount(c, e),
+                    deleteCallback: (c, e) => deleteExistingAccount(c, e),
+                    refreshCallback: (c, e) => getAccount(c, e.login),
+                    columns: 6,
+                };
+                return <AccountsTable {...accountsProps} />;
+            case "goods" :
+                const goodsProps: PropsWithChildren<IAdminTableProps<IGood>> = {
+                    getDataCallback: (c) => getGoods(c),
+                    createCallback: (c, e) => createNewGood(c, e),
+                    updateCallback: (c, e) => updateExistingGood(c, e),
+                    deleteCallback: (c, e) => deleteExistingGood(c, e),
+                    refreshCallback: (c, e) => getGood(c, e.id),
+                    columns: 5,
+                };
+                return <GoodsTable {...goodsProps} />;
+            case "orders" :
+                const ordersProps: PropsWithChildren<IAdminTableProps<IOrder>> = {
+                    getDataCallback: (c) => getOrders(c),
+                    createCallback: (c, e) => createNewOrder(c, e),
+                    updateCallback: (c, e) => updateExistingOrder(c, e),
+                    deleteCallback: (c, e) => deleteExistingOrder(c, e),
+                    refreshCallback: (c, e) => getOrder(c, e.id),
+                    columns: 5,
+                };
 
-    constructor(props: AdminPageProps) {
-        super(props);
+                return <OrdersTable {...ordersProps}  />;
+            default:
+                return <div/>;
+        }
     }
 
-    render() {
-        const {authorized} = this.context;
-        return authorized
-            ? (<>
+
+    return context.authorized
+        ? (
+            <>
                 <ButtonBar
                     items={[
                         {element: (<Button><Link to="/">Main</Link></Button>), adminButton: false},
@@ -37,8 +82,11 @@ export class AdminPage extends Component<AdminPageProps, AdminPageState> {
                     ]}
                 />
                 <SearchField/>
-                {this.props.component}
-            </>)
-            : (<AuthorizationOverlay/>);
-    }
+                {resolveTable()}
+            </>
+        ) : (
+            <AuthorizationOverlay/>
+        );
 }
+
+export default AdminPage;

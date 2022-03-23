@@ -21,8 +21,7 @@ const AuthorizationOverlay: React.FC = () => {
     });
 
     useEffect(() => {
-        verifyAuthorization(context).then(_ => {
-        });
+        verifyAuthorization(context).then();
     }, [context.token]);
 
     const handleChange = ({target: {name, value}}: React.ChangeEvent<HTMLInputElement>) => {

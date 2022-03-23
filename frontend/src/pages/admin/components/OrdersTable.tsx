@@ -1,85 +1,115 @@
-import React from "react";
-import {Input, TableCell, TableHead, TableRow} from "@mui/material";
-import {createNewOrder, deleteExistingOrder, getOrder, getOrders, updateExistingOrder} from "../../../utils/API";
-import type {IOrder} from "../../../../types/AdminTypes";
-import AbstractAdminTable from "./AbstractAdminTable";
-import type {IAccountRole} from "../../../../types/IAccountRole";
+import React, {useEffect, useState} from "react";
+import {ButtonGroup, Input, MenuItem, Select, Table, TableBody} from "@mui/material";
+import type {IAdminTableProps, IAdminTableState, IOrder} from "../../../../types/AdminTypes";
+import {ApplicationContext} from "../../../applicationContext";
+import Spinner from "./Spinner";
+import {
+    commonCreateBodyRow,
+    commonCreateHeaderRow,
+    commonCreatePlusRow,
+    commonRenderActionsInput
+} from "../../../utils/admin-tables";
+import {getOrders} from "../../../utils/API";
 
-class OrdersTable extends React.Component {
+const OrdersTable: React.FC<IAdminTableProps<IOrder>> = (props) => {
 
-    createHeaderRow = () => {
+    const context = React.useContext(ApplicationContext);
+
+    const [state, setState] = useState<IAdminTableState<IOrder>>({
+        isLoading: true,
+        statuses: context.statuses,
+        accountRoles: context.accountRoles,
+        rows: [],
+        sortBy: "",
+    });
+
+    const createHeaderRow = () => commonCreateHeaderRow(
+        "header-IOrder",
+        [
+            {columnNumber: 0, width: "10%", align: "center", key: "id", value: "ID"},
+            {columnNumber: 1, width: "60%", key: "info", value: "Info"},
+            {columnNumber: 2, width: "10%", key: "status", value: "Status"},
+            {columnNumber: 3, width: "20%", align: "center", key: "actions", value: "Actions"},
+        ]);
+
+    const createBodyRow = (entity: IOrder) => commonCreateBodyRow(
+        entity.info.replace(/[\s]+/, "_"),
+        [
+            {columnNumber: 0, key: "id", content: entity.id},
+            {columnNumber: 1, key: "info", content: renderInfoInput(entity)},
+            {columnNumber: 2, key: "status", content: renderStatusInput(entity)},
+            {columnNumber: 3, key: "actions", content: commonRenderActionsInput<IOrder>(context, entity, props)},
+        ]
+    );
+
+    const renderInfoInput = (entity: IOrder) => {
         return (
-            <TableHead>
-                <TableRow>
-                    <TableCell width={50}>ID</TableCell>
-                    <TableCell>Info</TableCell>
-                    <TableCell>Status</TableCell>
-                    <TableCell width={200} align={"center"}>Actions</TableCell>
-                </TableRow>
-            </TableHead>
-        );
-    }
-
-    createBodyCell = (
-        columnNumber: number,
-        order: IOrder,
-        idCellCallback: (_: IOrder) => JSX.Element,
-        statusSelectorCallback: (order: IOrder) => JSX.Element,
-        actionsSelectorCallback: (order: IOrder) => JSX.Element,
-        accountRoles: IAccountRole[],
-        stateUpdater: (entity: IOrder, name: string, ...args: any[]) => void
-    ): JSX.Element => {
-        switch (columnNumber) {
-            case 0: {
-                return idCellCallback(order);
-            }
-            case 1: {
-                return (
-                    <TableCell key="info">
-                        <Input
-                            fullWidth={true}
-                            defaultValue={order.info}
-                            onChange={(e) => {
-                                stateUpdater(order, "info", e);
-                            }}
-                        />
-                    </TableCell>
-                );
-            }
-            case 2: {
-                return (<>{statusSelectorCallback(order)}</>);
-            }
-            case 3: {
-                return (<>{actionsSelectorCallback(order)}</>);
-            }
-            default: {
-                return (<TableCell key="default"/>);
-            }
-        }
-    }
-
-    render() {
-        return (
-            <AbstractAdminTable
-                getDataCallback={getOrders}
-                headerRowBuilder={this.createHeaderRow}
-                bodyCellCreator={this.createBodyCell}
-                columns={5}
-                newEntityCreator={() => {
-                    return {
-                        id: undefined,
-                        info: '',
-                        status: 'ADDED'
-                    }
+            <Input
+                fullWidth={true}
+                defaultValue={entity.info}
+                onChange={(e) => {
                 }}
-                createCallback={createNewOrder}
-                updateCallback={updateExistingOrder}
-                deleteCallback={deleteExistingOrder}
-                refreshCallback={(context, data) => getOrder(context, data.id)}
-
             />
         );
     }
+
+    const renderStatusInput = (entity: IOrder) => {
+        return (
+            <Select
+                value={entity.status}
+                onChange={(e) => {
+                }}
+                defaultValue={""}
+            >
+                {
+                    context.statuses.map(item => (
+                        <MenuItem
+                            key={item}
+                            value={item}
+                        >
+                            {item}
+                        </MenuItem>
+                    ))
+                }
+            </Select>
+        );
+    };
+
+    useEffect(() => {
+        getOrders(context)
+            .then(r => setState({...state, rows: r.data, isLoading: false}))
+    }, []);
+
+    return (
+        (state.isLoading === undefined || state.isLoading)
+            ? (
+                <Spinner/>
+            ) : (
+                <Table>
+                    {createHeaderRow()}
+                    <TableBody>
+                        {
+                            state.rows
+                                // .filter((r) => props.filterCallback?.(r) || r.id === undefined)
+                                .sort((r1, r2) => (r1 && r1.id ? r1.id : 0xffff) - (r2 && r2.id ? r2.id : 0xffff))
+                                .map(r => createBodyRow(r as IOrder))
+                        }
+                        {
+                            commonCreatePlusRow<IOrder>(
+                                props.columns,
+                                {
+                                    id: undefined,
+                                    info: "",
+                                    status: "ADDED",
+                                },
+                                setState
+                            )
+                        }
+                    </TableBody>
+                </Table>
+            )
+    );
+
 }
 
 export default OrdersTable;

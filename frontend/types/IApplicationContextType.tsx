@@ -19,7 +19,9 @@ export type IApplicationContext = {
     setSnackBarValues?: (_: { message: string, color: AlertColor }) => void;
 
     // enums
-    statuses?: IStatus[];
-    accountRoles?: IAccountRole[];
+    statuses: IStatus[];
+    setStatuses?: (_: IStatus[]) => void;
+    accountRoles: IAccountRole[];
+    setAccountRoles?: (_: IAccountRole[]) => void;
 
 };

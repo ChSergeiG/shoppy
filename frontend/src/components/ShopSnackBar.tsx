@@ -7,6 +7,7 @@ type ISnackbarState = {
 };
 
 export const ShopSnackBar: React.FC = () => {
+
     const [state, setState] = useState<ISnackbarState>();
     const context = useContext(ApplicationContext);
 
