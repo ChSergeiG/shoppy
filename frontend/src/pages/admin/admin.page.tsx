@@ -62,7 +62,6 @@ const AdminPage = <T extends IAdminContent>() => {
                     refreshCallback: (c, e) => getOrder(c, e.id),
                     columns: 5,
                 };
-
                 return <OrdersTable {...ordersProps}  />;
             default:
                 return <div/>;

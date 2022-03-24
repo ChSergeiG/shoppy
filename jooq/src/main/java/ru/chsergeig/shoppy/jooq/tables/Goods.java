@@ -4,12 +4,14 @@
 package ru.chsergeig.shoppy.jooq.tables;
 
 
+import java.math.BigDecimal;
+
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row4;
+import org.jooq.Row5;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -60,6 +62,11 @@ public class Goods extends TableImpl<GoodsRecord> {
      * The column <code>public.goods.article</code>.
      */
     public final TableField<GoodsRecord, String> ARTICLE = createField(DSL.name("article"), SQLDataType.VARCHAR(1024), this, "");
+
+    /**
+     * The column <code>public.goods.price</code>.
+     */
+    public final TableField<GoodsRecord, BigDecimal> PRICE = createField(DSL.name("price"), SQLDataType.NUMERIC.defaultValue(DSL.field("0.0", SQLDataType.NUMERIC)), this, "");
 
     /**
      * The column <code>public.goods.status</code>.
@@ -141,11 +148,11 @@ public class Goods extends TableImpl<GoodsRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row4 type methods
+    // Row5 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row4<Integer, String, String, Status> fieldsRow() {
-        return (Row4) super.fieldsRow();
+    public Row5<Integer, String, String, BigDecimal, Status> fieldsRow() {
+        return (Row5) super.fieldsRow();
     }
 }

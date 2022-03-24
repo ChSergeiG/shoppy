@@ -5,6 +5,7 @@ package ru.chsergeig.shoppy.jooq.tables.pojos;
 
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import ru.chsergeig.shoppy.jooq.enums.Status;
 
@@ -17,10 +18,11 @@ public class Goods implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private Integer id;
-    private String  name;
-    private String  article;
-    private Status  status;
+    private Integer    id;
+    private String     name;
+    private String     article;
+    private BigDecimal price;
+    private Status     status;
 
     public Goods() {}
 
@@ -28,18 +30,21 @@ public class Goods implements Serializable {
         this.id = value.id;
         this.name = value.name;
         this.article = value.article;
+        this.price = value.price;
         this.status = value.status;
     }
 
     public Goods(
-        Integer id,
-        String  name,
-        String  article,
-        Status  status
+        Integer    id,
+        String     name,
+        String     article,
+        BigDecimal price,
+        Status     status
     ) {
         this.id = id;
         this.name = name;
         this.article = article;
+        this.price = price;
         this.status = status;
     }
 
@@ -89,6 +94,21 @@ public class Goods implements Serializable {
     }
 
     /**
+     * Getter for <code>public.goods.price</code>.
+     */
+    public BigDecimal getPrice() {
+        return this.price;
+    }
+
+    /**
+     * Setter for <code>public.goods.price</code>.
+     */
+    public Goods setPrice(BigDecimal price) {
+        this.price = price;
+        return this;
+    }
+
+    /**
      * Getter for <code>public.goods.status</code>.
      */
     public Status getStatus() {
@@ -110,6 +130,7 @@ public class Goods implements Serializable {
         sb.append(id);
         sb.append(", ").append(name);
         sb.append(", ").append(article);
+        sb.append(", ").append(price);
         sb.append(", ").append(status);
 
         sb.append(")");

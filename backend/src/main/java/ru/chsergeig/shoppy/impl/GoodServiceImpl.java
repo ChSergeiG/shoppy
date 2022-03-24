@@ -10,6 +10,7 @@ import ru.chsergeig.shoppy.jooq.tables.pojos.Goods;
 import ru.chsergeig.shoppy.mapping.GoodMapper;
 import ru.chsergeig.shoppy.service.admin.GoodService;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,7 +41,7 @@ public class GoodServiceImpl implements GoodService {
 
     @Override
     public GoodDto addGood(String name) {
-        Goods pojo = new Goods(null, name, null, Status.ADDED);
+        Goods pojo = new Goods(null, name, null, new BigDecimal("0.0"), Status.ADDED);
         goodRepository.insert(pojo);
         return goodMapper.map(pojo);
     }

@@ -6,6 +6,7 @@ import floppyIcon from "../img/floppy.svg";
 import type {IApplicationContext} from "../../types/IApplicationContextType";
 import binIcon from "../img/bin.svg";
 import refreshIcon from "../img/refresh.svg";
+import type {IResponseType} from "../../types/IResponseType";
 
 export const commonCreateHeaderRow = (
     rowKey: string,
@@ -84,35 +85,51 @@ export const commonCreatePlusRow = <T extends IAdminContent>(
 export const commonRenderActionsInput = <T extends IAdminContent>(
     context: IApplicationContext,
     entity: T,
-    props: IAdminTableProps<T>
+    isButtonActive: { save: boolean, delete: boolean, refresh: boolean },
+    props: IAdminTableProps<T>,
+    setStateCallback: (value: React.SetStateAction<IAdminTableState<T>>) => void
 ) => {
     return (
         <ButtonGroup>
             <Button
+                disabled={!isButtonActive.save}
                 onClick={async () => {
+                    let newEntity: IResponseType<T> | void;
                     if (entity.id) {
-                        const newEntity = await props.updateCallback(context, entity)
+                        newEntity = await props.updateCallback(context, entity)
                             .catch((r) => {
                                 context.setSnackBarValues?.({message: r.response.data, color: "warning"})
                             });
-                        if (!newEntity || !newEntity.data) {
-                            return;
-                        }
                     } else {
-                        const newEntity = await props.createCallback(context, entity)
+                        newEntity = await props.createCallback(context, entity)
                             .catch((r) => {
                                 context.setSnackBarValues?.({message: r.response.data, color: "warning"})
                             });
-                        if (!newEntity || !newEntity.data) {
-                            return;
-                        }
                     }
+                    if (!newEntity || !newEntity.data) {
+                        return;
+                    }
+                    setStateCallback(prevState => {
+                        const newRows = [...prevState.rows];
+                        const index = newEntity && newEntity.data && prevState.rows.indexOf(entity);
+                        if (index && index >= 0 && newEntity && newEntity.data) {
+                            newRows[index] = newEntity.data;
+                        }
+                        return {...prevState, rows: newRows};
+                    });
                     context.setSnackBarValues?.({message: "success", color: "success"})
                 }}
             >
-                <img src={floppyIcon} height={16} width={16} alt='save'/>
+                <img
+                    style={isButtonActive.save ? {} : {opacity: "0.1"}}
+                    src={floppyIcon}
+                    height={16}
+                    width={16}
+                    alt="save"
+                />
             </Button>
             <Button
+                disabled={!isButtonActive.delete}
                 onClick={async () => {
                     await props.deleteCallback(context, entity)
                         .catch((r) => {
@@ -121,11 +138,22 @@ export const commonRenderActionsInput = <T extends IAdminContent>(
                                 color: "warning"
                             })
                         });
+                    setStateCallback(prevState => {
+                        const newRows = [...prevState.rows.filter(r => r !== entity)];
+                        return {...prevState, rows: newRows};
+                    });
                 }}
             >
-                <img src={binIcon} height={16} width={16} alt='remove'/>
+                <img
+                    style={isButtonActive.delete ? {} : {opacity: "0.1"}}
+                    src={binIcon}
+                    height={16}
+                    width={16}
+                    alt="remove"
+                />
             </Button>
             <Button
+                disabled={!isButtonActive.refresh}
                 onClick={async () => {
                     const newEntity = await props.refreshCallback(context, entity)
                         .catch((r) => {
@@ -137,15 +165,30 @@ export const commonRenderActionsInput = <T extends IAdminContent>(
                     if (newEntity === undefined) {
                         return;
                     }
+                    setStateCallback(prevState => {
+                        const newRows = [...prevState.rows];
+                        const index = newEntity && newEntity.data && prevState.rows.indexOf(entity);
+                        if (index && index >= 0 && newEntity && newEntity.data) {
+                            newRows[index] = newEntity.data;
+                        }
+                        return {...prevState, rows: newRows};
+                    });
                     if (newEntity.status === 499) {
                         context.setSnackBarValues?.({
                             message: JSON.stringify(newEntity.data),
                             color: "error"
                         });
                     }
+
                 }}
             >
-                <img src={refreshIcon} height={16} width={16} alt='refresh'/>
+                <img
+                    style={isButtonActive.refresh ? {} : {opacity: "0.1"}}
+                    src={refreshIcon}
+                    height={16}
+                    width={16}
+                    alt="refresh"
+                />
             </Button>
         </ButtonGroup>
     );

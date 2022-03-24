@@ -12,6 +12,8 @@ const SearchField: React.FC = () => {
 
     return (
         <TextField
+            placeholder="Search for:"
+            style={{width: "50%"}}
             onChange={debounce(handleUpdate, 1000)}
         />
     );

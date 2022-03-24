@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Input, MenuItem, Select, Table, TableBody, TableHead} from "@mui/material";
+import {MenuItem, Select, Table, TableBody, TableHead, TextField} from "@mui/material";
 import type {IAdminTableProps, IAdminTableState, IOrder} from "../../../../types/AdminTypes";
 import {ApplicationContext} from "../../../applicationContext";
 import Spinner from "./Spinner";
@@ -34,22 +34,44 @@ const OrdersTable: React.FC<IAdminTableProps<IOrder>> = (props) => {
             {columnNumber: 3, width: "20%", align: "center", key: "actions", value: "Actions"},
         ]);
 
+
+    const renderActionsInput = (entity: IOrder) => commonRenderActionsInput<IOrder>(
+        context,
+        entity,
+        {
+            save: entity.info !== undefined && entity.info.trim() !== "",
+            delete: entity.id !== undefined,
+            refresh: true
+        },
+        props,
+        setState
+    );
+
+
     const createBodyRow = (entity: IOrder) => commonCreateBodyRow(
-        entity.info.replace(/[\s]+/, "_"),
+        `row-${state.rows.indexOf(entity)}`,
         [
             {columnNumber: 0, key: "id", content: entity.id},
             {columnNumber: 1, key: "info", content: renderInfoInput(entity)},
             {columnNumber: 2, key: "status", content: renderStatusInput(entity)},
-            {columnNumber: 3, key: "actions", content: commonRenderActionsInput<IOrder>(context, entity, props)},
+            {columnNumber: 3, key: "actions", align: "center", content: renderActionsInput(entity)},
         ]
     );
 
     const renderInfoInput = (entity: IOrder) => {
         return (
-            <Input
+            <TextField
                 fullWidth={true}
-                defaultValue={entity.info}
+                label="Information"
+                required
+                value={entity.info}
                 onChange={(e) => {
+                    setState(prevState => {
+                        const index = prevState.rows.indexOf(entity);
+                        const newRows = [...prevState.rows];
+                        newRows[index] = {...prevState.rows[index], info: e.target.value};
+                        return {...prevState, rows: newRows};
+                    });
                 }}
             />
         );

@@ -6,6 +6,7 @@ import type {IAccountRole} from "./IAccountRole";
 export type IGood = {
     id: number | undefined;
     name: string;
+    price: number;
     article: string | undefined;
     status: IStatus;
 };

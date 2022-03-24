@@ -4,6 +4,7 @@
 package ru.chsergeig.shoppy.jooq.tables.daos;
 
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -97,6 +98,21 @@ public class GoodsDao extends DAOImpl<GoodsRecord, ru.chsergeig.shoppy.jooq.tabl
      */
     public List<ru.chsergeig.shoppy.jooq.tables.pojos.Goods> fetchByArticle(String... values) {
         return fetch(Goods.GOODS.ARTICLE, values);
+    }
+
+    /**
+     * Fetch records that have <code>price BETWEEN lowerInclusive AND
+     * upperInclusive</code>
+     */
+    public List<ru.chsergeig.shoppy.jooq.tables.pojos.Goods> fetchRangeOfPrice(BigDecimal lowerInclusive, BigDecimal upperInclusive) {
+        return fetchRange(Goods.GOODS.PRICE, lowerInclusive, upperInclusive);
+    }
+
+    /**
+     * Fetch records that have <code>price IN (values)</code>
+     */
+    public List<ru.chsergeig.shoppy.jooq.tables.pojos.Goods> fetchByPrice(BigDecimal... values) {
+        return fetch(Goods.GOODS.PRICE, values);
     }
 
     /**

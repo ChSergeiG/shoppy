@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Input, MenuItem, Select, Table, TableBody, TableHead} from "@mui/material";
+import {MenuItem, Select, Table, TableBody, TableHead, TextField} from "@mui/material";
 import type {IAdminTableProps, IAdminTableState, IGood} from "../../../../types/AdminTypes";
 import {ApplicationContext} from "../../../applicationContext";
 import Spinner from "./Spinner";
@@ -29,29 +29,44 @@ const GoodsTable: React.FC<IAdminTableProps<IGood>> = (props) => {
         "header-IGood",
         [
             {columnNumber: 0, width: "10%", align: "center", key: "id", value: "ID"},
-            {columnNumber: 1, width: "30%", key: "name", value: "Name"},
-            {columnNumber: 2, width: "30%", key: "article", value: "Article"},
-            {columnNumber: 3, width: "10%", key: "status", value: "Status"},
-            {columnNumber: 4, width: "20%", align: "center", key: "actions", value: "Actions"},
+            {columnNumber: 1, width: "20%", key: "name", value: "Name"},
+            {columnNumber: 2, width: "20%", key: "price", value: "Price"},
+            {columnNumber: 3, width: "20%", key: "article", value: "Article"},
+            {columnNumber: 4, width: "10%", key: "status", value: "Status"},
+            {columnNumber: 5, width: "20%", align: "center", key: "actions", value: "Actions"},
         ]);
 
+    const renderActionsInput = (entity: IGood) => commonRenderActionsInput<IGood>(
+        context,
+        entity,
+        {
+            save: entity.name !== undefined && entity.name.trim() !== "" && entity.article !== undefined && entity.article.trim() !== "",
+            delete: entity.id !== undefined,
+            refresh: true
+        },
+        props,
+        setState
+    );
 
     const createBodyRow = (entity: IGood) => commonCreateBodyRow(
-        entity.name.replace(/[\s]+/, "_"),
+        `row-${state.rows.indexOf(entity)}`,
         [
             {columnNumber: 0, key: "id", content: entity.id},
             {columnNumber: 1, key: "name", content: renderNameInput(entity)},
-            {columnNumber: 2, key: "article", content: renderArticleInput(entity)},
-            {columnNumber: 3, key: "status", content: renderStatusInput(entity)},
-            {columnNumber: 4, key: "actions", content: commonRenderActionsInput<IGood>(context, entity, props)},
+            {columnNumber: 2, key: "price", content: renderPriceInput(entity)},
+            {columnNumber: 3, key: "article", content: renderArticleInput(entity)},
+            {columnNumber: 4, key: "status", content: renderStatusInput(entity)},
+            {columnNumber: 5, key: "actions", align: "center", content: renderActionsInput(entity)},
         ]
     );
 
     const renderNameInput = (entity: IGood) => {
         return (
-            <Input
+            <TextField
                 fullWidth={true}
-                defaultValue={entity.name}
+                label="Name"
+                required
+                value={entity.name}
                 onChange={(e) => {
                     setState(prevState => {
                         const index = prevState.rows.indexOf(entity);
@@ -64,11 +79,33 @@ const GoodsTable: React.FC<IAdminTableProps<IGood>> = (props) => {
         );
     }
 
+    const renderPriceInput = (entity: IGood) => {
+        return (
+            <TextField
+                fullWidth={true}
+                label="Price"
+                type="number"
+                value={entity.price}
+                onChange={(e) => {
+                    const newValue = parseFloat(e.target.value.replace(",", "."));
+                    setState(prevState => {
+                        const index = prevState.rows.indexOf(entity);
+                        const newRows = [...prevState.rows];
+                        newRows[index] = {...prevState.rows[index], price: newValue};
+                        return {...prevState, rows: newRows};
+                    });
+                }}
+            />
+        );
+    }
+
     const renderArticleInput = (entity: IGood) => {
         return (
-            <Input
+            <TextField
                 fullWidth={true}
-                defaultValue={entity.article}
+                label="Article"
+                required
+                value={entity.article}
                 onChange={(e) => {
                     setState(prevState => {
                         const index = prevState.rows.indexOf(entity);
@@ -137,6 +174,7 @@ const GoodsTable: React.FC<IAdminTableProps<IGood>> = (props) => {
                                 {
                                     id: undefined,
                                     name: "",
+                                    price: 0.0,
                                     article: "",
                                     status: "ADDED",
                                 },

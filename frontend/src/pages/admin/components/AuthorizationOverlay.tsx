@@ -33,7 +33,7 @@ const AuthorizationOverlay: React.FC = () => {
         const tokenResponse = await postLogin({...state})
             .catch((r) => {
                 context.setAuthorized?.(false);
-                context.setSnackBarValues?.({message: new Date() + " " + r.response.data, color: "error"});
+                context.setSnackBarValues?.({message: r.response.data, color: "error"});
             });
         if (tokenResponse !== undefined) {
             context.setToken?.(tokenResponse.data.token);

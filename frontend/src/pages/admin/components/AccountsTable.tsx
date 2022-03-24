@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Autocomplete, Input, MenuItem, Select, Table, TableBody, TableHead, TextField} from "@mui/material";
+import {Autocomplete, MenuItem, Select, Table, TableBody, TableHead, TextField} from "@mui/material";
 import type {IAccount, IAdminTableProps, IAdminTableState} from "../../../../types/AdminTypes";
 import type {IAccountRole} from "../../../../types/IAccountRole";
 import {ApplicationContext} from "../../../applicationContext";
@@ -39,9 +39,11 @@ const AccountsTable: React.FC<IAdminTableProps<IAccount>> = (props) => {
 
     const renderLoginInput = (entity: IAccount) => {
         return (
-            <Input
+            <TextField
                 fullWidth={true}
-                defaultValue={entity.login}
+                label="Login"
+                required
+                value={entity.login}
                 onChange={(e) => {
                     setState(prevState => {
                         const index = prevState.rows.indexOf(entity);
@@ -56,9 +58,11 @@ const AccountsTable: React.FC<IAdminTableProps<IAccount>> = (props) => {
 
     const renderPasswordInput = (entity: IAccount) => {
         return (
-            <Input
+            <TextField
                 fullWidth={true}
-                defaultValue={entity.password}
+                label="Password"
+                required
+                value={entity.password}
                 type={'password'}
                 onChange={(e) => {
                     setState(prevState => {
@@ -122,6 +126,18 @@ const AccountsTable: React.FC<IAdminTableProps<IAccount>> = (props) => {
         );
     };
 
+    const renderActionsInput = (entity: IAccount) => commonRenderActionsInput<IAccount>(
+        context,
+        entity,
+        {
+            save: entity.login !== undefined && entity.login.trim() !== "" && entity.password !== undefined && entity.password.trim() !== "",
+            delete: entity.id !== undefined,
+            refresh: true
+        },
+        props,
+        setState
+    );
+
     const createBodyRow = (entity: IAccount) => commonCreateBodyRow(
         `row-${state.rows.indexOf(entity)}`,
         [
@@ -130,7 +146,7 @@ const AccountsTable: React.FC<IAdminTableProps<IAccount>> = (props) => {
             {columnNumber: 2, key: "password", content: renderPasswordInput(entity)},
             {columnNumber: 3, key: "group", content: renderGroupInput(entity)},
             {columnNumber: 4, key: "status", content: renderStatusInput(entity)},
-            {columnNumber: 5, key: "actions", content: commonRenderActionsInput<IAccount>(context, entity, props)}
+            {columnNumber: 5, key: "actions", align: "center", content: renderActionsInput(entity)}
         ]
     );
 
