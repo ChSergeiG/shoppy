@@ -1,4 +1,4 @@
-package ru.chsergeig.shoppy.impl;
+package ru.chsergeig.shoppy.impl.admin;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -8,7 +8,7 @@ import ru.chsergeig.shoppy.dto.admin.GoodDto;
 import ru.chsergeig.shoppy.jooq.enums.Status;
 import ru.chsergeig.shoppy.jooq.tables.pojos.Goods;
 import ru.chsergeig.shoppy.mapping.GoodMapper;
-import ru.chsergeig.shoppy.service.admin.GoodService;
+import ru.chsergeig.shoppy.service.admin.AdminGoodService;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class GoodServiceImpl implements GoodService {
+public class AdminGoodServiceImpl implements AdminGoodService {
 
     private final GoodRepository goodRepository;
     private final GoodMapper goodMapper;

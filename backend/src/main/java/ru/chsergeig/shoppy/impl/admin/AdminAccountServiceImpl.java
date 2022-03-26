@@ -1,4 +1,4 @@
-package ru.chsergeig.shoppy.impl;
+package ru.chsergeig.shoppy.impl.admin;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -10,14 +10,14 @@ import ru.chsergeig.shoppy.jooq.enums.Status;
 import ru.chsergeig.shoppy.jooq.tables.pojos.Accounts;
 import ru.chsergeig.shoppy.jooq.tables.pojos.AccountsRoles;
 import ru.chsergeig.shoppy.mapping.AccountMapper;
-import ru.chsergeig.shoppy.service.admin.AccountService;
+import ru.chsergeig.shoppy.service.admin.AdminAccountService;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class AccountServiceImpl implements AccountService {
+public class AdminAccountServiceImpl implements AdminAccountService {
 
     private final AccountRepository accountRepository;
     private final AccountRoleRepository accountRoleRepository;

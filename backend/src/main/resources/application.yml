@@ -7,6 +7,8 @@ server:
     whitelabel:
       enabled: false
 spring:
+  profiles:
+    default: dev
   datasource:
     name: pgShoppy
     generateUniqueName: false

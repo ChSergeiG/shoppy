@@ -1,4 +1,4 @@
-package ru.chsergeig.shoppy.impl;
+package ru.chsergeig.shoppy.impl.admin;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -7,14 +7,14 @@ import ru.chsergeig.shoppy.dto.admin.OrderDto;
 import ru.chsergeig.shoppy.jooq.enums.Status;
 import ru.chsergeig.shoppy.jooq.tables.pojos.Orders;
 import ru.chsergeig.shoppy.mapping.OrderMapper;
-import ru.chsergeig.shoppy.service.admin.OrderService;
+import ru.chsergeig.shoppy.service.admin.AdminOrderService;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class OrderServiceImpl implements OrderService {
+public class AdminOrderServiceImpl implements AdminOrderService {
 
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;

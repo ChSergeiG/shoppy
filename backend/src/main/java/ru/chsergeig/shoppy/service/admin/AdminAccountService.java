@@ -4,7 +4,7 @@ import ru.chsergeig.shoppy.dto.admin.AccountDto;
 
 import java.util.List;
 
-public interface AccountService {
+public interface AdminAccountService {
 
     List<AccountDto> getAllAccounts();
 

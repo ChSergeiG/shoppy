@@ -4,7 +4,7 @@ import ru.chsergeig.shoppy.dto.admin.OrderDto;
 
 import java.util.List;
 
-public interface OrderService {
+public interface AdminOrderService {
 
     List<OrderDto> getAllOrders();
 

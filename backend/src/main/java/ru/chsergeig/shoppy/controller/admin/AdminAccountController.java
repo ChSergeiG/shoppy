@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.chsergeig.shoppy.dto.admin.AccountDto;
 import ru.chsergeig.shoppy.exception.ControllerException;
-import ru.chsergeig.shoppy.service.admin.AccountService;
+import ru.chsergeig.shoppy.service.admin.AdminAccountService;
 
 import java.util.List;
 
@@ -26,9 +26,9 @@ import java.util.List;
 @RestController
 @Secured("ROLE_ADMIN")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
-public class AccountController {
+public class AdminAccountController {
 
-    private final AccountService accountService;
+    private final AdminAccountService adminAccountService;
 
     @Operation(
             summary = "Get all not removed accounts",
@@ -42,7 +42,7 @@ public class AccountController {
     @GetMapping("get_all")
     public ResponseEntity<List<AccountDto>> getAllAccounts() {
         try {
-            return ResponseEntity.ok(accountService.getAllAccounts());
+            return ResponseEntity.ok(adminAccountService.getAllAccounts());
         } catch (Exception e) {
             throw new ControllerException(
                     499,
@@ -66,7 +66,7 @@ public class AccountController {
             @PathVariable("login") String login
     ) {
         try {
-            return ResponseEntity.ok(accountService.getAccountByLogin(login));
+            return ResponseEntity.ok(adminAccountService.getAccountByLogin(login));
         } catch (Exception e) {
             throw new ControllerException(
                     499,
@@ -90,7 +90,7 @@ public class AccountController {
             @PathVariable String login
     ) {
         try {
-            return ResponseEntity.status(HttpStatus.CREATED).body(accountService.addAccount(login));
+            return ResponseEntity.status(HttpStatus.CREATED).body(adminAccountService.addAccount(login));
         } catch (Exception e) {
             throw new ControllerException(
                     499,
@@ -114,7 +114,7 @@ public class AccountController {
             @RequestBody AccountDto dto
     ) {
         try {
-            return ResponseEntity.status(HttpStatus.CREATED).body(accountService.addAccount(dto));
+            return ResponseEntity.status(HttpStatus.CREATED).body(adminAccountService.addAccount(dto));
         } catch (Exception e) {
             throw new ControllerException(
                     499,
@@ -138,7 +138,7 @@ public class AccountController {
             @RequestBody AccountDto dto
     ) {
         try {
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body(accountService.updateAccount(dto));
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(adminAccountService.updateAccount(dto));
         } catch (Exception e) {
             throw new ControllerException(
                     499,
@@ -162,7 +162,7 @@ public class AccountController {
             @PathVariable String login
     ) {
         try {
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body(accountService.deleteAccount(login));
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(adminAccountService.deleteAccount(login));
         } catch (Exception e) {
             throw new ControllerException(
                     499,

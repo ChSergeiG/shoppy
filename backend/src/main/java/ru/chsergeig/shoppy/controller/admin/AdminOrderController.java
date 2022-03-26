@@ -15,23 +15,23 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.chsergeig.shoppy.dto.admin.GoodDto;
+import ru.chsergeig.shoppy.dto.admin.OrderDto;
 import ru.chsergeig.shoppy.exception.ControllerException;
-import ru.chsergeig.shoppy.service.admin.GoodService;
+import ru.chsergeig.shoppy.service.admin.AdminOrderService;
 
 import java.util.List;
 
 @RequiredArgsConstructor
-@RequestMapping("/admin/good")
+@RequestMapping("/admin/order")
 @RestController
 @Secured("ROLE_ADMIN")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
-public class GoodController {
+public class AdminOrderController {
 
-    private final GoodService goodsService;
+    private final AdminOrderService adminOrderService;
 
     @Operation(
-            summary = "Get all not removed goods",
+            summary = "Get all not removed orders",
             responses = {
                     @ApiResponse(responseCode = "200", description = "All good"),
                     @ApiResponse(responseCode = "401", description = "Need authorization"),
@@ -40,13 +40,13 @@ public class GoodController {
             }
     )
     @GetMapping("get_all")
-    public ResponseEntity<List<GoodDto>> getAllGoods() {
+    public ResponseEntity<List<OrderDto>> getAllOrders() {
         try {
-            return ResponseEntity.ok(goodsService.getAllGoods());
+            return ResponseEntity.ok(adminOrderService.getAllOrders());
         } catch (Exception e) {
             throw new ControllerException(
                     499,
-                    "Cant get goods list",
+                    "Cant get orders list",
                     e
             );
         }
@@ -61,112 +61,113 @@ public class GoodController {
                     @ApiResponse(responseCode = "500", description = "Error in wrapper")
             }
     )
+
     @GetMapping("{id}")
-    public ResponseEntity<GoodDto> getGood(
+    public ResponseEntity<OrderDto> getGood(
             @PathVariable("id") Long id
     ) {
         try {
-            return ResponseEntity.ok(goodsService.getGoodById(id));
+            return ResponseEntity.ok(adminOrderService.getOrderById(id));
         } catch (Exception e) {
             throw new ControllerException(
                     499,
-                    "Cant get good by id",
+                    "Cant get order by id",
                     e
             );
         }
     }
 
     @Operation(
-            summary = "Create default good",
+            summary = "Create default order",
             responses = {
-                    @ApiResponse(responseCode = "201", description = "Good created"),
+                    @ApiResponse(responseCode = "201", description = "Order created"),
                     @ApiResponse(responseCode = "401", description = "Need authorization"),
-                    @ApiResponse(responseCode = "499", description = "Cant create good"),
+                    @ApiResponse(responseCode = "499", description = "Cant create order"),
                     @ApiResponse(responseCode = "500", description = "Error in wrapper")
             }
     )
-    @PutMapping("{name}")
-    public ResponseEntity<GoodDto> addDefaultGood(
-            @PathVariable String name
+    @PutMapping("{info}")
+    public ResponseEntity<OrderDto> addDefaultOrder(
+            @PathVariable String info
     ) {
         try {
-            return ResponseEntity.status(HttpStatus.CREATED).body(goodsService.addGood(name));
+            return ResponseEntity.status(HttpStatus.CREATED).body(adminOrderService.addOrder(info));
         } catch (Exception e) {
             throw new ControllerException(
                     499,
-                    "Cant create new good",
+                    "Cant create new order",
                     e
             );
         }
     }
 
     @Operation(
-            summary = "Create good",
+            summary = "Create order",
             responses = {
-                    @ApiResponse(responseCode = "201", description = "Good created"),
+                    @ApiResponse(responseCode = "201", description = "Order created"),
                     @ApiResponse(responseCode = "401", description = "Need authorization"),
-                    @ApiResponse(responseCode = "499", description = "Cant create good"),
+                    @ApiResponse(responseCode = "499", description = "Cant create order"),
                     @ApiResponse(responseCode = "500", description = "Error in wrapper")
             }
     )
     @PostMapping("add")
-    public ResponseEntity<GoodDto> addGoodPost(
-            @RequestBody GoodDto dto
+    public ResponseEntity<OrderDto> addOrderPost(
+            @RequestBody OrderDto dto
     ) {
         try {
-            return ResponseEntity.status(HttpStatus.CREATED).body(goodsService.addGood(dto));
+            return ResponseEntity.status(HttpStatus.CREATED).body(adminOrderService.addOrder(dto));
         } catch (Exception e) {
             throw new ControllerException(
                     499,
-                    "Cant create new good",
+                    "Cant create new order",
                     e
             );
         }
     }
 
     @Operation(
-            summary = "Update existing good",
+            summary = "Update existing order",
             responses = {
-                    @ApiResponse(responseCode = "202", description = "Good updated"),
+                    @ApiResponse(responseCode = "202", description = "Order updated"),
                     @ApiResponse(responseCode = "401", description = "Need authorization"),
-                    @ApiResponse(responseCode = "499", description = "Cant update good"),
+                    @ApiResponse(responseCode = "499", description = "Cant update order"),
                     @ApiResponse(responseCode = "500", description = "Error in wrapper")
             }
     )
     @PostMapping("update")
-    public ResponseEntity<GoodDto> updateGood(
-            @RequestBody GoodDto dto
+    public ResponseEntity<OrderDto> updateOrder(
+            @RequestBody OrderDto dto
     ) {
         try {
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body(goodsService.updateGood(dto));
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(adminOrderService.updateOrder(dto));
         } catch (Exception e) {
             throw new ControllerException(
                     499,
-                    "Cant update good",
+                    "Cant update order",
                     e
             );
         }
     }
 
     @Operation(
-            summary = "Delete existing good",
+            summary = "Delete existing order",
             responses = {
-                    @ApiResponse(responseCode = "202", description = "Good deleted"),
+                    @ApiResponse(responseCode = "202", description = "Order deleted"),
                     @ApiResponse(responseCode = "401", description = "Need authorization"),
-                    @ApiResponse(responseCode = "499", description = "Cant create good"),
+                    @ApiResponse(responseCode = "499", description = "Cant create order"),
                     @ApiResponse(responseCode = "500", description = "Error in wrapper")
             }
     )
-    @DeleteMapping("{article}")
-    public ResponseEntity<Integer> deleteGood(
-            @PathVariable String article
+    @DeleteMapping("{id}")
+    public ResponseEntity<Integer> deleteOrder(
+            @PathVariable Integer id
     ) {
         try {
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body(goodsService.deleteGood(article));
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(adminOrderService.deleteOrder(id));
         } catch (Exception e) {
             throw new ControllerException(
                     499,
-                    "Cant delete good",
+                    "Cant delete order",
                     e
             );
         }

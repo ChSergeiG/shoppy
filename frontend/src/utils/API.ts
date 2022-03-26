@@ -5,10 +5,18 @@ import type {IResponseType} from "../../types/IResponseType";
 import type {IApplicationContext} from "../../types/IApplicationContextType";
 import type {IAccountRole} from "../../types/IAccountRole";
 
+function getApiBaseUrl() : string {
+    const envValue = process.env["API_BASE_URL"]?.trim();
+    if (envValue !== undefined && envValue.length > 0) {
+        return  envValue;
+    }
+    return "SUBSTITUTE_API_URL";
+}
+
 function client(): AxiosInstance {
     return axios.create({
-        baseURL: 'http://localhost:8080',
-        responseType: 'json'
+        baseURL: getApiBaseUrl(),
+        responseType: "json"
     });
 }
 

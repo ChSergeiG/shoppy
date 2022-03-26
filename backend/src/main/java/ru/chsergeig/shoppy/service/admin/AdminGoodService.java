@@ -4,7 +4,7 @@ import ru.chsergeig.shoppy.dto.admin.GoodDto;
 
 import java.util.List;
 
-public interface GoodService {
+public interface AdminGoodService {
 
     List<GoodDto> getAllGoods();
 

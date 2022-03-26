@@ -29,6 +29,8 @@ dependencies {
     implementation(group = "org.springframework.boot", name = "spring-boot-starter-jooq")
     implementation(group = "org.springframework.boot", name = "spring-boot-starter-security")
     implementation(group = "org.springframework.boot", name = "spring-boot-starter-web")
+    implementation(group = "org.springframework.data", name = "spring-data-commons")
+
 
     testImplementation(group = "org.springframework.boot", name = "spring-boot-starter-test")
 
@@ -48,6 +50,12 @@ java {
 }
 
 tasks {
+    bootJar {
+        layered {
+            enabled = true
+        }
+    }
+
     test {
         useJUnitPlatform()
     }

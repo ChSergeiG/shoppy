@@ -14,4 +14,7 @@ tasks {
     "npm_start" {
         dependsOn(npmInstall)
     }
+    "npm_run_build" {
+        dependsOn(npmInstall)
+    }
 }

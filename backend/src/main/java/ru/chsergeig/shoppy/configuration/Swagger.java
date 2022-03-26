@@ -14,6 +14,7 @@ import org.springframework.boot.actuate.endpoint.web.annotation.ServletEndpoints
 import org.springframework.boot.actuate.endpoint.web.servlet.WebMvcEndpointHandlerMapping;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
 import org.springframework.util.StringUtils;
 import springfox.documentation.builders.PathSelectors;
@@ -31,7 +32,18 @@ import java.util.List;
 public class Swagger {
 
     @Bean
-    public Docket api() {
+    @Profile("dev")
+    public Docket devApi() {
+        return new Docket(DocumentationType.SWAGGER_2)
+                .select()
+                .apis(RequestHandlerSelectors.any())
+                .paths(PathSelectors.any())
+                .build();
+    }
+
+    @Bean
+    @Profile("!dev")
+    public Docket prodApi() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
                 .apis(RequestHandlerSelectors.any())
@@ -43,7 +55,8 @@ public class Swagger {
      * To work with swagger 3
      */
     @Bean
-    public WebMvcEndpointHandlerMapping webEndpointServletHandlerMapping(
+    @Profile("dev")
+    public WebMvcEndpointHandlerMapping devWebEndpointServletHandlerMapping(
             WebEndpointsSupplier webEndpointsSupplier,
             ServletEndpointsSupplier servletEndpointsSupplier,
             ControllerEndpointsSupplier controllerEndpointsSupplier,
@@ -57,6 +70,31 @@ public class Swagger {
         allEndpoints.addAll(webEndpoints);
         allEndpoints.addAll(servletEndpointsSupplier.getEndpoints());
         allEndpoints.addAll(controllerEndpointsSupplier.getEndpoints());
+        String basePath = webEndpointProperties.getBasePath();
+        EndpointMapping endpointMapping = new EndpointMapping(basePath);
+        boolean shouldRegisterLinksMapping = this.shouldRegisterLinksMapping(webEndpointProperties, environment, basePath);
+        return new WebMvcEndpointHandlerMapping(
+                endpointMapping,
+                webEndpoints,
+                endpointMediaTypes,
+                corsProperties.toCorsConfiguration(),
+                new EndpointLinksResolver(allEndpoints, basePath),
+                shouldRegisterLinksMapping,
+                null
+        );
+    }
+
+    @Bean
+    @Profile("!dev")
+    public WebMvcEndpointHandlerMapping prodWebEndpointServletHandlerMapping(
+            WebEndpointsSupplier webEndpointsSupplier,
+            EndpointMediaTypes endpointMediaTypes,
+            CorsEndpointProperties corsProperties,
+            WebEndpointProperties webEndpointProperties,
+            Environment environment
+    ) {
+        List<ExposableEndpoint<?>> allEndpoints = new ArrayList<>();
+        Collection<ExposableWebEndpoint> webEndpoints = webEndpointsSupplier.getEndpoints();
         String basePath = webEndpointProperties.getBasePath();
         EndpointMapping endpointMapping = new EndpointMapping(basePath);
         boolean shouldRegisterLinksMapping = this.shouldRegisterLinksMapping(webEndpointProperties, environment, basePath);
