@@ -32,7 +32,7 @@ services:
   frontend:
     image: chsergeig/shoppy-front:latest
     healthcheck:
-      test: [ "CMD-SHELL", "wget -nv --spider http://localhost:8080/actuator/health || exit 1" ]
+      test: [ "CMD-SHELL", "service nginx status || exit 1" ]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -43,7 +43,7 @@ services:
   nginx:
     image: nginx:latest
     healthcheck:
-      test: [ "CMD-SHELL", "wget -nv --spider http://localhost:8080/actuator/health || exit 1" ]
+      test: [ "CMD-SHELL", "service nginx status || exit 1" ]
       interval: 5s
       timeout: 5s
       retries: 5

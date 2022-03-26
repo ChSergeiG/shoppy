@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.chsergeig.shoppy.dao.AccountRepository;
 import ru.chsergeig.shoppy.dao.AccountRoleRepository;
 import ru.chsergeig.shoppy.dto.admin.AccountDto;
+import ru.chsergeig.shoppy.jooq.enums.AccountRole;
 import ru.chsergeig.shoppy.jooq.enums.Status;
 import ru.chsergeig.shoppy.jooq.tables.pojos.Accounts;
 import ru.chsergeig.shoppy.jooq.tables.pojos.AccountsRoles;
@@ -49,14 +50,28 @@ public class AdminAccountServiceImpl implements AdminAccountService {
     @Override
     public AccountDto getAccountByLogin(String login) {
         List<Accounts> users = accountRepository.fetchByLogin(login);
-        return users.isEmpty() ? null : accountMapper.map(users.get(0));
+        AccountDto dto = users.isEmpty() ? null : accountMapper.map(users.get(0));
+        if (dto == null) {
+            return null;
+        }
+        List<AccountsRoles> accountRoles = accountRoleRepository.fetchByAccountId(dto.getId());
+        dto.setAccountRoles(
+                accountRoles.stream()
+                        .map(AccountsRoles::getRole)
+                        .collect(Collectors.toList())
+        );
+        return dto;
     }
 
     @Override
+    @Transactional
     public AccountDto addAccount(String name) {
         Accounts pojo = new Accounts(null, name, null, false, Status.ADDED);
         accountRepository.insert(pojo);
-        return accountMapper.map(pojo);
+        accountRoleRepository.insert(new AccountsRoles(pojo.getId(), AccountRole.ROLE_USER));
+        AccountDto dto = accountMapper.map(pojo);
+        dto.setAccountRoles(List.of(AccountRole.ROLE_USER));
+        return dto;
     }
 
     @Override
