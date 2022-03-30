@@ -29,11 +29,11 @@ const AccountsTable: React.FC<IAdminTableProps<IAccount>> = (props) => {
     const createHeaderRow = () => commonCreateHeaderRow(
         "header-IAccount",
         [
-            {columnNumber: 0, width: "10%", align: "center", key: "id", value: "ID"},
+            {columnNumber: 0, width: "5%", align: "center", key: "id", value: "ID"},
             {columnNumber: 1, width: "15%", align: "center", key: "login", value: "Login"},
             {columnNumber: 2, width: "15%", align: "center", key: "password", value: "Password"},
             {columnNumber: 3, width: "30%", key: "group", value: "Group"},
-            {columnNumber: 4, width: "10%", key: "status", value: "Status"},
+            {columnNumber: 4, width: "15%", key: "status", value: "Status"},
             {columnNumber: 5, width: "20%", align: "center", key: "actions", value: "Actions"},
         ]);
 

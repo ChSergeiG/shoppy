@@ -1,10 +1,11 @@
-import React from "react";
+import React, {useState} from "react";
 import type {AlertColor} from "@mui/material";
 import type {IApplicationContext} from "../types/IApplicationContextType";
 import {LOCAL_STORAGE_JWT_KEY} from "./pages/admin/components/AuthorizationOverlay";
 import {getProbeLogin} from "./utils/API";
 import type {IStatus} from "../types/IStatus";
 import type {IAccountRole} from "../types/IAccountRole";
+import type {IButtonBarItem} from "./components/ButtonBar";
 
 export const ApplicationContext = React.createContext<IApplicationContext>({
     token: "",
@@ -51,6 +52,8 @@ export const ApplicationContextProvider: React.FC<React.PropsWithChildren<{}>> =
     const [statuses, setStatuses] = React.useState<IStatus[]>([]);
     const [accountRoles, setAccountRoles] = React.useState<IAccountRole[]>([]);
 
+    const [buttonBarItems, setButtonBarItems] = React.useState<IButtonBarItem[]>([]);
+
     const setValues: IApplicationContext["setSnackBarValues"] = ({message, color}) => {
         setMessage(`[${crypto.randomUUID()}] ${message}`);
         setColor(color);
@@ -64,6 +67,7 @@ export const ApplicationContextProvider: React.FC<React.PropsWithChildren<{}>> =
                 authorized, setAuthorized,
                 adminFilter, setAdminFilter,
                 message, color, setSnackBarValues: setValues,
+                buttonBarItems, setButtonBarItems,
                 statuses, setStatuses, accountRoles, setAccountRoles
             }}
         />

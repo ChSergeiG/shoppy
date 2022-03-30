@@ -1,8 +1,6 @@
-import React, {PropsWithChildren, useContext} from "react";
-import ButtonBar from "../../components/ButtonBar";
-import {Link, useParams} from "react-router-dom";
+import React, {PropsWithChildren, useContext, useEffect} from "react";
+import {useParams} from "react-router-dom";
 import AuthorizationOverlay from "./components/AuthorizationOverlay";
-import {Button} from "@mui/material";
 import SearchField from "./components/SearchField";
 import {AccountsTable, GoodsTable, OrdersTable} from ".";
 import type {IAccount, IAdminContent, IAdminTableProps, IGood, IOrder} from "../../../types/AdminTypes";
@@ -24,6 +22,9 @@ import {
     updateExistingOrder
 } from "src/utils/API";
 import {ApplicationContext} from "../../applicationContext";
+import {Home, Logout, ManageAccounts, ShoppingBag, ShoppingBasket} from "@mui/icons-material";
+import type {IButtonBarItem} from "../../components/ButtonBar";
+import {Box} from "@mui/material";
 
 const AdminPage = <T extends IAdminContent>() => {
 
@@ -68,21 +69,62 @@ const AdminPage = <T extends IAdminContent>() => {
         }
     }
 
+    const buttonsForBar = (): IButtonBarItem[] => {
+        const buttons = [
+            {
+                routerLinkProps: {to: "/"},
+                adminButton: false,
+                index: -1,
+                text: "Home",
+                icon: <Home/>
+            }
+        ]
+        if (context.authorized) {
+            buttons.push(
+                {
+                    routerLinkProps: {to: "/admin/accounts"},
+                    adminButton: true,
+                    index: 10,
+                    text: "Accounts",
+                    icon: <ManageAccounts/>
+                },
+                {
+                    routerLinkProps: {to: "/admin/goods"},
+                    adminButton: true,
+                    index: 20,
+                    text: "Goods",
+                    icon: <ShoppingBasket/>
+                },
+                {
+                    routerLinkProps: {to: "/admin/orders"},
+                    adminButton: true,
+                    index: 30,
+                    text: "Orders",
+                    icon: <ShoppingBag/>
+                },
+                {
+                    routerLinkProps: {to: "/"},
+                    adminButton: true,
+                    index: 1000,
+                    text: "Logout",
+                    icon: <Logout/>
+                }
+            );
+        }
+        return buttons;
+    }
+
+    useEffect(
+        () => context.setButtonBarItems?.(buttonsForBar()),
+        [context.authorized]
+    );
 
     return context.authorized
         ? (
-            <>
-                <ButtonBar
-                    items={[
-                        {element: (<Button><Link to="/">Main</Link></Button>), adminButton: false},
-                        {element: (<Button><Link to="/admin/accounts">Accounts</Link></Button>), adminButton: true},
-                        {element: (<Button><Link to="/admin/goods">Goods</Link></Button>), adminButton: true},
-                        {element: (<Button><Link to="/admin/orders">Orders</Link></Button>), adminButton: true}
-                    ]}
-                />
+            <Box>
                 <SearchField/>
                 {resolveTable()}
-            </>
+            </Box>
         ) : (
             <AuthorizationOverlay/>
         );

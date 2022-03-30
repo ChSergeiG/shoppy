@@ -28,11 +28,11 @@ const GoodsTable: React.FC<IAdminTableProps<IGood>> = (props) => {
     const createHeaderRow = () => commonCreateHeaderRow(
         "header-IGood",
         [
-            {columnNumber: 0, width: "10%", align: "center", key: "id", value: "ID"},
+            {columnNumber: 0, width: "5%", align: "center", key: "id", value: "ID"},
             {columnNumber: 1, width: "20%", key: "name", value: "Name"},
             {columnNumber: 2, width: "20%", key: "price", value: "Price"},
             {columnNumber: 3, width: "20%", key: "article", value: "Article"},
-            {columnNumber: 4, width: "10%", key: "status", value: "Status"},
+            {columnNumber: 4, width: "15%", key: "status", value: "Status"},
             {columnNumber: 5, width: "20%", align: "center", key: "actions", value: "Actions"},
         ]);
 

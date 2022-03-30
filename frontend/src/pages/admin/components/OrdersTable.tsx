@@ -28,9 +28,9 @@ const OrdersTable: React.FC<IAdminTableProps<IOrder>> = (props) => {
     const createHeaderRow = () => commonCreateHeaderRow(
         "header-IOrder",
         [
-            {columnNumber: 0, width: "10%", align: "center", key: "id", value: "ID"},
+            {columnNumber: 0, width: "5%", align: "center", key: "id", value: "ID"},
             {columnNumber: 1, width: "60%", key: "info", value: "Info"},
-            {columnNumber: 2, width: "10%", key: "status", value: "Status"},
+            {columnNumber: 2, width: "15%", key: "status", value: "Status"},
             {columnNumber: 3, width: "20%", align: "center", key: "actions", value: "Actions"},
         ]);
 

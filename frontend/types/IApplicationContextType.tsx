@@ -1,6 +1,7 @@
 import type {AlertColor} from "@mui/material";
 import type {IStatus} from "./IStatus";
 import type {IAccountRole} from "./IAccountRole";
+import type {IButtonBarItem} from "../src/components/ButtonBar";
 
 export type IApplicationContext = {
     // authorization
@@ -17,6 +18,10 @@ export type IApplicationContext = {
     message: string;
     color: AlertColor;
     setSnackBarValues?: (_: { message: string, color: AlertColor }) => void;
+
+    // button bar
+    buttonBarItems?: IButtonBarItem[];
+    setButtonBarItems?: (_: IButtonBarItem[]) => void;
 
     // enums
     statuses: IStatus[];

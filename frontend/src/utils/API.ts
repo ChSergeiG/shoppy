@@ -6,7 +6,7 @@ import type {IApplicationContext} from "../../types/IApplicationContextType";
 import type {IAccountRole} from "../../types/IAccountRole";
 
 function getApiBaseUrl() : string {
-    const envValue = process.env["API_BASE_URL"]?.trim();
+    const envValue = process.env["REACT_APP_API_BASE_URL"]?.trim();
     if (envValue !== undefined && envValue.length > 0) {
         return  envValue;
     }
