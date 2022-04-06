@@ -1,13 +1,17 @@
-import React, {useContext, useEffect} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {Box, Paper} from "@mui/material";
 import GoodCard from "../components/GoodCard";
-import {Login, Logout, ManageAccounts, ShoppingBag} from "@mui/icons-material";
+import {Login, Logout, ManageAccounts, ShoppingBag, ShoppingBasket} from "@mui/icons-material";
 import {ApplicationContext} from "../applicationContext";
 import type {IButtonBarItem} from "../components/ButtonBar";
+import type {IGood} from "../../types/AdminTypes";
+import {getAllGoods} from "../utils/API";
 
-const MainPage: React.FC = () => {
+const MainPage: React.FC<React.PropsWithChildren<{}>> = (props) => {
 
     const context = useContext(ApplicationContext);
+
+    const [state, setState] = useState<{ goods: IGood[] }>({goods: []});
 
     const buttonsForBar = (): IButtonBarItem[] => {
         const buttons: IButtonBarItem[] = [];
@@ -25,7 +29,7 @@ const MainPage: React.FC = () => {
                     adminButton: true,
                     index: 20,
                     text: "Goods",
-                    icon: <ShoppingBag/>
+                    icon: <ShoppingBasket/>
                 },
                 {
                     routerLinkProps: {to: "/admin/orders"},
@@ -59,50 +63,39 @@ const MainPage: React.FC = () => {
         [context.authorized]
     );
 
+    useEffect(
+        () => {
+            getAllGoods(undefined, 0, 5)
+                .then((r) => {
+                    setState((prevState => {
+                        return {...prevState, goods: r.data.content};
+                    }))
+                })
+                .catch((_) => {
+                    context.setSnackBarValues?.({message: "Cant get goods", color: "error"});
+                });
+        },
+        []
+    );
+
     return (
         <Box>
             <Paper
                 sx={{display: "flex"}}
             >
-                <GoodCard
-                    sx={{
-                        m: "10px",
-                        maxWidth: "200px"
-                    }}
-                    good={{
-                        id: 1,
-                        name: "well",
-                        price: 17.4,
-                        article: "asd-4445-ol",
-                        status: "ACTIVE"
-                    }}
-                />
-                <GoodCard
-                    sx={{
-                        m: "10px",
-                        maxWidth: "200px"
-                    }}
-                    good={{
-                        id: 2,
-                        name: "well",
-                        price: 17.4,
-                        article: "asd-4445-ol",
-                        status: "ACTIVE"
-                    }}
-                />
-                <GoodCard
-                    sx={{
-                        m: "10px",
-                        maxWidth: "200px"
-                    }}
-                    good={{
-                        id: 3,
-                        name: "well",
-                        price: 17.4,
-                        article: "asd-4445-ol",
-                        status: "ACTIVE"
-                    }}
-                />
+                {
+                    state.goods.map((g) =>
+                        <GoodCard
+                            sx={{
+                                m: "10px",
+                                width: "250px"
+                            }}
+                            variant="outlined"
+                            good={g}
+                            key={`good-${g.article}`}
+                        />
+                    )
+                }
             </Paper>
         </Box>
     );

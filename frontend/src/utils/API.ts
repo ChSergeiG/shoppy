@@ -4,11 +4,12 @@ import type {IStatus} from "../../types/IStatus";
 import type {IResponseType} from "../../types/IResponseType";
 import type {IApplicationContext} from "../../types/IApplicationContextType";
 import type {IAccountRole} from "../../types/IAccountRole";
+import type {IPage} from "../../types/IPage";
 
-function getApiBaseUrl() : string {
+function getApiBaseUrl(): string {
     const envValue = process.env["REACT_APP_API_BASE_URL"]?.trim();
     if (envValue !== undefined && envValue.length > 0) {
-        return  envValue;
+        return envValue;
     }
     return "SUBSTITUTE_API_URL";
 }
@@ -102,7 +103,6 @@ export async function getOrder(context: IApplicationContext, id: number | undefi
         .get(`/admin/order/${id}`, {headers: {"X-Authorization": context.token || ""}});
 }
 
-
 export async function createNewDefaultOrder(context: IApplicationContext, info: string): Promise<AxiosResponse<IOrder>> {
     return client()
         .put(`/admin/order/${info}`, {}, {headers: {"X-Authorization": context.token || ""}});
@@ -121,6 +121,46 @@ export async function updateExistingOrder(context: IApplicationContext, orderToU
 export async function deleteExistingOrder(context: IApplicationContext, orderToDelete: IOrder): Promise<AxiosResponse<number>> {
     return client()
         .delete(`/admin/order/${orderToDelete.id}`, {headers: {"X-Authorization": context.token || ""}});
+}
+
+/////////////////////////////////
+// common/CommonGoodController //
+/////////////////////////////////
+
+export async function getAllGoods(
+    filter?: string,
+    page?: number,
+    pageSize?: number
+): Promise<AxiosResponse<IPage<IGood>>> {
+    const params: string[] = []
+    if (filter && filter.trim().length !== 0) {
+        params.push(`filter=${filter.trim()}`);
+    }
+    if (page !== undefined) {
+        params.push(`page=${page}`);
+    }
+    if (pageSize !== undefined) {
+        params.push(`size=${pageSize}`);
+    }
+    if (params.length > 0) {
+        return client()
+            .get(`/goods/get_all?${params.join("&")}`);
+    } else {
+        return client()
+            .get(`/goods/get_all`);
+    }
+}
+
+//////////////////////////////////
+// common/CommonOrderController //
+//////////////////////////////////
+
+export async function postOrder(
+    context: IApplicationContext,
+    body: IGood[]
+): Promise<AxiosResponse<string>> {
+    return client()
+        .post(`/orders/create`, body, {headers: {"X-Authorization": context.token || ""}})
 }
 
 /////////////////////////////////////

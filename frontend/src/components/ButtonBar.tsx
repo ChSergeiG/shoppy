@@ -25,6 +25,9 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import type {LinkProps} from "react-router-dom";
 import {Link} from "react-router-dom";
 import {LOCAL_STORAGE_JWT_KEY} from "../pages/admin/components/AuthorizationOverlay";
+import {ShoppingBag} from "@mui/icons-material";
+import {postOrder} from "../utils/API";
+import {removeAllFromBasket, selectedGoods} from "../store/UserBucketStore";
 
 type ButtonBarState = {
     open: boolean;
@@ -110,6 +113,7 @@ const ButtonBarDrawer = styled(Drawer, {shouldForwardProp: (prop) => prop !== 'o
     }),
 );
 
+
 const ButtonBar: React.FC<PropsWithChildren<{}>> = (props) => {
     const context = useContext(ApplicationContext);
 
@@ -118,6 +122,19 @@ const ButtonBar: React.FC<PropsWithChildren<{}>> = (props) => {
     });
 
     const theme = useTheme();
+
+    const handlePlaceOrder = (e: any) => {
+        postOrder(context, selectedGoods.getState())
+            .then((r) => context.setSnackBarValues?.({
+                message: "Success " + r.data,
+                color: "success"
+            }))
+            .catch((r) => context.setSnackBarValues?.({
+                message: r.response.data,
+                color: "error"
+            }))
+        removeAllFromBasket();
+    };
 
     const handleDrawerOpen = () => {
         setState(prevState => {
@@ -167,6 +184,17 @@ const ButtonBar: React.FC<PropsWithChildren<{}>> = (props) => {
                     >
                         Well well well //
                     </Typography>
+                    <Box sx={{flexGrow: 1}}/>
+                    <IconButton
+                        color="inherit"
+                        onClick={handlePlaceOrder}
+                        sx={{
+                            marginRight: 5,
+                            ...(state.open && {display: 'none'}),
+                        }}
+                    >
+                        <ShoppingBag/>
+                    </IconButton>
                 </Toolbar>
             </AppBar>
             <ButtonBarDrawer
@@ -190,6 +218,7 @@ const ButtonBar: React.FC<PropsWithChildren<{}>> = (props) => {
                                 <Link
                                     {...i.routerLinkProps}
                                     style={{textDecoration: "inherit", color: "inherit"}}
+                                    key={`button-${context.buttonBarItems?.indexOf(i)}`}
                                 >
                                     <ListItem
                                         button
@@ -215,6 +244,7 @@ const ButtonBar: React.FC<PropsWithChildren<{}>> = (props) => {
                                 <Link
                                     {...i.routerLinkProps}
                                     style={{textDecoration: "inherit", color: "inherit"}}
+                                    key={`admin-button-${context.buttonBarItems?.indexOf(i)}`}
                                 >
                                     <ListItem
                                         button
@@ -234,12 +264,13 @@ const ButtonBar: React.FC<PropsWithChildren<{}>> = (props) => {
                     <Divider/>
                     {
                         context.buttonBarItems
-                            ?.filter(i =>   i.index >= 1000)
+                            ?.filter(i => i.index >= 1000)
                             .sort((bbi1, bbi2) => bbi1.index - bbi2.index)
                             .map(i =>
                                 <Link
                                     {...i.routerLinkProps}
                                     style={{textDecoration: "inherit", color: "inherit"}}
+                                    key={`admin-button-${context.buttonBarItems?.indexOf(i)}`}
                                 >
                                     <ListItem
                                         button

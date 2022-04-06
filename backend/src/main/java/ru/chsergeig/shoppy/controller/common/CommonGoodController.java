@@ -33,8 +33,7 @@ public class CommonGoodController {
             @RequestParam(value = "filter", required = false) String filter,
             Pageable pageable
     ) {
-//        commonGoodService.
-        return ResponseEntity.ok(Page.empty());
+        return ResponseEntity.ok(commonGoodService.getAllGoodsUsingFilterAndPagination(filter, pageable));
     }
 
 

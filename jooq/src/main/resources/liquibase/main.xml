@@ -5,5 +5,6 @@
 
     <include file="changelog/00-01-init.sql" relativeToChangelogFile="true"/>
     <include file="changelog/00-02-create-role-model.sql" relativeToChangelogFile="true"/>
+    <include file="changelog/00-03-add-good-guid.sql" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

@@ -1,13 +1,13 @@
 package ru.chsergeig.shoppy.dto.admin;
 
 import lombok.Data;
-import ru.chsergeig.shoppy.jooq.enums.Status;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import ru.chsergeig.shoppy.dto.CommonOrderDto;
 
 @Data
-public class OrderDto {
-
-    public Integer id;
-    public String info;
-    public Status status;
-
+@EqualsAndHashCode(callSuper = true)
+@NoArgsConstructor
+public class OrderDto extends CommonOrderDto {
+    private String guid;
 }

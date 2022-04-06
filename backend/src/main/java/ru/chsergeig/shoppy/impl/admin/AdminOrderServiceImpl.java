@@ -40,7 +40,7 @@ public class AdminOrderServiceImpl implements AdminOrderService {
 
     @Override
     public OrderDto addOrder(String info) {
-        Orders pojo = new Orders(null, info, Status.ADDED);
+        Orders pojo = new Orders(null, info, Status.ADDED, null);
         orderRepository.insert(pojo);
         return orderMapper.map(pojo);
     }

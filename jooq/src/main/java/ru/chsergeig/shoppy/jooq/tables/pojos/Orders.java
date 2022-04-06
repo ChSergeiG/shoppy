@@ -20,6 +20,7 @@ public class Orders implements Serializable {
     private Integer id;
     private String  info;
     private Status  status;
+    private String  guid;
 
     public Orders() {}
 
@@ -27,16 +28,19 @@ public class Orders implements Serializable {
         this.id = value.id;
         this.info = value.info;
         this.status = value.status;
+        this.guid = value.guid;
     }
 
     public Orders(
         Integer id,
         String  info,
-        Status  status
+        Status  status,
+        String  guid
     ) {
         this.id = id;
         this.info = info;
         this.status = status;
+        this.guid = guid;
     }
 
     /**
@@ -84,6 +88,21 @@ public class Orders implements Serializable {
         return this;
     }
 
+    /**
+     * Getter for <code>public.orders.guid</code>.
+     */
+    public String getGuid() {
+        return this.guid;
+    }
+
+    /**
+     * Setter for <code>public.orders.guid</code>.
+     */
+    public Orders setGuid(String guid) {
+        this.guid = guid;
+        return this;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("Orders (");
@@ -91,6 +110,7 @@ public class Orders implements Serializable {
         sb.append(id);
         sb.append(", ").append(info);
         sb.append(", ").append(status);
+        sb.append(", ").append(guid);
 
         sb.append(")");
         return sb.toString();

@@ -9,7 +9,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row3;
+import org.jooq.Row4;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -60,6 +60,11 @@ public class Orders extends TableImpl<OrdersRecord> {
      * The column <code>public.orders.status</code>.
      */
     public final TableField<OrdersRecord, Status> STATUS = createField(DSL.name("status"), SQLDataType.VARCHAR.nullable(false).defaultValue(DSL.field("'ADDED'::status", SQLDataType.VARCHAR)).asEnumDataType(ru.chsergeig.shoppy.jooq.enums.Status.class), this, "");
+
+    /**
+     * The column <code>public.orders.guid</code>.
+     */
+    public final TableField<OrdersRecord, String> GUID = createField(DSL.name("guid"), SQLDataType.VARCHAR(36).defaultValue(DSL.field("NULL::character varying", SQLDataType.VARCHAR)), this, "");
 
     private Orders(Name alias, Table<OrdersRecord> aliased) {
         this(alias, aliased, null);
@@ -136,11 +141,11 @@ public class Orders extends TableImpl<OrdersRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row3 type methods
+    // Row4 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row3<Integer, String, Status> fieldsRow() {
-        return (Row3) super.fieldsRow();
+    public Row4<Integer, String, Status, String> fieldsRow() {
+        return (Row4) super.fieldsRow();
     }
 }

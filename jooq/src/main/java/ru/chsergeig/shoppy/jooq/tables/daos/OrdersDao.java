@@ -98,4 +98,19 @@ public class OrdersDao extends DAOImpl<OrdersRecord, ru.chsergeig.shoppy.jooq.ta
     public List<ru.chsergeig.shoppy.jooq.tables.pojos.Orders> fetchByStatus(Status... values) {
         return fetch(Orders.ORDERS.STATUS, values);
     }
+
+    /**
+     * Fetch records that have <code>guid BETWEEN lowerInclusive AND
+     * upperInclusive</code>
+     */
+    public List<ru.chsergeig.shoppy.jooq.tables.pojos.Orders> fetchRangeOfGuid(String lowerInclusive, String upperInclusive) {
+        return fetchRange(Orders.ORDERS.GUID, lowerInclusive, upperInclusive);
+    }
+
+    /**
+     * Fetch records that have <code>guid IN (values)</code>
+     */
+    public List<ru.chsergeig.shoppy.jooq.tables.pojos.Orders> fetchByGuid(String... values) {
+        return fetch(Orders.ORDERS.GUID, values);
+    }
 }
