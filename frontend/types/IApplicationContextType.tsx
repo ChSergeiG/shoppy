@@ -4,11 +4,6 @@ import type {IAccountRole} from "./IAccountRole";
 import type {IButtonBarItem} from "../src/components/ButtonBar";
 
 export type IApplicationContext = {
-    // authorization
-    token: string;
-    setToken?: (token: string) => void;
-    authorized: boolean;
-    setAuthorized?: (authorized: boolean) => void;
 
     // admin filtering
     adminFilter?: string;

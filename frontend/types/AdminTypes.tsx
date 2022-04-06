@@ -1,6 +1,5 @@
 import type {IStatus} from "./IStatus";
 import type {IResponseType} from "./IResponseType";
-import type {IApplicationContext} from "./IApplicationContextType";
 import type {IAccountRole} from "./IAccountRole";
 
 export type IGood = {
@@ -38,13 +37,13 @@ export type IAdminTableState<T extends IAdminContent> = {
 };
 
 export type IAdminTableProps<T extends IAdminContent> = {
-    getDataCallback: (context: IApplicationContext) => Promise<IResponseType<T[]>>;
+    getDataCallback: () => Promise<IResponseType<T[]>>;
     columns: number;
     newEntityCreator?: () => T;
-    createCallback: (context: IApplicationContext, entity: T) => Promise<IResponseType<T>>;
-    updateCallback: (context: IApplicationContext, entity: T) => Promise<IResponseType<T>>;
-    deleteCallback: (context: IApplicationContext, entity: T) => Promise<IResponseType<{}>>;
-    refreshCallback: (context: IApplicationContext, entity: T) => Promise<IResponseType<T> | undefined>;
+    createCallback: (entity: T) => Promise<IResponseType<T>>;
+    updateCallback: (entity: T) => Promise<IResponseType<T>>;
+    deleteCallback: (entity: T) => Promise<IResponseType<{}>>;
+    refreshCallback: (entity: T) => Promise<IResponseType<T> | undefined>;
 };
 
 export type IJwtRequest = {

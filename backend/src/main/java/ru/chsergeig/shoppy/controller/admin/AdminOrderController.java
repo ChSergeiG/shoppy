@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.chsergeig.shoppy.dto.admin.AccountDto;
+import ru.chsergeig.shoppy.dto.admin.CountedGoodDto;
 import ru.chsergeig.shoppy.dto.admin.OrderDto;
 import ru.chsergeig.shoppy.exception.ControllerException;
 import ru.chsergeig.shoppy.service.admin.AdminOrderService;
@@ -88,7 +90,7 @@ public class AdminOrderController {
     )
     @PutMapping("{info}")
     public ResponseEntity<OrderDto> addDefaultOrder(
-            @PathVariable String info
+            @PathVariable("info") String info
     ) {
         try {
             return ResponseEntity.status(HttpStatus.CREATED).body(adminOrderService.addOrder(info));
@@ -160,7 +162,7 @@ public class AdminOrderController {
     )
     @DeleteMapping("{id}")
     public ResponseEntity<Integer> deleteOrder(
-            @PathVariable Integer id
+            @PathVariable("id") Integer id
     ) {
         try {
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(adminOrderService.deleteOrder(id));
@@ -171,6 +173,34 @@ public class AdminOrderController {
                     e
             );
         }
+    }
+
+    @Operation(
+            summary = "Get all accounts assigned to given order",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "All good"),
+                    @ApiResponse(responseCode = "401", description = "Need authorization")
+            }
+    )
+    @GetMapping("accounts/{orderId}")
+    public ResponseEntity<List<AccountDto>> getAccountsByOrderId(
+            @PathVariable("orderId") Integer orderId
+    ) {
+        return ResponseEntity.ok(adminOrderService.getAccountsByOrderId(orderId));
+    }
+
+    @Operation(
+            summary = "Get all goods assigned to given order",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "All good"),
+                    @ApiResponse(responseCode = "401", description = "Need authorization")
+            }
+    )
+    @GetMapping("goods/{orderId}")
+    public ResponseEntity<List<CountedGoodDto>> getGoodsByOrderId(
+            @PathVariable("orderId") Integer orderId
+    ) {
+        return ResponseEntity.ok(adminOrderService.getGoodsByOrderId(orderId));
     }
 
 }

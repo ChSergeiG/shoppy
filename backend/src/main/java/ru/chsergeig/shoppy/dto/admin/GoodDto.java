@@ -10,6 +10,11 @@ import ru.chsergeig.shoppy.dto.CommonGoodDto;
 @NoArgsConstructor
 public class GoodDto extends CommonGoodDto {
 
-    public Integer id;
+    private Integer id;
+
+    public GoodDto (CommonGoodDto commonGoodDto, Integer id) {
+        super(commonGoodDto);
+        this.id = id;
+    }
 
 }

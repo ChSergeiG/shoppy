@@ -10,10 +10,10 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class CommonGoodDto {
 
-    public String name;
-    public String article;
-    public Status status;
-    public BigDecimal price;
+    private String name;
+    private String article;
+    private Status status;
+    private BigDecimal price;
 
     public CommonGoodDto(CommonGoodDto dto) {
         this.name = dto.name;

@@ -1,8 +1,7 @@
 import React from "react";
 import {CircularProgress} from "@mui/material";
 
-const Spinner: React.FC = () => {
-
+export const SpinnerOverlay: React.FC = () => {
     return (
         <div
             style={{
@@ -26,7 +25,8 @@ const Spinner: React.FC = () => {
             />
         </div>
     );
-
 };
 
-export default Spinner;
+export const InlineSpinner: React.FC = () => {
+    return (<CircularProgress/>);
+}

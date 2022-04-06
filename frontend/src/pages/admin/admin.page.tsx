@@ -25,43 +25,46 @@ import {ApplicationContext} from "../../applicationContext";
 import {Home, Logout, ManageAccounts, ShoppingBag, ShoppingBasket} from "@mui/icons-material";
 import type {IButtonBarItem} from "../../components/ButtonBar";
 import {Box} from "@mui/material";
+import {authorizationStore, IAuthorizationStore} from "../../store/UserAuthorizationStore";
+import {useStore} from "effector-react";
 
 const AdminPage = <T extends IAdminContent>() => {
 
     const params = useParams();
 
     const context = useContext(ApplicationContext);
+    const authStore = useStore<IAuthorizationStore>(authorizationStore);
 
     const resolveTable = (): JSX.Element => {
         switch (params.table) {
             case "accounts" :
                 const accountsProps: PropsWithChildren<IAdminTableProps<IAccount>> = {
-                    getDataCallback: (c) => getAccounts(c),
-                    createCallback: (c, e) => createNewAccount(c, e),
-                    updateCallback: (c, e) => updateExistingAccount(c, e),
-                    deleteCallback: (c, e) => deleteExistingAccount(c, e),
-                    refreshCallback: (c, e) => getAccount(c, e.login),
+                    getDataCallback: () => getAccounts(),
+                    createCallback: (e) => createNewAccount(e),
+                    updateCallback: (e) => updateExistingAccount(e),
+                    deleteCallback: (e) => deleteExistingAccount(e),
+                    refreshCallback: (e) => getAccount(e.login),
                     columns: 6,
                 };
                 return <AccountsTable {...accountsProps} />;
             case "goods" :
                 const goodsProps: PropsWithChildren<IAdminTableProps<IGood>> = {
-                    getDataCallback: (c) => getGoods(c),
-                    createCallback: (c, e) => createNewGood(c, e),
-                    updateCallback: (c, e) => updateExistingGood(c, e),
-                    deleteCallback: (c, e) => deleteExistingGood(c, e),
-                    refreshCallback: (c, e) => getGood(c, e.id),
+                    getDataCallback: () => getGoods(),
+                    createCallback: (e) => createNewGood(e),
+                    updateCallback: (e) => updateExistingGood(e),
+                    deleteCallback: (e) => deleteExistingGood(e),
+                    refreshCallback: (e) => getGood(e.id),
                     columns: 5,
                 };
                 return <GoodsTable {...goodsProps} />;
             case "orders" :
                 const ordersProps: PropsWithChildren<IAdminTableProps<IOrder>> = {
-                    getDataCallback: (c) => getOrders(c),
-                    createCallback: (c, e) => createNewOrder(c, e),
-                    updateCallback: (c, e) => updateExistingOrder(c, e),
-                    deleteCallback: (c, e) => deleteExistingOrder(c, e),
-                    refreshCallback: (c, e) => getOrder(c, e.id),
-                    columns: 5,
+                    getDataCallback: () => getOrders(),
+                    createCallback: (e) => createNewOrder(e),
+                    updateCallback: (e) => updateExistingOrder(e),
+                    deleteCallback: (e) => deleteExistingOrder(e),
+                    refreshCallback: (e) => getOrder(e.id),
+                    columns: 6,
                 };
                 return <OrdersTable {...ordersProps}  />;
             default:
@@ -79,7 +82,7 @@ const AdminPage = <T extends IAdminContent>() => {
                 icon: <Home/>
             }
         ]
-        if (context.authorized) {
+        if (authStore.authorized) {
             buttons.push(
                 {
                     routerLinkProps: {to: "/admin/accounts"},
@@ -116,10 +119,10 @@ const AdminPage = <T extends IAdminContent>() => {
 
     useEffect(
         () => context.setButtonBarItems?.(buttonsForBar()),
-        [context.authorized]
+        [authStore.authorized]
     );
 
-    return context.authorized
+    return authStore.authorized
         ? (
             <Box>
                 <SearchField/>

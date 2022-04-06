@@ -96,12 +96,12 @@ export const commonRenderActionsInput = <T extends IAdminContent>(
                 onClick={async () => {
                     let newEntity: IResponseType<T> | void;
                     if (entity.id) {
-                        newEntity = await props.updateCallback(context, entity)
+                        newEntity = await props.updateCallback(entity)
                             .catch((r) => {
                                 context.setSnackBarValues?.({message: r.response.data, color: "warning"})
                             });
                     } else {
-                        newEntity = await props.createCallback(context, entity)
+                        newEntity = await props.createCallback(entity)
                             .catch((r) => {
                                 context.setSnackBarValues?.({message: r.response.data, color: "warning"})
                             });
@@ -131,7 +131,7 @@ export const commonRenderActionsInput = <T extends IAdminContent>(
             <Button
                 disabled={!isButtonActive.delete}
                 onClick={async () => {
-                    await props.deleteCallback(context, entity)
+                    await props.deleteCallback(entity)
                         .catch((r) => {
                             context.setSnackBarValues?.({
                                 message: "Cant remove entity: " + r.response.data,
@@ -155,7 +155,7 @@ export const commonRenderActionsInput = <T extends IAdminContent>(
             <Button
                 disabled={!isButtonActive.refresh}
                 onClick={async () => {
-                    const newEntity = await props.refreshCallback(context, entity)
+                    const newEntity = await props.refreshCallback(entity)
                         .catch((r) => {
                             context.setSnackBarValues?.({
                                 message: "Cant refresh entity: " + r.response.data,

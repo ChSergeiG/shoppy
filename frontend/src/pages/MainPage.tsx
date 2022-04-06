@@ -6,16 +6,19 @@ import {ApplicationContext} from "../applicationContext";
 import type {IButtonBarItem} from "../components/ButtonBar";
 import type {IGood} from "../../types/AdminTypes";
 import {getAllGoods} from "../utils/API";
+import {authorizationStore, IAuthorizationStore} from "../store/UserAuthorizationStore";
+import {useStore} from "effector-react";
 
 const MainPage: React.FC<React.PropsWithChildren<{}>> = (props) => {
 
     const context = useContext(ApplicationContext);
+    const authStore = useStore<IAuthorizationStore>(authorizationStore);
 
     const [state, setState] = useState<{ goods: IGood[] }>({goods: []});
 
     const buttonsForBar = (): IButtonBarItem[] => {
         const buttons: IButtonBarItem[] = [];
-        if (context.authorized) {
+        if (authStore.authorized) {
             buttons.push(
                 {
                     routerLinkProps: {to: "/admin/accounts"},
@@ -60,7 +63,7 @@ const MainPage: React.FC<React.PropsWithChildren<{}>> = (props) => {
 
     useEffect(
         () => context.setButtonBarItems?.(buttonsForBar()),
-        [context.authorized]
+        [authStore.authorized]
     );
 
     useEffect(

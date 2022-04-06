@@ -2,125 +2,132 @@ import axios, {AxiosInstance, AxiosResponse} from "axios";
 import type {IAccount, IGood, IJwtRequest, IJwtResponse, IOrder} from "../../types/AdminTypes";
 import type {IStatus} from "../../types/IStatus";
 import type {IResponseType} from "../../types/IResponseType";
-import type {IApplicationContext} from "../../types/IApplicationContextType";
 import type {IAccountRole} from "../../types/IAccountRole";
 import type {IPage} from "../../types/IPage";
-
-function getApiBaseUrl(): string {
-    const envValue = process.env["REACT_APP_API_BASE_URL"]?.trim();
-    if (envValue !== undefined && envValue.length > 0) {
-        return envValue;
-    }
-    return "SUBSTITUTE_API_URL";
-}
+import {authorizationStore} from "../store/UserAuthorizationStore";
 
 function client(): AxiosInstance {
     return axios.create({
-        baseURL: getApiBaseUrl(),
+        baseURL: "/api",
         responseType: "json"
     });
+}
+
+function authStore() {
+    return authorizationStore.getState();
 }
 
 /////////////////////////////
 // admin/AccountController //
 /////////////////////////////
 
-export async function getAccounts(context: IApplicationContext): Promise<IResponseType<IAccount[]>> {
+export async function getAccounts(): Promise<IResponseType<IAccount[]>> {
     return client()
-        .get("/admin/account/get_all", {headers: {"X-Authorization": context.token || ""}});
+        .get("/admin/account/get_all", {headers: {"X-Authorization": authStore().token || ""}});
 }
 
-export async function getAccount(context: IApplicationContext, login: string): Promise<IResponseType<IAccount>> {
+export async function getAccount(login: string): Promise<IResponseType<IAccount>> {
     return client()
-        .get(`/admin/account/${login}`, {headers: {"X-Authorization": context.token || ""}});
+        .get(`/admin/account/${login}`, {headers: {"X-Authorization": authStore().token || ""}});
 }
 
-export async function createNewDefaultAccount(context: IApplicationContext, login: string): Promise<IResponseType<void>> {
+export async function createNewDefaultAccount(login: string): Promise<IResponseType<void>> {
     return client()
-        .put(`/admin/account/${login}`, {}, {headers: {"X-Authorization": context.token || ""}});
+        .put(`/admin/account/${login}`, {}, {headers: {"X-Authorization": authStore().token || ""}});
 }
 
-export async function createNewAccount(context: IApplicationContext, accountToCreate: IAccount): Promise<IResponseType<IAccount>> {
+export async function createNewAccount(accountToCreate: IAccount): Promise<IResponseType<IAccount>> {
     return client()
-        .post("/admin/account/add", accountToCreate, {headers: {"X-Authorization": context.token || ""}});
+        .post("/admin/account/add", accountToCreate, {headers: {"X-Authorization": authStore().token || ""}});
 }
 
-export async function updateExistingAccount(context: IApplicationContext, accountToUpdate: IAccount): Promise<IResponseType<IAccount>> {
+export async function updateExistingAccount(accountToUpdate: IAccount): Promise<IResponseType<IAccount>> {
     return client()
-        .post("/admin/account/update", accountToUpdate, {headers: {"X-Authorization": context.token || ""}});
+        .post("/admin/account/update", accountToUpdate, {headers: {"X-Authorization": authStore().token || ""}});
 }
 
-export async function deleteExistingAccount(context: IApplicationContext, accountToDelete: IAccount): Promise<IResponseType<number>> {
+export async function deleteExistingAccount(accountToDelete: IAccount): Promise<IResponseType<number>> {
     return client()
-        .delete(`/admin/account/${accountToDelete.login}`, {headers: {"X-Authorization": context.token || ""}});
+        .delete(`/admin/account/${accountToDelete.login}`, {headers: {"X-Authorization": authStore().token || ""}});
 }
 
 //////////////////////////
 // admin/GoodController //
 //////////////////////////
 
-export async function getGoods(context: IApplicationContext): Promise<AxiosResponse<IGood[]>> {
+export async function getGoods(): Promise<AxiosResponse<IGood[]>> {
     return client()
-        .get("/admin/good/get_all", {headers: {"X-Authorization": context.token || ""}});
+        .get("/admin/good/get_all", {headers: {"X-Authorization": authStore().token || ""}});
 }
 
-export async function getGood(context: IApplicationContext, id: number | undefined): Promise<AxiosResponse<IGood> | undefined> {
+export async function getGood(id: number | undefined): Promise<AxiosResponse<IGood> | undefined> {
     return client()
-        .get(`/admin/good/${id}`, {headers: {"X-Authorization": context.token || ""}});
+        .get(`/admin/good/${id}`, {headers: {"X-Authorization": authStore().token || ""}});
 }
 
-export async function createNewDefaultGood(context: IApplicationContext, name: string): Promise<AxiosResponse<IGood>> {
+export async function createNewDefaultGood(name: string): Promise<AxiosResponse<IGood>> {
     return client()
-        .put(`/admin/good/${name}`, {}, {headers: {"X-Authorization": context.token || ""}});
+        .put(`/admin/good/${name}`, {}, {headers: {"X-Authorization": authStore().token || ""}});
 }
 
-export async function createNewGood(context: IApplicationContext, goodToCreate: IGood): Promise<AxiosResponse<IGood>> {
+export async function createNewGood(goodToCreate: IGood): Promise<AxiosResponse<IGood>> {
     return client()
-        .post("/admin/good/add", goodToCreate, {headers: {"X-Authorization": context.token || ""}});
+        .post("/admin/good/add", goodToCreate, {headers: {"X-Authorization": authStore().token || ""}});
 }
 
-export async function updateExistingGood(context: IApplicationContext, goodToUpdate: IGood): Promise<AxiosResponse<IGood>> {
+export async function updateExistingGood(goodToUpdate: IGood): Promise<AxiosResponse<IGood>> {
     return client()
-        .post("/admin/good/update", goodToUpdate, {headers: {"X-Authorization": context.token || ""}});
+        .post("/admin/good/update", goodToUpdate, {headers: {"X-Authorization": authStore().token || ""}});
 }
 
-export async function deleteExistingGood(context: IApplicationContext, goodToDelete: IGood): Promise<AxiosResponse<number>> {
+export async function deleteExistingGood(goodToDelete: IGood): Promise<AxiosResponse<number>> {
     return client()
-        .delete(`/admin/good/${goodToDelete.article}`, {headers: {"X-Authorization": context.token || ""}});
+        .delete(`/admin/good/${goodToDelete.article}`, {headers: {"X-Authorization": authStore().token || ""}});
 }
 
 ///////////////////////////
 // admin/OrderController //
 ///////////////////////////
 
-export async function getOrders(context: IApplicationContext): Promise<AxiosResponse<IOrder[]>> {
+export async function getOrders(): Promise<AxiosResponse<IOrder[]>> {
     return client()
-        .get("/admin/order/get_all", {headers: {"X-Authorization": context.token || ""}});
+        .get("/admin/order/get_all", {headers: {"X-Authorization": authStore().token || ""}});
 }
 
-export async function getOrder(context: IApplicationContext, id: number | undefined): Promise<AxiosResponse<IOrder> | undefined> {
+export async function getOrder(id: number | undefined): Promise<AxiosResponse<IOrder> | undefined> {
     return client()
-        .get(`/admin/order/${id}`, {headers: {"X-Authorization": context.token || ""}});
+        .get(`/admin/order/${id}`, {headers: {"X-Authorization": authStore().token || ""}});
 }
 
-export async function createNewDefaultOrder(context: IApplicationContext, info: string): Promise<AxiosResponse<IOrder>> {
+export async function createNewDefaultOrder(info: string): Promise<AxiosResponse<IOrder>> {
     return client()
-        .put(`/admin/order/${info}`, {}, {headers: {"X-Authorization": context.token || ""}});
+        .put(`/admin/order/${info}`, {}, {headers: {"X-Authorization": authStore().token || ""}});
 }
 
-export async function createNewOrder(context: IApplicationContext, orderToCreate: IOrder): Promise<AxiosResponse<IOrder>> {
+export async function createNewOrder(orderToCreate: IOrder): Promise<AxiosResponse<IOrder>> {
     return client()
-        .post("/admin/order/add", orderToCreate, {headers: {"X-Authorization": context.token || ""}});
+        .post("/admin/order/add", orderToCreate, {headers: {"X-Authorization": authStore().token || ""}});
 }
 
-export async function updateExistingOrder(context: IApplicationContext, orderToUpdate: IOrder): Promise<AxiosResponse<IOrder>> {
+export async function updateExistingOrder(orderToUpdate: IOrder): Promise<AxiosResponse<IOrder>> {
     return client()
-        .post("/admin/order/update", orderToUpdate, {headers: {"X-Authorization": context.token || ""}});
+        .post("/admin/order/update", orderToUpdate, {headers: {"X-Authorization": authStore().token || ""}});
 }
 
-export async function deleteExistingOrder(context: IApplicationContext, orderToDelete: IOrder): Promise<AxiosResponse<number>> {
+export async function deleteExistingOrder(orderToDelete: IOrder): Promise<AxiosResponse<number>> {
     return client()
-        .delete(`/admin/order/${orderToDelete.id}`, {headers: {"X-Authorization": context.token || ""}});
+        .delete(`/admin/order/${orderToDelete.id}`, {headers: {"X-Authorization": authStore().token || ""}});
+}
+
+export async function getAccountsByOrderId(orderToGetInfo: IOrder): Promise<AxiosResponse<IAccount[]>> {
+    return client()
+        .get(`/admin/order/accounts/${orderToGetInfo.id}`, {headers: {"X-Authorization": authStore().token || ""}});
+
+}
+
+export async function getGoodsByOrderId(orderToGetInfo: IOrder): Promise<AxiosResponse<(IGood & { count: number })[]>> {
+    return client()
+        .get(`/admin/order/goods/${orderToGetInfo.id}`, {headers: {"X-Authorization": authStore().token || ""}});
 }
 
 /////////////////////////////////
@@ -156,11 +163,10 @@ export async function getAllGoods(
 //////////////////////////////////
 
 export async function postOrder(
-    context: IApplicationContext,
     body: IGood[]
 ): Promise<AxiosResponse<string>> {
     return client()
-        .post(`/orders/create`, body, {headers: {"X-Authorization": context.token || ""}})
+        .post(`/orders/create`, body, {headers: {"X-Authorization": authStore().token || ""}})
 }
 
 /////////////////////////////////////

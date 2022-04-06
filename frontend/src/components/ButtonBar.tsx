@@ -24,10 +24,10 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import type {LinkProps} from "react-router-dom";
 import {Link} from "react-router-dom";
-import {LOCAL_STORAGE_JWT_KEY} from "../pages/admin/components/AuthorizationOverlay";
 import {ShoppingBag} from "@mui/icons-material";
 import {postOrder} from "../utils/API";
 import {removeAllFromBasket, selectedGoods} from "../store/UserBucketStore";
+import {logout} from "../store/UserAuthorizationStore";
 
 type ButtonBarState = {
     open: boolean;
@@ -124,7 +124,10 @@ const ButtonBar: React.FC<PropsWithChildren<{}>> = (props) => {
     const theme = useTheme();
 
     const handlePlaceOrder = (e: any) => {
-        postOrder(context, selectedGoods.getState())
+        if (selectedGoods.getState().length === 0) {
+            return;
+        }
+        postOrder(selectedGoods.getState())
             .then((r) => context.setSnackBarValues?.({
                 message: "Success " + r.data,
                 color: "success"
@@ -148,11 +151,9 @@ const ButtonBar: React.FC<PropsWithChildren<{}>> = (props) => {
         });
     };
 
-    const logout = (e: any) => {
+    const doLogout = (e: any) => {
         handleDrawerClose();
-        context.setAuthorized?.(false);
-        context.setToken?.("");
-        localStorage.setItem(LOCAL_STORAGE_JWT_KEY, "");
+        logout();
     };
 
     return (
@@ -275,7 +276,7 @@ const ButtonBar: React.FC<PropsWithChildren<{}>> = (props) => {
                                     <ListItem
                                         button
                                         key={`admin-button-${context.buttonBarItems?.indexOf(i)}`}
-                                        onClick={logout}
+                                        onClick={doLogout}
                                     >
                                         <ListItemIcon>
                                             {i.icon}

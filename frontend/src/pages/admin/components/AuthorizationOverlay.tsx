@@ -1,8 +1,16 @@
-import React, {useContext, useEffect, useState} from "react";
+import React, {useContext, useState} from "react";
 import {Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField} from "@mui/material";
 import {postLogin} from "../../../utils/API";
-import {ApplicationContext, verifyAuthorization} from "../../../applicationContext";
+import {ApplicationContext} from "../../../applicationContext";
 import {Link} from "react-router-dom";
+import {
+    authorizationStore,
+    IAuthorizationStore,
+    updateAuthorizationState,
+    updateAuthorizationToken,
+    verifyAuthorization
+} from "../../../store/UserAuthorizationStore";
+import {useStore} from "effector-react";
 
 type AuthorizationOverlayState = {
     login: string;
@@ -15,14 +23,12 @@ const AuthorizationOverlay: React.FC = () => {
 
     const context = useContext(ApplicationContext);
 
+    const authStore = useStore<IAuthorizationStore>(authorizationStore);
+
     const [state, setState] = useState<AuthorizationOverlayState>({
         login: "",
         password: "",
     });
-
-    useEffect(() => {
-        verifyAuthorization(context).then();
-    }, [context.token]);
 
     const handleChange = ({target: {name, value}}: React.ChangeEvent<HTMLInputElement>) => {
         setState({...state, [name]: value});
@@ -32,11 +38,13 @@ const AuthorizationOverlay: React.FC = () => {
         e.preventDefault();
         const tokenResponse = await postLogin({...state})
             .catch((r) => {
-                context.setAuthorized?.(false);
+                updateAuthorizationState(false);
                 context.setSnackBarValues?.({message: r.response.data, color: "error"});
             });
         if (tokenResponse !== undefined) {
-            context.setToken?.(tokenResponse.data.token);
+            updateAuthorizationToken(tokenResponse.data.token);
+            verifyAuthorization();
+            console.log(authStore)
         }
     }
 
@@ -44,7 +52,7 @@ const AuthorizationOverlay: React.FC = () => {
         <Dialog
             id="login-dialog"
             aria-labelledby="login-dialog"
-            open={!context.authorized}
+            open={!authStore.authorized}
         >
             <form
                 onSubmit={handleSubmit}

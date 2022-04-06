@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import {MenuItem, Select, Table, TableBody, TableHead, TextField} from "@mui/material";
 import type {IAdminTableProps, IAdminTableState, IGood} from "../../../../types/AdminTypes";
 import {ApplicationContext} from "../../../applicationContext";
-import Spinner from "./Spinner";
+import {SpinnerOverlay} from "../../../components/Spinner";
 import {
     checkFilterCondition,
     commonCreateBodyRow,
@@ -148,14 +148,14 @@ const GoodsTable: React.FC<IAdminTableProps<IGood>> = (props) => {
     };
 
     useEffect(() => {
-        getGoods(context)
+        getGoods()
             .then(r => setState({...state, rows: r.data, isLoading: false}))
     }, []);
 
     return (
         (state.isLoading === undefined || state.isLoading)
             ? (
-                <Spinner/>
+                <SpinnerOverlay/>
             ) : (
                 <Table>
                     <TableHead>

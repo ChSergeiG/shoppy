@@ -3,7 +3,7 @@ import {Autocomplete, MenuItem, Select, Table, TableBody, TableHead, TextField} 
 import type {IAccount, IAdminTableProps, IAdminTableState} from "../../../../types/AdminTypes";
 import type {IAccountRole} from "../../../../types/IAccountRole";
 import {ApplicationContext} from "../../../applicationContext";
-import Spinner from "./Spinner";
+import {SpinnerOverlay} from "../../../components/Spinner";
 import {getAccounts} from "../../../utils/API";
 import {
     checkFilterCondition,
@@ -151,14 +151,14 @@ const AccountsTable: React.FC<IAdminTableProps<IAccount>> = (props) => {
     );
 
     useEffect(() => {
-        getAccounts(context)
+        getAccounts()
             .then(r => setState({...state, rows: r.data, isLoading: false}))
     }, []);
 
     return (
         (state.isLoading === undefined || state.isLoading)
             ? (
-                <Spinner/>
+                <SpinnerOverlay/>
             ) : (
                 <Table>
                     <TableHead>
