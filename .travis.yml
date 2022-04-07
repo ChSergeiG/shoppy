@@ -1,0 +1,10 @@
+language: java
+install: skip
+
+os: linux
+dist: trusty
+jdk: openjdk15
+
+#script:
+#  - sh ./scripts/build-back.sh
+#  - sh ./scripts/build-front.sh

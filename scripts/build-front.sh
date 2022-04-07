@@ -2,7 +2,7 @@
 
 version=$(sed -n -e '/projectVersion/ s/.*\= *//p' ./gradle.properties)
 
-./gradlew clean :frontend:npm_ci
+./gradlew clean :frontend:npm_ci :frontend:npm_run_build
 
 cd ./frontend || exit
 
