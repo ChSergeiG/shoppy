@@ -12,15 +12,19 @@ import {
 } from "../../../utils/admin-tables";
 import {getGoods} from "../../../utils/API";
 import type {IStatus} from "../../../../types/IStatus";
+import {useStore} from "effector-react";
+import {IStaticsStore, staticsStore} from "../../../store/StaticsStore";
 
 const GoodsTable: React.FC<IAdminTableProps<IGood>> = (props) => {
 
     const context = React.useContext(ApplicationContext);
 
+    const contextStore = useStore<IStaticsStore>(staticsStore);
+
     const [state, setState] = useState<IAdminTableState<IGood>>({
         isLoading: true,
-        statuses: context.statuses,
-        accountRoles: context.accountRoles,
+        statuses: contextStore.statuses,
+        accountRoles: contextStore.accountRoles,
         rows: [],
         sortBy: "",
     });
@@ -37,7 +41,6 @@ const GoodsTable: React.FC<IAdminTableProps<IGood>> = (props) => {
         ]);
 
     const renderActionsInput = (entity: IGood) => commonRenderActionsInput<IGood>(
-        context,
         entity,
         {
             save: entity.name !== undefined && entity.name.trim() !== "" && entity.article !== undefined && entity.article.trim() !== "",
@@ -134,7 +137,7 @@ const GoodsTable: React.FC<IAdminTableProps<IGood>> = (props) => {
                 defaultValue={""}
             >
                 {
-                    context.statuses.map(item => (
+                    contextStore.statuses.map(item => (
                         <MenuItem
                             key={item}
                             value={item}

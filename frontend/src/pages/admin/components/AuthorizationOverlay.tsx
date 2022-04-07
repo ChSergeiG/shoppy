@@ -11,6 +11,7 @@ import {
     verifyAuthorization
 } from "../../../store/UserAuthorizationStore";
 import {useStore} from "effector-react";
+import {placeSnackBarAlert} from "../../../store/SnackBarStore";
 
 type AuthorizationOverlayState = {
     login: string;
@@ -20,8 +21,6 @@ type AuthorizationOverlayState = {
 export const LOCAL_STORAGE_JWT_KEY = "LOCAL_STORAGE_JWT_KEY";
 
 const AuthorizationOverlay: React.FC = () => {
-
-    const context = useContext(ApplicationContext);
 
     const authStore = useStore<IAuthorizationStore>(authorizationStore);
 
@@ -39,7 +38,7 @@ const AuthorizationOverlay: React.FC = () => {
         const tokenResponse = await postLogin({...state})
             .catch((r) => {
                 updateAuthorizationState(false);
-                context.setSnackBarValues?.({message: r.response.data, color: "error"});
+                placeSnackBarAlert({message: r.response.data, color: "error"});
             });
         if (tokenResponse !== undefined) {
             updateAuthorizationToken(tokenResponse.data.token);

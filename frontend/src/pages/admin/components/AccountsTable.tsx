@@ -13,15 +13,20 @@ import {
     commonRenderActionsInput
 } from "../../../utils/admin-tables";
 import type {IStatus} from "../../../../types/IStatus";
+import {useStore} from "effector-react";
+import type {IStaticsStore} from "../../../store/StaticsStore";
+import {staticsStore} from "../../../store/StaticsStore";
 
 const AccountsTable: React.FC<IAdminTableProps<IAccount>> = (props) => {
 
     const context = React.useContext(ApplicationContext);
 
+    const contextStore = useStore<IStaticsStore>(staticsStore);
+
     const [state, setState] = useState<IAdminTableState<IAccount>>({
         isLoading: true,
-        statuses: context.statuses,
-        accountRoles: context.accountRoles,
+        statuses: contextStore.statuses,
+        accountRoles: contextStore.accountRoles,
         rows: [],
         sortBy: "",
     });
@@ -88,7 +93,7 @@ const AccountsTable: React.FC<IAdminTableProps<IAccount>> = (props) => {
                         return {...prevState, rows: newRows};
                     });
                 }}
-                options={context.accountRoles}
+                options={contextStore.accountRoles}
                 renderInput={(params) => <TextField {...params} variant="outlined" fullWidth/>}
                 value={entity.accountRoles}
                 fullWidth
@@ -113,7 +118,7 @@ const AccountsTable: React.FC<IAdminTableProps<IAccount>> = (props) => {
                 defaultValue={""}
             >
                 {
-                    context.statuses.map(item => (
+                    contextStore.statuses.map(item => (
                         <MenuItem
                             key={item}
                             value={item}
@@ -127,7 +132,6 @@ const AccountsTable: React.FC<IAdminTableProps<IAccount>> = (props) => {
     };
 
     const renderActionsInput = (entity: IAccount) => commonRenderActionsInput<IAccount>(
-        context,
         entity,
         {
             save: entity.login !== undefined && entity.login.trim() !== "" && entity.password !== undefined && entity.password.trim() !== "",

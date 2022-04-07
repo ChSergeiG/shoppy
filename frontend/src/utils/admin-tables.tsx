@@ -3,10 +3,10 @@ import type {IAdminContent, IAdminTableProps, IAdminTableState} from "../../type
 import React from "react";
 import type {TableCellProps} from "@mui/material/TableCell/TableCell";
 import floppyIcon from "../img/floppy.svg";
-import type {IApplicationContext} from "../../types/IApplicationContextType";
 import binIcon from "../img/bin.svg";
 import refreshIcon from "../img/refresh.svg";
 import type {IResponseType} from "../../types/IResponseType";
+import {placeSnackBarAlert} from "../store/SnackBarStore";
 
 export const commonCreateHeaderRow = (
     rowKey: string,
@@ -83,7 +83,6 @@ export const commonCreatePlusRow = <T extends IAdminContent>(
 };
 
 export const commonRenderActionsInput = <T extends IAdminContent>(
-    context: IApplicationContext,
     entity: T,
     isButtonActive: { save: boolean, delete: boolean, refresh: boolean },
     props: IAdminTableProps<T>,
@@ -98,12 +97,12 @@ export const commonRenderActionsInput = <T extends IAdminContent>(
                     if (entity.id) {
                         newEntity = await props.updateCallback(entity)
                             .catch((r) => {
-                                context.setSnackBarValues?.({message: r.response.data, color: "warning"})
+                                placeSnackBarAlert({message: r.response.data, color: "warning"})
                             });
                     } else {
                         newEntity = await props.createCallback(entity)
                             .catch((r) => {
-                                context.setSnackBarValues?.({message: r.response.data, color: "warning"})
+                                placeSnackBarAlert({message: r.response.data, color: "warning"})
                             });
                     }
                     if (!newEntity || !newEntity.data) {
@@ -117,7 +116,7 @@ export const commonRenderActionsInput = <T extends IAdminContent>(
                         }
                         return {...prevState, rows: newRows};
                     });
-                    context.setSnackBarValues?.({message: "success", color: "success"})
+                    placeSnackBarAlert({message: "success", color: "success"})
                 }}
             >
                 <img
@@ -133,7 +132,7 @@ export const commonRenderActionsInput = <T extends IAdminContent>(
                 onClick={async () => {
                     await props.deleteCallback(entity)
                         .catch((r) => {
-                            context.setSnackBarValues?.({
+                            placeSnackBarAlert({
                                 message: "Cant remove entity: " + r.response.data,
                                 color: "warning"
                             })
@@ -157,7 +156,7 @@ export const commonRenderActionsInput = <T extends IAdminContent>(
                 onClick={async () => {
                     const newEntity = await props.refreshCallback(entity)
                         .catch((r) => {
-                            context.setSnackBarValues?.({
+                            placeSnackBarAlert({
                                 message: "Cant refresh entity: " + r.response.data,
                                 color: "warning"
                             })
@@ -174,7 +173,7 @@ export const commonRenderActionsInput = <T extends IAdminContent>(
                         return {...prevState, rows: newRows};
                     });
                     if (newEntity.status === 499) {
-                        context.setSnackBarValues?.({
+                        placeSnackBarAlert({
                             message: JSON.stringify(newEntity.data),
                             color: "error"
                         });

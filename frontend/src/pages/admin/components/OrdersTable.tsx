@@ -29,6 +29,8 @@ import {getAccountsByOrderId, getGoodsByOrderId, getOrders} from "../../../utils
 import type {IStatus} from "../../../../types/IStatus";
 import {InlineSpinner, SpinnerOverlay} from "../../../components/Spinner";
 import {Close} from "@mui/icons-material";
+import {useStore} from "effector-react";
+import {IStaticsStore, staticsStore} from "../../../store/StaticsStore";
 
 type IFetching = {
     id?: number;
@@ -75,10 +77,12 @@ const OrdersTable: React.FC<IAdminTableProps<IOrder>> = (props) => {
 
     const context = React.useContext(ApplicationContext);
 
+    const contextStore = useStore<IStaticsStore>(staticsStore);
+
     const [state, setState] = useState<IAdminTableState<IOrder>>({
         isLoading: true,
-        statuses: context.statuses,
-        accountRoles: context.accountRoles,
+        statuses: contextStore.statuses,
+        accountRoles: contextStore.accountRoles,
         rows: [],
         sortBy: "",
     });
@@ -131,7 +135,6 @@ const OrdersTable: React.FC<IAdminTableProps<IOrder>> = (props) => {
 
 
     const renderActionsInput = (entity: IOrder) => commonRenderActionsInput<IOrder>(
-        context,
         entity,
         {
             save: entity.info !== undefined && entity.info.trim() !== "",
@@ -190,7 +193,7 @@ const OrdersTable: React.FC<IAdminTableProps<IOrder>> = (props) => {
                 defaultValue={""}
             >
                 {
-                    context.statuses.map(item => (
+                    contextStore.statuses.map(item => (
                         <MenuItem
                             key={item}
                             value={item}

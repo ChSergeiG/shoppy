@@ -1,6 +1,7 @@
 import {Alert, Snackbar} from "@mui/material";
-import React, {useContext, useEffect, useState} from "react";
-import {ApplicationContext} from "../applicationContext";
+import React, {useEffect, useState} from "react";
+import {snackBarStore} from "../store/SnackBarStore";
+import {useStore} from "effector-react";
 
 type ISnackbarState = {
     isOpened: boolean;
@@ -9,13 +10,13 @@ type ISnackbarState = {
 export const ShopSnackBar: React.FC = () => {
 
     const [state, setState] = useState<ISnackbarState>();
-    const context = useContext(ApplicationContext);
+    const store = useStore(snackBarStore);
 
     useEffect(() => {
-        if (context.message) {
+        if (store.message) {
             setState({...state, isOpened: true})
         }
-    }, [context.message]);
+    }, [store.message]);
     return (
         <Snackbar
             anchorOrigin={{vertical: 'bottom', horizontal: 'left'}}
@@ -24,9 +25,9 @@ export const ShopSnackBar: React.FC = () => {
         >
             <Alert
                 onClose={() => setState?.({...state, isOpened: false})}
-                severity={context.color}
+                severity={store.color}
             >
-                {context.message.slice(39)}
+                {store.message.slice(39)}
             </Alert>
         </Snackbar>
     );

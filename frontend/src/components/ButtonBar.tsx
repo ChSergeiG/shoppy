@@ -28,6 +28,7 @@ import {ShoppingBag} from "@mui/icons-material";
 import {postOrder} from "../utils/API";
 import {removeAllFromBasket, selectedGoods} from "../store/UserBucketStore";
 import {logout} from "../store/UserAuthorizationStore";
+import {placeSnackBarAlert} from "../store/SnackBarStore";
 
 type ButtonBarState = {
     open: boolean;
@@ -128,11 +129,11 @@ const ButtonBar: React.FC<PropsWithChildren<{}>> = (props) => {
             return;
         }
         postOrder(selectedGoods.getState())
-            .then((r) => context.setSnackBarValues?.({
-                message: "Success " + r.data,
+            .then((r) => placeSnackBarAlert({
+                message: r.data,
                 color: "success"
             }))
-            .catch((r) => context.setSnackBarValues?.({
+            .catch((r) => placeSnackBarAlert({
                 message: r.response.data,
                 color: "error"
             }))
@@ -190,7 +191,6 @@ const ButtonBar: React.FC<PropsWithChildren<{}>> = (props) => {
                         color="inherit"
                         onClick={handlePlaceOrder}
                         sx={{
-                            marginRight: 5,
                             ...(state.open && {display: 'none'}),
                         }}
                     >

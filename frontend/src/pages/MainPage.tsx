@@ -8,6 +8,7 @@ import type {IGood} from "../../types/AdminTypes";
 import {getAllGoods} from "../utils/API";
 import {authorizationStore, IAuthorizationStore} from "../store/UserAuthorizationStore";
 import {useStore} from "effector-react";
+import {placeSnackBarAlert} from "../store/SnackBarStore";
 
 const MainPage: React.FC<React.PropsWithChildren<{}>> = (props) => {
 
@@ -75,7 +76,7 @@ const MainPage: React.FC<React.PropsWithChildren<{}>> = (props) => {
                     }))
                 })
                 .catch((_) => {
-                    context.setSnackBarValues?.({message: "Cant get goods", color: "error"});
+                    placeSnackBarAlert({message: "Cant get goods", color: "error"});
                 });
         },
         []
