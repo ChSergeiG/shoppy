@@ -1,5 +1,5 @@
 import React, {useContext, useState} from "react";
-import {Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField} from "@mui/material";
+import {Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, TextField} from "@mui/material";
 import {postLogin} from "../../../utils/API";
 import {ApplicationContext} from "../../../applicationContext";
 import {Link} from "react-router-dom";
@@ -62,12 +62,19 @@ const AuthorizationOverlay: React.FC = () => {
                 >
                     Enter login info
                 </DialogTitle>
-                <DialogContent>
+                <DialogContent
+                sx ={{
+                    m:"10px",
+                }}
+                >
                     <TextField
                         label="Login"
                         name="login"
                         onChange={handleChange}
                         value={state.login}
+                        sx={{
+                            m: "6px",
+                         }}
                         variant="outlined"
                         fullWidth
                     />
@@ -76,11 +83,15 @@ const AuthorizationOverlay: React.FC = () => {
                         name="password"
                         type={"password"}
                         onChange={handleChange}
+                        sx={{
+                            m: "6px",
+                         }}
                         value={state.password}
                         variant="outlined"
                         fullWidth
                     />
-                </DialogContent>
+                </DialogContent
+                >
                 <DialogActions>
                     <Button
                         color="secondary"

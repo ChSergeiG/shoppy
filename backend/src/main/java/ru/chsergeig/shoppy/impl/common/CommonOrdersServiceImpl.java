@@ -9,12 +9,14 @@ import ru.chsergeig.shoppy.dao.GoodRepository;
 import ru.chsergeig.shoppy.dao.OrderGoodRepository;
 import ru.chsergeig.shoppy.dao.OrderRepository;
 import ru.chsergeig.shoppy.dto.admin.GoodDto;
+import ru.chsergeig.shoppy.dto.admin.OrderDto;
 import ru.chsergeig.shoppy.jooq.enums.Status;
 import ru.chsergeig.shoppy.jooq.tables.pojos.Accounts;
 import ru.chsergeig.shoppy.jooq.tables.pojos.AccountsOrders;
 import ru.chsergeig.shoppy.jooq.tables.pojos.Goods;
 import ru.chsergeig.shoppy.jooq.tables.pojos.Orders;
 import ru.chsergeig.shoppy.jooq.tables.pojos.OrdersGoods;
+import ru.chsergeig.shoppy.mapping.OrderMapper;
 import ru.chsergeig.shoppy.service.common.CommonOrdersService;
 
 import java.time.LocalDateTime;
@@ -32,6 +34,7 @@ public class CommonOrdersServiceImpl implements CommonOrdersService {
     private final AccountRepository accountRepository;
     private final GoodRepository goodRepository;
     private final OrderGoodRepository orderGoodRepository;
+    private final OrderMapper orderMapper;
     private final OrderRepository orderRepository;
 
     @Override
@@ -90,5 +93,17 @@ public class CommonOrdersServiceImpl implements CommonOrdersService {
         return guid;
     }
 
-
+    @Override
+    public OrderDto getOrderByGuid(String guid, String username) {
+        List<Orders> orders = orderRepository.fetchByGuid(guid);
+        if (orders.size() != 1) {
+            return null;
+        }
+        Orders pojo = orders.get(0);
+        List<Accounts> associatedAccounts = accountOrderRepository.getAccountsByOrderId(pojo.getId());
+        if (associatedAccounts.stream().noneMatch(a -> a.getLogin().equals(username))) {
+            return null;
+        }
+        return orderMapper.map(pojo);
+    }
 }

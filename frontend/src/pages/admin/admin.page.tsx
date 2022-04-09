@@ -38,6 +38,7 @@ const AdminPage = <T extends IAdminContent>() => {
     const resolveTable = (): JSX.Element => {
         switch (params.table) {
             case "accounts" :
+                document.title = "Edit account page";
                 const accountsProps: PropsWithChildren<IAdminTableProps<IAccount>> = {
                     getDataCallback: () => getAccounts(),
                     createCallback: (e) => createNewAccount(e),
@@ -48,6 +49,7 @@ const AdminPage = <T extends IAdminContent>() => {
                 };
                 return <AccountsTable {...accountsProps} />;
             case "goods" :
+                document.title = "Edit goods page";
                 const goodsProps: PropsWithChildren<IAdminTableProps<IGood>> = {
                     getDataCallback: () => getGoods(),
                     createCallback: (e) => createNewGood(e),
@@ -58,6 +60,7 @@ const AdminPage = <T extends IAdminContent>() => {
                 };
                 return <GoodsTable {...goodsProps} />;
             case "orders" :
+                document.title = "Edit orders page";
                 const ordersProps: PropsWithChildren<IAdminTableProps<IOrder>> = {
                     getDataCallback: () => getOrders(),
                     createCallback: (e) => createNewOrder(e),

@@ -1,5 +1,6 @@
 import {createEvent, createStore} from "effector";
 import {getProbeLogin} from "../utils/API";
+import {getTableSortLabelUtilityClass} from "@mui/material";
 
 const LOCAL_STORAGE_JWT_KEY = "LOCAL_STORAGE_JWT_KEY";
 
@@ -42,6 +43,7 @@ authorizationStore
         }
     })
     .on(logout, (state) => {
+        console.log(123)
         localStorage.setItem(LOCAL_STORAGE_JWT_KEY, "");
         return {...state, authorized: false, token: ""};
     })

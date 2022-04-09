@@ -29,6 +29,7 @@ import {postOrder} from "../utils/API";
 import {removeAllFromBasket, selectedGoods} from "../store/UserBucketStore";
 import {logout} from "../store/UserAuthorizationStore";
 import {placeSnackBarAlert} from "../store/SnackBarStore";
+import {useStore} from "effector-react";
 
 type ButtonBarState = {
     open: boolean;
@@ -116,7 +117,10 @@ const ButtonBarDrawer = styled(Drawer, {shouldForwardProp: (prop) => prop !== 'o
 
 
 const ButtonBar: React.FC<PropsWithChildren<{}>> = (props) => {
+
     const context = useContext(ApplicationContext);
+
+    const goodsStore = useStore(selectedGoods);
 
     const [state, setState] = useState<ButtonBarState>({
         open: false,
@@ -125,19 +129,24 @@ const ButtonBar: React.FC<PropsWithChildren<{}>> = (props) => {
     const theme = useTheme();
 
     const handlePlaceOrder = (e: any) => {
-        if (selectedGoods.getState().length === 0) {
+        if (goodsStore.length === 0) {
             return;
         }
-        postOrder(selectedGoods.getState())
-            .then((r) => placeSnackBarAlert({
-                message: r.data,
-                color: "success"
-            }))
-            .catch((r) => placeSnackBarAlert({
-                message: r.response.data,
-                color: "error"
-            }))
-        removeAllFromBasket();
+        postOrder(goodsStore)
+            .then((r) => {
+                    placeSnackBarAlert({
+                        message: r.data,
+                        color: "success"
+                    });
+                    removeAllFromBasket();
+                }
+            )
+            .catch((r) => {
+                placeSnackBarAlert({
+                    message: r.response.data,
+                    color: r.response.status === 401 ? "warning" : "error"
+                });
+            })
     };
 
     const handleDrawerOpen = () => {
@@ -193,6 +202,7 @@ const ButtonBar: React.FC<PropsWithChildren<{}>> = (props) => {
                         sx={{
                             ...(state.open && {display: 'none'}),
                         }}
+                        disabled={goodsStore.length === 0}
                     >
                         <ShoppingBag/>
                     </IconButton>

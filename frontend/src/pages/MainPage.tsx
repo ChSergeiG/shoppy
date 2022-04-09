@@ -12,6 +12,8 @@ import {placeSnackBarAlert} from "../store/SnackBarStore";
 
 const MainPage: React.FC<React.PropsWithChildren<{}>> = (props) => {
 
+    document.title = "Main page";
+
     const context = useContext(ApplicationContext);
     const authStore = useStore<IAuthorizationStore>(authorizationStore);
 
@@ -45,7 +47,7 @@ const MainPage: React.FC<React.PropsWithChildren<{}>> = (props) => {
                 {
                     routerLinkProps: {to: "/"},
                     adminButton: true,
-                    index: 40,
+                    index: 1000,
                     text: "Logout",
                     icon: <Logout/>
                 }

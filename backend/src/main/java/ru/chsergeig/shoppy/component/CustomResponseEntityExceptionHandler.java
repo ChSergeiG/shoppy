@@ -20,7 +20,11 @@ public class CustomResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = {ControllerException.class})
     public ResponseEntity<String> controllerException(ControllerException ex) {
-        return ResponseEntity.status(499).body(ex.reason);
+        if (ex.code == null || ex.code == 499) {
+            return ResponseEntity.status(499).body(ex.reason);
+        } else {
+            return ResponseEntity.status(ex.code).body(ex.reason);
+        }
     }
 
 }
