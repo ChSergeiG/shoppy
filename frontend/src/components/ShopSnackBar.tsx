@@ -27,7 +27,7 @@ export const ShopSnackBar: React.FC = () => {
                 onClose={() => setState?.({...state, isOpened: false})}
                 severity={store.color}
             >
-                {store.message.slice(39)}
+                {store.message.slice(16)}
             </Alert>
         </Snackbar>
     );

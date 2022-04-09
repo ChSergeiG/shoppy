@@ -54,7 +54,7 @@ const AdminPage = <T extends IAdminContent>() => {
                     updateCallback: (e) => updateExistingGood(e),
                     deleteCallback: (e) => deleteExistingGood(e),
                     refreshCallback: (e) => getGood(e.id),
-                    columns: 5,
+                    columns: 6,
                 };
                 return <GoodsTable {...goodsProps} />;
             case "orders" :

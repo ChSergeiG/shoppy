@@ -15,5 +15,5 @@ export const placeSnackBarAlert = createEvent<ISnackBarEvent>("Register new snac
 
 snackBarStore
     .on(placeSnackBarAlert, (state, event) => {
-        return {...state, message: `[${crypto.randomUUID()}] ${event.message}`, color: event.color};
+        return {...state, message: `[${Date.now()}] ${event.message}`, color: event.color};
     });

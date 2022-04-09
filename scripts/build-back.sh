@@ -9,7 +9,7 @@ cd ./backend || exit
 java -Djarmode=layertools -jar ./build/libs/backend-*.jar extract
 
 # shellcheck disable=SC2086
-docker build --no-cache -t chsergeig/shoppy-back:$version -t chsergeig/shoppy-back:latest .
+docker buildx build --platform linux/amd64 --no-cache -t chsergeig/shoppy-back:$version -t chsergeig/shoppy-back:latest .
 
 rm -rf ./application || true
 rm -rf ./dependencies || true
