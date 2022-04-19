@@ -1,21 +1,20 @@
-import React, {useContext, useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Box, Paper} from "@mui/material";
 import GoodCard from "../components/GoodCard";
 import {Login, Logout, ManageAccounts, ShoppingBag, ShoppingBasket} from "@mui/icons-material";
-import {ApplicationContext} from "../applicationContext";
 import type {IButtonBarItem} from "../components/ButtonBar";
 import type {IGood} from "../../types/AdminTypes";
 import {getAllGoods} from "../utils/API";
-import {authorizationStore, IAuthorizationStore} from "../store/UserAuthorizationStore";
+import {authorizationStore} from "../store/UserAuthorizationStore";
 import {useStore} from "effector-react";
 import {placeSnackBarAlert} from "../store/SnackBarStore";
+import {setButtons} from "../store/ButtonBarStore";
 
 const MainPage: React.FC<React.PropsWithChildren<{}>> = (props) => {
 
     document.title = "Main page";
 
-    const context = useContext(ApplicationContext);
-    const authStore = useStore<IAuthorizationStore>(authorizationStore);
+    const authStore = useStore(authorizationStore);
 
     const [state, setState] = useState<{ goods: IGood[] }>({goods: []});
 
@@ -65,7 +64,9 @@ const MainPage: React.FC<React.PropsWithChildren<{}>> = (props) => {
     };
 
     useEffect(
-        () => context.setButtonBarItems?.(buttonsForBar()),
+        () => {
+            setButtons(buttonsForBar())
+        },
         [authStore.authorized]
     );
 

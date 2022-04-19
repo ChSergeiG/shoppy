@@ -1,9 +1,26 @@
 import {createEvent, createStore} from "effector";
 
-export const adminFilterStore = createStore<string>("");
+export type IFilterEntry = { key: string, value: string };
 
-export const setAdminFilter = createEvent<string>("Set admin filter value");
+export const adminFilterStore = createStore<IFilterEntry[]>([]);
+
+export const setAdminFilter = createEvent<IFilterEntry>("Set admin filter value");
 
 adminFilterStore
-    .on(setAdminFilter, (state, newFilterValue) => newFilterValue);
+    .on(setAdminFilter, (state, entry) => {
+        const newState = [];
+        const idx = state.map(e => e.key).indexOf(entry.key);
+        for (let i = 0; i < state.length; i++) {
+            if (i !== idx) {
+                newState.push(state[i]);
+            } else {
+                newState.push(entry);
+            }
+        }
+        if (idx === -1) {
+            newState.push(entry);
+        }
+        console.log(newState)
+        return newState;
+    });
 

@@ -4,7 +4,7 @@ import {Badge, Box, Button, Card, CardContent, Typography} from "@mui/material";
 import type {CardProps} from "@mui/material/Card/Card";
 import {useStore} from "effector-react";
 import {addGoodToBasket, removeGoodFromBasket, selectedGoods} from "../store/UserBucketStore";
-import {Add, Remove} from "@mui/icons-material";
+import {Add, Remove, ShoppingBasket} from "@mui/icons-material";
 
 const cardWidth = 250;
 const cardHeight = 180;
@@ -63,7 +63,7 @@ const GoodCard: React.FC<CardProps & { good: IGood }> = (props) => {
                         size="small"
                         onClick={() => addGoodToBasket(props.good)}
                     >
-                        <Add/>
+                        <ShoppingBasket/>
                     </Button>
                 </Box>
             </CardContent>

@@ -1,7 +1,7 @@
-import React, {PropsWithChildren, useContext, useState} from "react";
-import {ApplicationContext} from "../applicationContext";
+import React, {PropsWithChildren, useState} from "react";
 import {
     AppBarProps,
+    Badge,
     Box,
     CssBaseline,
     CSSObject,
@@ -30,9 +30,13 @@ import {removeAllFromBasket, selectedGoods} from "../store/UserBucketStore";
 import {logout} from "../store/UserAuthorizationStore";
 import {placeSnackBarAlert} from "../store/SnackBarStore";
 import {useStore} from "effector-react";
+import {buttonBarStore} from "../store/ButtonBarStore";
 
 type ButtonBarState = {
     open: boolean;
+
+    orderInfoUrl: string;
+    showOrderInfo: boolean;
 };
 
 type ButtonBarProps = AppBarProps & {
@@ -118,12 +122,14 @@ const ButtonBarDrawer = styled(Drawer, {shouldForwardProp: (prop) => prop !== 'o
 
 const ButtonBar: React.FC<PropsWithChildren<{}>> = (props) => {
 
-    const context = useContext(ApplicationContext);
-
     const goodsStore = useStore(selectedGoods);
+
+    const buttonsStore = useStore(buttonBarStore);
 
     const [state, setState] = useState<ButtonBarState>({
         open: false,
+        orderInfoUrl: "",
+        showOrderInfo: false,
     });
 
     const theme = useTheme();
@@ -195,17 +201,33 @@ const ButtonBar: React.FC<PropsWithChildren<{}>> = (props) => {
                     >
                         Well well well //
                     </Typography>
-                    <Box sx={{flexGrow: 1}}/>
-                    <IconButton
-                        color="inherit"
-                        onClick={handlePlaceOrder}
+                    <Box sx={{
+                        flexGrow: 1
+                    }}/>
+                    <Box
                         sx={{
-                            ...(state.open && {display: 'none'}),
+                            display: "flex"
                         }}
-                        disabled={goodsStore.length === 0}
                     >
-                        <ShoppingBag/>
-                    </IconButton>
+                        <Badge
+                            sx={{
+                                top: "5px",
+                                left: "35px",
+                            }}
+                            color="secondary"
+                            badgeContent={goodsStore.length}
+                        />
+                        <IconButton
+                            color="inherit"
+                            onClick={handlePlaceOrder}
+                            sx={{
+                                ...(state.open && {display: 'none'}),
+                            }}
+                            disabled={goodsStore.length === 0}
+                        >
+                            <ShoppingBag/>
+                        </IconButton>
+                    </Box>
                 </Toolbar>
             </AppBar>
             <ButtonBarDrawer
@@ -222,18 +244,18 @@ const ButtonBar: React.FC<PropsWithChildren<{}>> = (props) => {
                 <Divider/>
                 <List>
                     {
-                        context.buttonBarItems
+                        buttonsStore
                             ?.filter(i => !i.adminButton && i.index < 1000)
                             .sort((bbi1, bbi2) => bbi1.index - bbi2.index)
                             .map(i =>
                                 <Link
                                     {...i.routerLinkProps}
                                     style={{textDecoration: "inherit", color: "inherit"}}
-                                    key={`button-${context.buttonBarItems?.indexOf(i)}`}
+                                    key={`button-${buttonsStore.indexOf(i)}`}
                                 >
                                     <ListItem
                                         button
-                                        key={`button-${context.buttonBarItems?.indexOf(i)}`}
+                                        key={`button-${buttonsStore.indexOf(i)}`}
                                         onClick={handleDrawerClose}
                                     >
                                         <ListItemIcon>
@@ -248,18 +270,18 @@ const ButtonBar: React.FC<PropsWithChildren<{}>> = (props) => {
                     }
                     <Divider/>
                     {
-                        context.buttonBarItems
+                        buttonsStore
                             ?.filter(i => i.adminButton && i.index < 1000)
                             .sort((bbi1, bbi2) => bbi1.index - bbi2.index)
                             .map(i =>
                                 <Link
                                     {...i.routerLinkProps}
                                     style={{textDecoration: "inherit", color: "inherit"}}
-                                    key={`admin-button-${context.buttonBarItems?.indexOf(i)}`}
+                                    key={`admin-button-${buttonsStore.indexOf(i)}`}
                                 >
                                     <ListItem
                                         button
-                                        key={`admin-button-${context.buttonBarItems?.indexOf(i)}`}
+                                        key={`admin-button-${buttonsStore.indexOf(i)}`}
                                         onClick={handleDrawerClose}
                                     >
                                         <ListItemIcon>
@@ -274,18 +296,18 @@ const ButtonBar: React.FC<PropsWithChildren<{}>> = (props) => {
                     }
                     <Divider/>
                     {
-                        context.buttonBarItems
+                        buttonsStore
                             ?.filter(i => i.index >= 1000)
                             .sort((bbi1, bbi2) => bbi1.index - bbi2.index)
                             .map(i =>
                                 <Link
                                     {...i.routerLinkProps}
                                     style={{textDecoration: "inherit", color: "inherit"}}
-                                    key={`admin-button-${context.buttonBarItems?.indexOf(i)}`}
+                                    key={`admin-button-${buttonsStore.indexOf(i)}`}
                                 >
                                     <ListItem
                                         button
-                                        key={`admin-button-${context.buttonBarItems?.indexOf(i)}`}
+                                        key={`admin-button-${buttonsStore.indexOf(i)}`}
                                         onClick={doLogout}
                                     >
                                         <ListItemIcon>

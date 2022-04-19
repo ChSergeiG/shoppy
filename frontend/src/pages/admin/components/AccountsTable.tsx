@@ -2,7 +2,6 @@ import React, {useEffect, useState} from "react";
 import {Autocomplete, MenuItem, Select, Table, TableBody, TableHead, TextField} from "@mui/material";
 import type {IAccount, IAdminTableProps, IAdminTableState} from "../../../../types/AdminTypes";
 import type {IAccountRole} from "../../../../types/IAccountRole";
-import {ApplicationContext} from "../../../applicationContext";
 import {SpinnerOverlay} from "../../../components/Spinner";
 import {getAccounts} from "../../../utils/API";
 import {
@@ -14,14 +13,15 @@ import {
 } from "../../../utils/admin-tables";
 import type {IStatus} from "../../../../types/IStatus";
 import {useStore} from "effector-react";
-import type {IStaticsStore} from "../../../store/StaticsStore";
 import {staticsStore} from "../../../store/StaticsStore";
+import {adminFilterStore} from "../../../store/AdminFilterStore";
+import {ADMIN_ACCOUNTS_KEY} from "../admin.page";
 
-const AccountsTable: React.FC<IAdminTableProps<IAccount>> = (props) => {
+const AccountsTable: React.FC<IAdminTableProps<IAccount>  > = (props) => {
 
-    const context = React.useContext(ApplicationContext);
+    const contextStore = useStore(staticsStore);
 
-    const contextStore = useStore<IStaticsStore>(staticsStore);
+    const adminFilter = useStore(adminFilterStore);
 
     const [state, setState] = useState<IAdminTableState<IAccount>>({
         isLoading: true,
@@ -170,7 +170,7 @@ const AccountsTable: React.FC<IAdminTableProps<IAccount>> = (props) => {
                     </TableHead>
                     <TableBody>
                         {state.rows
-                            .filter(r => checkFilterCondition(context.adminFilter, r.login))
+                            .filter(r => checkFilterCondition(ADMIN_ACCOUNTS_KEY, adminFilter, r.login))
                             .sort((r1, r2) => (r1.id ? r1.id : 0xffff) - (r2.id ? r2.id : 0xffff))
                             .map(r => createBodyRow(r))}
                         {

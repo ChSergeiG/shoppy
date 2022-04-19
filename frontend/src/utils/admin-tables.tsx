@@ -7,6 +7,7 @@ import binIcon from "../img/bin.svg";
 import refreshIcon from "../img/refresh.svg";
 import type {IResponseType} from "../../types/IResponseType";
 import {placeSnackBarAlert} from "../store/SnackBarStore";
+import type {IFilterEntry} from "../store/AdminFilterStore";
 
 export const commonCreateHeaderRow = (
     rowKey: string,
@@ -193,9 +194,21 @@ export const commonRenderActionsInput = <T extends IAdminContent>(
     );
 };
 
-export const checkFilterCondition = (findFor?: string, ...findIn: (string | undefined)[]): boolean => {
-    if (findFor === undefined || findFor.trim().length === 0) {
+export const checkFilterCondition = (
+    key: string,
+    filter?: IFilterEntry[],
+    ...findIn: (string | undefined)[]
+): boolean => {
+    if (
+        filter === undefined
+        || filter.filter(e => e.key === key).length === 0
+        || filter.filter(e => e.key === key)[0].value.length === 0
+    ) {
         return true;
     }
-    return findIn?.some(fi => fi?.toLowerCase().includes(findFor.toLowerCase()));
+    return findIn?.some(
+        fi => fi?.toLowerCase().includes(
+            filter.filter(e => e.key === key)[0].value.toLowerCase()
+        )
+    );
 };

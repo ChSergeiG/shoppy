@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {MenuItem, Select, Table, TableBody, TableHead, TextField} from "@mui/material";
 import type {IAdminTableProps, IAdminTableState, IGood} from "../../../../types/AdminTypes";
-import {ApplicationContext} from "../../../applicationContext";
 import {SpinnerOverlay} from "../../../components/Spinner";
 import {
     checkFilterCondition,
@@ -14,12 +13,14 @@ import {getGoods} from "../../../utils/API";
 import type {IStatus} from "../../../../types/IStatus";
 import {useStore} from "effector-react";
 import {IStaticsStore, staticsStore} from "../../../store/StaticsStore";
+import {adminFilterStore} from "../../../store/AdminFilterStore";
+import {ADMIN_GOODS_KEY} from "../admin.page";
 
 const GoodsTable: React.FC<IAdminTableProps<IGood>> = (props) => {
 
-    const context = React.useContext(ApplicationContext);
-
     const contextStore = useStore<IStaticsStore>(staticsStore);
+
+    const adminFilter = useStore(adminFilterStore);
 
     const [state, setState] = useState<IAdminTableState<IGood>>({
         isLoading: true,
@@ -167,7 +168,7 @@ const GoodsTable: React.FC<IAdminTableProps<IGood>> = (props) => {
                     <TableBody>
                         {
                             state.rows
-                                .filter(r => checkFilterCondition(context.adminFilter, r.name, r.article))
+                                .filter(r => checkFilterCondition(ADMIN_GOODS_KEY, adminFilter, r.article))
                                 .sort((r1, r2) => (r1 && r1.id ? r1.id : 0xffff) - (r2 && r2.id ? r2.id : 0xffff))
                                 .map(r => createBodyRow(r))
                         }

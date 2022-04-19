@@ -24,7 +24,7 @@ export const refreshStatuses = createEvent<IStatus[]>("Refresh actual statuses")
 
 export const refreshAccountRoles = createEvent<IAccountRole[]>("Refresh actual account roles");
 
-const setCachedDate = createEvent<number>("Internal method to set last refresh date");
+export const setCachedDate = createEvent<number>("Internal method to set last refresh date");
 
 staticsStore
     .on(refreshStatuses, (state, newStatuses) => {

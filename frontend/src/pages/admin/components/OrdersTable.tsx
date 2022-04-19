@@ -17,7 +17,6 @@ import {
     Typography
 } from "@mui/material";
 import type {IAccount, IAdminTableProps, IAdminTableState, IGood, IOrder} from "../../../../types/AdminTypes";
-import {ApplicationContext} from "../../../applicationContext";
 import {
     checkFilterCondition,
     commonCreateBodyRow,
@@ -31,6 +30,8 @@ import {InlineSpinner, SpinnerOverlay} from "../../../components/Spinner";
 import {Close} from "@mui/icons-material";
 import {useStore} from "effector-react";
 import {IStaticsStore, staticsStore} from "../../../store/StaticsStore";
+import {adminFilterStore} from "../../../store/AdminFilterStore";
+import {ADMIN_ORDERS_KEY} from "../admin.page";
 
 type IFetching = {
     id?: number;
@@ -75,9 +76,9 @@ const DetailsModal: React.FC<{
 
 const OrdersTable: React.FC<IAdminTableProps<IOrder>> = (props) => {
 
-    const context = React.useContext(ApplicationContext);
-
     const contextStore = useStore<IStaticsStore>(staticsStore);
+
+    const adminFilter = useStore(adminFilterStore);
 
     const [state, setState] = useState<IAdminTableState<IOrder>>({
         isLoading: true,
@@ -373,7 +374,7 @@ const OrdersTable: React.FC<IAdminTableProps<IOrder>> = (props) => {
                         <TableBody>
                             {
                                 state.rows
-                                    .filter(r => checkFilterCondition(context.adminFilter, r.info))
+                                    .filter(r => checkFilterCondition(ADMIN_ORDERS_KEY, adminFilter, r.info))
                                     .sort((r1, r2) => (r1 && r1.id ? r1.id : 0xffff) - (r2 && r2.id ? r2.id : 0xffff))
                                     .map(r => createBodyRow(r as IOrder))
                             }
