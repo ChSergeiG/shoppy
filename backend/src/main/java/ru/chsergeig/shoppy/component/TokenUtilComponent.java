@@ -4,7 +4,10 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
+import ru.chsergeig.shoppy.exception.ControllerException;
 import ru.chsergeig.shoppy.model.JwtUserDetails;
 import ru.chsergeig.shoppy.properties.SecurityProperties;
 
@@ -77,6 +80,17 @@ public class TokenUtilComponent {
                 .parseClaimsJws(token)
                 .getBody();
         return claimExtractor.apply(claims);
+    }
+
+    public String validateTokenAndGetUsername(final String token) {
+        if (!StringUtils.hasText(token) || isTokenExpired(token)) {
+            throw new ControllerException(
+                    HttpStatus.UNAUTHORIZED,
+                    "You are not authorized",
+                    null
+            );
+        }
+        return getUsernameFromToken(token);
     }
 
 }

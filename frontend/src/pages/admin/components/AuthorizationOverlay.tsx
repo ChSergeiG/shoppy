@@ -42,7 +42,6 @@ const AuthorizationOverlay: React.FC = () => {
         if (tokenResponse !== undefined) {
             updateAuthorizationToken(tokenResponse.data.token);
             verifyAuthorization();
-            console.log(authStore)
         }
     }
 

@@ -14,6 +14,7 @@ import ru.chsergeig.shoppy.mapping.AccountMapper;
 import ru.chsergeig.shoppy.service.admin.AdminAccountService;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -95,9 +96,9 @@ public class AdminAccountServiceImpl implements AdminAccountService {
         Accounts pojo = accountMapper.map(dto);
         accountRepository.update(pojo);
         accountRoleRepository.deleteByAccountId(pojo.getId());
-        List<AccountsRoles> accountsRoles = dto.getAccountRoles().stream()
+        Set<AccountsRoles> accountsRoles = dto.getAccountRoles().stream()
                 .map(ar -> new AccountsRoles(pojo.getId(), ar))
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
         accountRoleRepository.insert(accountsRoles);
         AccountDto result = accountMapper.map(pojo);
         result.setAccountRoles(dto.getAccountRoles());

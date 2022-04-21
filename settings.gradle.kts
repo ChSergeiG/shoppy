@@ -7,6 +7,5 @@ include(":jooq")
 pluginManagement {
     repositories {
         gradlePluginPortal()
-        jcenter()
     }
 }

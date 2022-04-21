@@ -1,5 +1,7 @@
 package ru.chsergeig.shoppy.dao;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jooq.Configuration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -28,7 +30,8 @@ public class AccountRoleRepository
     /**
      * Get account roles by its login
      */
-    public List<AccountRole> fetchRolesByLogin(String login) {
+    @NotNull
+    public List<AccountRole> fetchRolesByLogin(@Nullable String login) {
         return ctx().select(ACCOUNTS_ROLES.ROLE)
                 .from(ACCOUNTS)
                 .leftJoin(ACCOUNTS_ROLES).on(ACCOUNTS.ID.eq(ACCOUNTS_ROLES.ACCOUNT_ID))

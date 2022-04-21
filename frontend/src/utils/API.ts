@@ -6,7 +6,7 @@ import type {IAccountRole} from "../../types/IAccountRole";
 import type {IPage} from "../../types/IPage";
 import {authorizationStore} from "../store/UserAuthorizationStore";
 
-function client(): AxiosInstance {
+export function client(): AxiosInstance {
     return axios.create({
         baseURL: "/api",
         responseType: "json"
@@ -15,6 +15,15 @@ function client(): AxiosInstance {
 
 function authStore() {
     return authorizationStore.getState();
+}
+
+/////////
+// mvc //
+/////////
+
+export async function logoutRequest(): Promise<void> {
+    return client()
+        .get("/logout")
 }
 
 /////////////////////////////
@@ -158,6 +167,13 @@ export async function getAllGoods(
     }
 }
 
+export async function getGoodsByIds(
+    ids: number[]
+): Promise<AxiosResponse<IGood[]>> {
+    return client()
+        .post("/goods/get_by_id", ids, {headers: {"X-Authorization": authStore().token || ""}});
+}
+
 //////////////////////////////////
 // common/CommonOrderController //
 //////////////////////////////////
@@ -167,6 +183,13 @@ export async function postOrder(
 ): Promise<AxiosResponse<string>> {
     return client()
         .post(`/orders/create`, body, {headers: {"X-Authorization": authStore().token || ""}})
+}
+
+export async function getCreatedOrderInfo(
+    url: string
+): Promise<AxiosResponse<IOrder & { guid: string, goods: { good: IGood, count: number }[] }>> {
+    return client()
+        .get(url, {headers: {"X-Authorization": authStore().token || ""}});
 }
 
 /////////////////////////////////////

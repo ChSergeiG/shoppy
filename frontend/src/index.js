@@ -6,12 +6,14 @@ import {ShopSnackBar} from "./components/ShopSnackBar";
 import MainPage from "./pages/MainPage";
 import ButtonBar from "./components/ButtonBar";
 import {refreshStatics} from "./store/StaticsStore";
+import AlertDialog from "./components/AlertDialog";
 
 refreshStatics();
 
 ReactDOM.render(
     <>
         <ShopSnackBar/>
+        <AlertDialog/>
         <BrowserRouter>
             <ButtonBar>
                 <Routes>

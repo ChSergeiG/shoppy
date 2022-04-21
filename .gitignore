@@ -1,5 +1,6 @@
 **/.gradle
 **/.idea
 **/.node
+**/.DS_STORE
 **/build
 **/node_modules

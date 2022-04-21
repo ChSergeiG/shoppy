@@ -1,9 +1,20 @@
+plugins {
+    java
+}
+
 val projectVersion: String by rootProject
 val projectGroup: String by rootProject
 
-configure(subprojects) {
+subprojects {
     version = projectVersion
     group = projectGroup
+}
+
+val javaProjects = listOf(project(":backend"), project(":jooq"))
+
+configure(javaProjects) {
+
+    apply(plugin = "java")
 
     configurations.all {
         resolutionStrategy.eachDependency {
@@ -18,8 +29,11 @@ configure(subprojects) {
 
     repositories {
         mavenLocal()
-        jcenter()
         mavenCentral()
         google()
+    }
+
+    dependencies {
+        implementation(group = "org.jetbrains", name = "annotations", version = "23.0.0")
     }
 }

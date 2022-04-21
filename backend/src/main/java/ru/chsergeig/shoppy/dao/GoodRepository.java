@@ -14,6 +14,7 @@ import ru.chsergeig.shoppy.jooq.tables.daos.GoodsDao;
 import ru.chsergeig.shoppy.jooq.tables.pojos.Goods;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import static ru.chsergeig.shoppy.jooq.Tables.GOODS;
@@ -50,5 +51,12 @@ public class GoodRepository
                 .from(GOODS)
                 .where(GOODS.STATUS.eq(Status.ACTIVE))
                 .fetchOneInto(Integer.class);
+    }
+
+    public List<Goods> getGoodsByIds(Collection<Integer> ids) {
+        return ctx().select()
+                .from(GOODS)
+                .where(GOODS.ID.in(ids))
+                .fetchInto(Goods.class);
     }
 }

@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,10 +16,13 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.chsergeig.shoppy.component.TokenUtilComponent;
 import ru.chsergeig.shoppy.dto.admin.AccountDto;
 import ru.chsergeig.shoppy.exception.ControllerException;
+import ru.chsergeig.shoppy.properties.SecurityProperties;
 import ru.chsergeig.shoppy.service.admin.AdminAccountService;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -29,6 +33,8 @@ import java.util.List;
 public class AdminAccountController {
 
     private final AdminAccountService adminAccountService;
+    private final SecurityProperties securityProperties;
+    private final TokenUtilComponent tokenUtilComponent;
 
     @Operation(
             summary = "Get all not removed accounts",
@@ -135,9 +141,17 @@ public class AdminAccountController {
     )
     @PostMapping("update")
     public ResponseEntity<AccountDto> updateAccount(
+            HttpServletRequest httpServletRequest,
             @RequestBody AccountDto dto
     ) {
         try {
+            if (isSelfModification(httpServletRequest, dto.getLogin())) {
+                AccountDto existingAccount = adminAccountService.getAccountByLogin(dto.getLogin());
+                dto.setAccountRoles(
+                        existingAccount.getAccountRoles()
+                );
+                dto.setStatus(existingAccount.getStatus());
+            }
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(adminAccountService.updateAccount(dto));
         } catch (Exception e) {
             throw new ControllerException(
@@ -159,8 +173,16 @@ public class AdminAccountController {
     )
     @DeleteMapping("{login}")
     public ResponseEntity<Integer> deleteAccount(
+            HttpServletRequest httpServletRequest,
             @PathVariable String login
     ) {
+        if (isSelfModification(httpServletRequest, login)) {
+            throw new ControllerException(
+                    HttpStatus.NOT_MODIFIED,
+                    "Self modification is not allowed",
+                    null
+            );
+        }
         try {
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(adminAccountService.deleteAccount(login));
         } catch (Exception e) {
@@ -171,4 +193,12 @@ public class AdminAccountController {
             );
         }
     }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private boolean isSelfModification(HttpServletRequest httpServletRequest, String login) {
+        final String token = httpServletRequest.getHeader(securityProperties.getJwt().getAuthorizationHeader());
+        return login.equals(tokenUtilComponent.validateTokenAndGetUsername(token));
+    }
+
 }

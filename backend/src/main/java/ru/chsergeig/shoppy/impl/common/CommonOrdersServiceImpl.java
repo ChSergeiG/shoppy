@@ -8,6 +8,7 @@ import ru.chsergeig.shoppy.dao.AccountRepository;
 import ru.chsergeig.shoppy.dao.GoodRepository;
 import ru.chsergeig.shoppy.dao.OrderGoodRepository;
 import ru.chsergeig.shoppy.dao.OrderRepository;
+import ru.chsergeig.shoppy.dto.ExtendedOrderDto;
 import ru.chsergeig.shoppy.dto.admin.GoodDto;
 import ru.chsergeig.shoppy.dto.admin.OrderDto;
 import ru.chsergeig.shoppy.jooq.enums.Status;
@@ -16,6 +17,7 @@ import ru.chsergeig.shoppy.jooq.tables.pojos.AccountsOrders;
 import ru.chsergeig.shoppy.jooq.tables.pojos.Goods;
 import ru.chsergeig.shoppy.jooq.tables.pojos.Orders;
 import ru.chsergeig.shoppy.jooq.tables.pojos.OrdersGoods;
+import ru.chsergeig.shoppy.mapping.GoodMapper;
 import ru.chsergeig.shoppy.mapping.OrderMapper;
 import ru.chsergeig.shoppy.service.common.CommonOrdersService;
 
@@ -32,6 +34,7 @@ public class CommonOrdersServiceImpl implements CommonOrdersService {
 
     private final AccountOrderRepository accountOrderRepository;
     private final AccountRepository accountRepository;
+    private final GoodMapper goodMapper;
     private final GoodRepository goodRepository;
     private final OrderGoodRepository orderGoodRepository;
     private final OrderMapper orderMapper;
@@ -94,7 +97,7 @@ public class CommonOrdersServiceImpl implements CommonOrdersService {
     }
 
     @Override
-    public OrderDto getOrderByGuid(String guid, String username) {
+    public ExtendedOrderDto getOrderByGuid(String guid, String username) {
         List<Orders> orders = orderRepository.fetchByGuid(guid);
         if (orders.size() != 1) {
             return null;
@@ -104,6 +107,15 @@ public class CommonOrdersServiceImpl implements CommonOrdersService {
         if (associatedAccounts.stream().noneMatch(a -> a.getLogin().equals(username))) {
             return null;
         }
-        return orderMapper.map(pojo);
+        OrderDto orderDto = orderMapper.map(pojo);
+        ExtendedOrderDto result = new ExtendedOrderDto(orderDto);
+        result.setGuid(guid);
+
+        result.setGoods(
+                orderGoodRepository.getGoodsByOrderId(pojo.getId()).entrySet().stream()
+                        .map(e -> new ExtendedOrderDto.OrderEntry(goodMapper.map(e.getKey()), e.getValue()))
+                        .collect(Collectors.toList())
+        );
+        return result;
     }
 }

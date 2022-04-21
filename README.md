@@ -22,6 +22,8 @@
 * MUI
 * Axios
 
+#### Delivery
+
 ### Setup
 
 #### locally
@@ -35,5 +37,6 @@
 
 1. Build backend image: `./scripts/build-back.sh`
 2. Build frontend image: `./scripts/build-front.sh`
-3. ???
-4. PROFIT
+3. It is possible to 
+4. ???
+5. PROFIT

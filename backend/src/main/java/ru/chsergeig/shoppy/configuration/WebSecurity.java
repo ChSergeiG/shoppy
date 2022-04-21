@@ -43,12 +43,20 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     ) throws Exception {
         httpSecurity
                 .cors().and()
+                .logout(
+                        logout -> logout
+                                .logoutUrl("/logout")
+                                .logoutSuccessUrl("/")
+                                .invalidateHttpSession(true)
+                )
                 .csrf().disable()
                 .authorizeRequests().antMatchers("/admin/**").authenticated()
                 .anyRequest().permitAll()
                 .and().exceptionHandling().authenticationEntryPoint(authenticationEntryPoint)
                 .and().sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+
+        ;
         httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
     }
 

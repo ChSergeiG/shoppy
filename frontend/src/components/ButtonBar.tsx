@@ -3,8 +3,12 @@ import {
     AppBarProps,
     Badge,
     Box,
+    Button,
     CssBaseline,
     CSSObject,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
     Divider,
     Drawer,
     IconButton,
@@ -13,6 +17,11 @@ import {
     ListItemIcon,
     ListItemText,
     styled,
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableRow,
     Theme,
     Toolbar,
     Typography,
@@ -25,12 +34,14 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import type {LinkProps} from "react-router-dom";
 import {Link} from "react-router-dom";
 import {ShoppingBag} from "@mui/icons-material";
-import {postOrder} from "../utils/API";
+import {getCreatedOrderInfo, getGoodsByIds, logoutRequest, postOrder} from "../utils/API";
 import {removeAllFromBasket, selectedGoods} from "../store/UserBucketStore";
 import {logout} from "../store/UserAuthorizationStore";
 import {placeSnackBarAlert} from "../store/SnackBarStore";
 import {useStore} from "effector-react";
 import {buttonBarStore} from "../store/ButtonBarStore";
+import {closeAlert, setAlertContent, showAlert} from "../store/AlertStore";
+import {InlineSpinner} from "./Spinner";
 
 type ButtonBarState = {
     open: boolean;
@@ -119,7 +130,6 @@ const ButtonBarDrawer = styled(Drawer, {shouldForwardProp: (prop) => prop !== 'o
     }),
 );
 
-
 const ButtonBar: React.FC<PropsWithChildren<{}>> = (props) => {
 
     const goodsStore = useStore(selectedGoods);
@@ -139,14 +149,92 @@ const ButtonBar: React.FC<PropsWithChildren<{}>> = (props) => {
             return;
         }
         postOrder(goodsStore)
-            .then((r) => {
-                    placeSnackBarAlert({
-                        message: r.data,
-                        color: "success"
-                    });
-                    removeAllFromBasket();
+            .then((or) => {
+                placeSnackBarAlert({
+                    message: or.data,
+                    color: "success"
+                });
+                removeAllFromBasket();
+                const orderLocation = or?.headers?.location;
+                if (orderLocation) {
+                    showAlert()
+                    setAlertContent(<InlineSpinner/>)
+                    getCreatedOrderInfo(orderLocation)
+                        .then((cor) => {
+                            console.log(cor)
+                            const order = cor.data
+                            const goodIds: number[] = order.goods.map(g => g.good.id)
+                                .filter(id => id !== undefined) as number[]
+                            getGoodsByIds(goodIds)
+                                .then((gbi) => {
+
+                                    const total = order.goods.map((g) => g.count * g.good.price)
+                                        .reduce((a, b) => a + b)
+
+                                    setAlertContent(
+                                        <form>
+                                            <DialogTitle>
+                                                Order successfully created
+                                            </DialogTitle>
+                                            <DialogContent>
+                                                <Typography variant="body1">{`Number: ${order.id}`}</Typography>
+                                                <Typography variant="body1">{`Info: ${order.info}`}</Typography>
+                                                <hr/>
+                                                <Typography variant="overline">{order.guid}</Typography>
+                                                <hr/>
+                                                <Table>
+                                                    <TableHead>
+                                                        <TableRow key="header-row">
+                                                            <TableCell key="article-header-cell">Article</TableCell>
+                                                            <TableCell key="info-header-cell">Info</TableCell>
+                                                            <TableCell key="count-header-cell">Count</TableCell>
+                                                        </TableRow>
+                                                    </TableHead>
+                                                    <TableBody>
+
+                                                        {order.goods.map((g) => {
+                                                            return (
+                                                                <TableRow>
+                                                                    <TableCell
+                                                                        key={`article-cell-${g.good.id}`}
+                                                                    >
+                                                                        <Typography
+                                                                            variant="overline"
+                                                                        >
+                                                                            {g.good.article}
+                                                                        </Typography>
+                                                                    </TableCell>
+                                                                    <TableCell
+                                                                        key={`name-cell-${g.good.id}`}
+                                                                    >
+                                                                        {g.good.name}
+                                                                    </TableCell>
+                                                                    <TableCell
+                                                                        key={`count-cell-${g.good.id}`}
+                                                                    >
+                                                                        {g.count}
+                                                                    </TableCell>
+                                                                </TableRow>
+                                                            );
+                                                        })}
+                                                    </TableBody>
+                                                </Table>
+                                                <hr/>
+                                                <Typography variant="body1">{`Total: ${total} RUB`}</Typography>
+                                            </DialogContent>
+                                            <DialogActions>
+                                                <Button
+                                                    onClick={(e) => closeAlert()}
+                                                >
+                                                    Close
+                                                </Button>
+                                            </DialogActions>
+                                        </form>
+                                    );
+                                });
+                        })
                 }
-            )
+            })
             .catch((r) => {
                 placeSnackBarAlert({
                     message: r.response.data,
@@ -170,6 +258,8 @@ const ButtonBar: React.FC<PropsWithChildren<{}>> = (props) => {
     const doLogout = (e: any) => {
         handleDrawerClose();
         logout();
+        logoutRequest().then(_ => {
+        });
     };
 
     return (
