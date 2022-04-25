@@ -4,23 +4,24 @@
 
 #### Backend
 
-* Spring
-    * S. boot web for rest api
-    * S. boot jooq to setup jOOQ
-    * S. actuator to manage app via REST in f.e. Prometheus
-    * S. security to handle authentication and secure endpoints
-* JWT to operate authorization tokens
-* Liquibase to keep code and DB consistency
-* jOOQ to keep DB and code consistency and simple DAO way to do SQL
-* Swagger oAPI to represent and formalize API of app
-* Mapstruct to generate mappers for models in compile-time
+* `Spring`
+    * `S`. boot web for rest api
+    * `S`. boot jooq to setup jOOQ
+    * `S`. actuator to manage app via REST in f.e. Prometheus
+    * `S`. security to handle authentication and secure endpoints
+* `JWT` to operate authorization tokens
+* `Liquibase` to keep code and DB consistency
+* `jOOQ` to keep DB and code consistency and simple DAO way to do SQL
+* `Swagger` oAPI to represent and formalize API of app
+* `Mapstruct` to generate mappers for models in compile-time
 
 #### Frontend
 
-* Typescript
-* React
-* MUI
-* Axios
+* `Typescript`
+* `React`
+* `Effector` as global store
+* `MUI`
+* `Axios`
 
 #### Delivery
 

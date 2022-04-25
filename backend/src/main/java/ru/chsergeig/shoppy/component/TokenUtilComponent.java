@@ -65,10 +65,7 @@ public class TokenUtilComponent {
     }
 
     public boolean isTokenExpired(String tokenValue) {
-        Date tokenExpirationDate = getClaimFromToken(tokenValue, Claims::getExpiration);
-        return LocalDateTime
-                .ofInstant(tokenExpirationDate.toInstant(), ZONE_ID)
-                .isBefore(LocalDateTime.now());
+        return getExpirationTimeFromToken(tokenValue).isBefore(LocalDateTime.now());
     }
 
     public <T> T getClaimFromToken(

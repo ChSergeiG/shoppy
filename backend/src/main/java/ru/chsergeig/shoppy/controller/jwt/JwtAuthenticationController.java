@@ -69,15 +69,18 @@ public class JwtAuthenticationController {
                     @ApiResponse(responseCode = "500", description = "Error in wrapper")
             }
     )
-    @GetMapping("probe")
-    public ResponseEntity<Boolean> probeToken(
+    @GetMapping(
+            value = "probe",
+            produces = MediaType.TEXT_PLAIN_VALUE
+    )
+    public ResponseEntity<String> probeToken(
             HttpServletRequest httpServletRequest
     ) {
         String token = httpServletRequest.getHeader(securityProperties.getJwt().getAuthorizationHeader());
         try {
-            return ResponseEntity.ok(authenticationService.probeToken(token));
+            return ResponseEntity.ok(authenticationService.probeToken(token).toString());
         } catch (Exception ignore) {
-            return ResponseEntity.ok(false);
+            return ResponseEntity.ok("false");
         }
     }
 

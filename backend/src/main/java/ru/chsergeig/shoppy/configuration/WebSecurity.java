@@ -1,8 +1,8 @@
 package ru.chsergeig.shoppy.configuration;
 
-import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,18 +16,30 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import ru.chsergeig.shoppy.component.JwtRequestFilter;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
-@RequiredArgsConstructor
 public class WebSecurity extends WebSecurityConfigurerAdapter {
 
     private final AuthenticationEntryPoint authenticationEntryPoint;
-    private final JwtRequestFilter jwtRequestFilter;
+    private final OncePerRequestFilter jwtRequestFilter;
     private final PasswordEncoder passwordEncoder;
     private final UserDetailsService userDetailsService;
+
+    @Autowired
+    public WebSecurity(
+            AuthenticationEntryPoint authenticationEntryPoint,
+            @Qualifier("jwtRequestFilter") OncePerRequestFilter jwtRequestFilter,
+            PasswordEncoder passwordEncoder,
+            UserDetailsService userDetailsService
+    ) {
+        this.authenticationEntryPoint = authenticationEntryPoint;
+        this.jwtRequestFilter = jwtRequestFilter;
+        this.passwordEncoder = passwordEncoder;
+        this.userDetailsService = userDetailsService;
+    }
 
     @SneakyThrows
     @Autowired
@@ -55,7 +67,6 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                 .and().exceptionHandling().authenticationEntryPoint(authenticationEntryPoint)
                 .and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-
         ;
         httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
     }

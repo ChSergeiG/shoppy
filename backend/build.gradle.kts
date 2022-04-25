@@ -31,7 +31,6 @@ dependencies {
     implementation(group = "org.springframework.boot", name = "spring-boot-starter-web")
     implementation(group = "org.springframework.data", name = "spring-data-commons")
 
-
     testImplementation(group = "org.springframework.boot", name = "spring-boot-starter-test")
 
     implementation(group = "io.jsonwebtoken", name = "jjwt", version = "0.9.1")
@@ -42,7 +41,12 @@ dependencies {
     implementation(group = "org.mapstruct", name = "mapstruct", version = MAPSTRUCT_VERSION)
     implementation(group = "org.postgresql", name = "postgresql", version = POSTGRES_VERSION)
 
-    testImplementation(group = "org.junit.jupiter", name = "junit-jupiter", version = "5.5.2")
+    testImplementation(group = "io.rest-assured", name = "rest-assured", version = "4.5.1")
+    testImplementation(group = "io.rest-assured", name = "json-path", version = "4.5.1")
+    testImplementation(group = "io.rest-assured", name = "xml-path", version = "4.5.1")
+    testImplementation(group = "io.rest-assured", name = "json-schema-validator", version = "4.5.1")
+
+    testImplementation(group = "org.hamcrest", name = "hamcrest", version = "2.2")
 }
 
 java {
@@ -54,9 +58,5 @@ tasks {
         layered {
             enabled = true
         }
-    }
-
-    test {
-        useJUnitPlatform()
     }
 }

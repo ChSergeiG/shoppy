@@ -36,7 +36,6 @@ public class UserController {
             }
     )
     @GetMapping("roles")
-    @Secured({"ROLE_USER", "ROLE_ADMIN"})
     public ResponseEntity<List<AccountRole>> getUserRoles(
             HttpServletRequest httpServletRequest
     ) {
