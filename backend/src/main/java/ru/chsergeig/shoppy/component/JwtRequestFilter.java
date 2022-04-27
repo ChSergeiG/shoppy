@@ -2,9 +2,9 @@ package ru.chsergeig.shoppy.component;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
-import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,12 +23,22 @@ import javax.servlet.http.HttpServletResponse;
 @Slf4j
 @Component("jwtRequestFilter")
 @Profile("!test")
-@RequiredArgsConstructor
 public class JwtRequestFilter extends OncePerRequestFilter {
 
     private final SecurityProperties securityProperties;
     private final TokenUtilComponent tokenUtilComponent;
     private final UserDetailsService userDetailsService;
+
+    @Autowired
+    public JwtRequestFilter(
+            SecurityProperties securityProperties,
+            TokenUtilComponent tokenUtilComponent,
+            UserDetailsService userDetailsService
+    ) {
+        this.securityProperties = securityProperties;
+        this.tokenUtilComponent = tokenUtilComponent;
+        this.userDetailsService = userDetailsService;
+    }
 
     @Override
     @SneakyThrows

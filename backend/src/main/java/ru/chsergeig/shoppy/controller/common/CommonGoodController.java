@@ -51,8 +51,13 @@ public class CommonGoodController {
         return ResponseEntity.ok(commonGoodService.getAllGoodsUsingFilterAndPagination(filter, pageable));
     }
 
+    @Operation(
+            summary = "Get goods by ids list",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "All good")
+            }
+    )
     @PostMapping("get_by_id")
-    @Secured({"ROLE_USER", "ROLE_ADMIN"})
     public ResponseEntity<List<GoodDto>> getGoodsByIds(
             HttpServletRequest httpServletRequest,
             @RequestBody Set<Integer> ids

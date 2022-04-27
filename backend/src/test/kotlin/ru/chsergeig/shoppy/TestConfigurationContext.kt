@@ -7,6 +7,7 @@ import org.springframework.web.filter.OncePerRequestFilter
 import javax.servlet.FilterChain
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
+import javax.sql.DataSource
 
 @TestConfiguration
 @Profile("test")
@@ -23,6 +24,10 @@ open class TestConfigurationContext {
                 filterChain.doFilter(request, response)
             }
         }
+    }
+
+    open fun h2DataSource()  {
+
     }
 
 }

@@ -5,11 +5,11 @@ import io.restassured.http.ContentType
 import org.hamcrest.Matchers.hasItem
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpStatus
-import ru.chsergeig.shoppy.ApiTest
+import ru.chsergeig.shoppy.AbstractApiTest
 import ru.chsergeig.shoppy.jooq.enums.AccountRole
 import ru.chsergeig.shoppy.jooq.enums.Status
 
-open class CommonControllerTest : ApiTest() {
+open class CommonControllerTest : AbstractApiTest() {
 
     @Test
     open fun getStatuses() {

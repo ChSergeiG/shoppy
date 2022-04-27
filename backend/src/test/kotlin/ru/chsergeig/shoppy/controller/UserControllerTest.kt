@@ -5,17 +5,14 @@ import io.restassured.http.ContentType
 import org.hamcrest.Matchers.`is`
 import org.hamcrest.Matchers.empty
 import org.hamcrest.Matchers.hasItem
-import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.eq
 import org.mockito.Mockito.reset
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.HttpStatus
-import ru.chsergeig.shoppy.ApiTest
+import ru.chsergeig.shoppy.AbstractApiTest
 import ru.chsergeig.shoppy.component.TokenUtilComponent
-import ru.chsergeig.shoppy.dao.AccountRepository
-import ru.chsergeig.shoppy.dao.AccountRoleRepository
 import ru.chsergeig.shoppy.jooq.enums.AccountRole.ROLE_ADMIN
 import ru.chsergeig.shoppy.jooq.enums.AccountRole.ROLE_USER
 import ru.chsergeig.shoppy.model.JwtUserDetails
@@ -25,13 +22,7 @@ import java.util.UUID
 import kotlin.random.Random
 import org.mockito.Mockito.`when` as mockitoWhen
 
-open class UserControllerTest : ApiTest() {
-
-    @MockBean
-    lateinit var accountRepository: AccountRepository
-
-    @MockBean
-    lateinit var accountRoleRepository: AccountRoleRepository
+open class UserControllerTest : AbstractApiTest() {
 
     @Autowired
     lateinit var securityProperties: SecurityProperties
@@ -42,12 +33,7 @@ open class UserControllerTest : ApiTest() {
     @MockBean
     lateinit var userService: UserService
 
-    @AfterEach
-    fun tearDown() {
-        flushMocks()
-    }
-
-    private fun flushMocks() {
+    override fun flushMocks() {
         reset(userService)
     }
 

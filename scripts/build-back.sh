@@ -2,7 +2,7 @@
 
 version=$(sed -n -e '/projectVersion/ s/.*\= *//p' ./gradle.properties)
 
-./gradlew clean test :backend:bootJar
+./gradlew clean jacocoRootReport :backend:bootJar
 
 cd ./backend || exit
 

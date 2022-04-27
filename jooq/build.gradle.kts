@@ -19,9 +19,10 @@ apply(plugin = "com.bmuschko.docker-remote-api")
 dependencies {
     api(group = "org.jooq", name = "jooq", version = "3.16.5")
 
+    liquibaseRuntime(group = "com.h2database", name = "h2", version = "2.1.212")
+    liquibaseRuntime(group = "jakarta.xml.bind", name = "jakarta.xml.bind-api", version = "3.0.1")
     liquibaseRuntime(group = "org.postgresql", name = "postgresql", version = "42.2.18")
     liquibaseRuntime(group = "org.liquibase", name = "liquibase-core", version = LIQUIBASE_VERSION)
-    liquibaseRuntime(group = "jakarta.xml.bind", name = "jakarta.xml.bind-api", version = "3.0.1")
 }
 
 java {

@@ -3,7 +3,7 @@ package ru.chsergeig.shoppy.component;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -25,7 +25,6 @@ import java.util.function.Function;
 import static io.jsonwebtoken.impl.TextCodec.BASE64;
 
 @Component
-@RequiredArgsConstructor
 public class TokenUtilComponent {
 
     private static final Charset CHARSET = StandardCharsets.UTF_8;
@@ -33,6 +32,13 @@ public class TokenUtilComponent {
     private static final ZoneOffset ZONE_OFFSET = ZoneOffset.UTC;
 
     private final SecurityProperties securityProperties;
+
+    @Autowired
+    public TokenUtilComponent(
+            SecurityProperties securityProperties
+    ) {
+        this.securityProperties = securityProperties;
+    }
 
     public String generateToken(JwtUserDetails userDetails) {
         final LocalDateTime createdDate = LocalDateTime.now();

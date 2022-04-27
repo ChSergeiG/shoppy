@@ -17,7 +17,7 @@ import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
-import ru.chsergeig.shoppy.ApiTest
+import ru.chsergeig.shoppy.AbstractApiTest
 import ru.chsergeig.shoppy.component.TokenUtilComponent
 import ru.chsergeig.shoppy.dto.jwt.RequestDto
 import ru.chsergeig.shoppy.dto.jwt.ResponseDto
@@ -29,7 +29,7 @@ import java.util.UUID
 import kotlin.random.Random
 import org.mockito.Mockito.`when` as mockitoWhen
 
-class JwtAuthenticationControllerTest : ApiTest() {
+class JwtAuthenticationControllerTest : AbstractApiTest() {
 
     @MockBean
     lateinit var authenticationManager: AuthenticationManager
@@ -43,12 +43,7 @@ class JwtAuthenticationControllerTest : ApiTest() {
     @MockBean
     lateinit var userDetailsService: UserDetailsService
 
-    @AfterEach
-    fun tearDown() {
-        flushMocks()
-    }
-
-    private fun flushMocks() {
+    override fun flushMocks() {
         reset(authenticationManager)
         reset(userDetailsService)
     }
