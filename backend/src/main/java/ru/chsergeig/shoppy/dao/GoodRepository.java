@@ -54,8 +54,8 @@ public class GoodRepository
     }
 
     public List<Goods> getGoodsByIds(Collection<Integer> ids) {
-        return ctx().select()
-                .from(GOODS)
+        return ctx()
+                .selectFrom(GOODS)
                 .where(GOODS.ID.in(ids))
                 .fetchInto(Goods.class);
     }

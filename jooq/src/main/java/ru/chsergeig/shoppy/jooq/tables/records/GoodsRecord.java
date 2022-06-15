@@ -40,7 +40,7 @@ public class GoodsRecord extends UpdatableRecordImpl<GoodsRecord> implements Rec
     }
 
     /**
-     * Setter for <code>public.goods.name</code>.
+     * Setter for <code>public.goods.name</code>. Title of good
      */
     public GoodsRecord setName(String value) {
         set(1, value);
@@ -48,14 +48,14 @@ public class GoodsRecord extends UpdatableRecordImpl<GoodsRecord> implements Rec
     }
 
     /**
-     * Getter for <code>public.goods.name</code>.
+     * Getter for <code>public.goods.name</code>. Title of good
      */
     public String getName() {
         return (String) get(1);
     }
 
     /**
-     * Setter for <code>public.goods.article</code>.
+     * Setter for <code>public.goods.article</code>. Unique good article
      */
     public GoodsRecord setArticle(String value) {
         set(2, value);
@@ -63,14 +63,14 @@ public class GoodsRecord extends UpdatableRecordImpl<GoodsRecord> implements Rec
     }
 
     /**
-     * Getter for <code>public.goods.article</code>.
+     * Getter for <code>public.goods.article</code>. Unique good article
      */
     public String getArticle() {
         return (String) get(2);
     }
 
     /**
-     * Setter for <code>public.goods.price</code>.
+     * Setter for <code>public.goods.price</code>. Price
      */
     public GoodsRecord setPrice(BigDecimal value) {
         set(3, value);
@@ -78,14 +78,14 @@ public class GoodsRecord extends UpdatableRecordImpl<GoodsRecord> implements Rec
     }
 
     /**
-     * Getter for <code>public.goods.price</code>.
+     * Getter for <code>public.goods.price</code>. Price
      */
     public BigDecimal getPrice() {
         return (BigDecimal) get(3);
     }
 
     /**
-     * Setter for <code>public.goods.status</code>.
+     * Setter for <code>public.goods.status</code>. Given good status
      */
     public GoodsRecord setStatus(Status value) {
         set(4, value);
@@ -93,7 +93,7 @@ public class GoodsRecord extends UpdatableRecordImpl<GoodsRecord> implements Rec
     }
 
     /**
-     * Getter for <code>public.goods.status</code>.
+     * Getter for <code>public.goods.status</code>. Given good status
      */
     public Status getStatus() {
         return (Status) get(4);

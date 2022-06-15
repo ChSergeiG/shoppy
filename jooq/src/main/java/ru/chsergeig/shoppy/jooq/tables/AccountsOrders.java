@@ -49,14 +49,14 @@ public class AccountsOrders extends TableImpl<AccountsOrdersRecord> {
     }
 
     /**
-     * The column <code>public.accounts_orders.account_id</code>.
+     * The column <code>public.accounts_orders.account_id</code>. User id
      */
-    public final TableField<AccountsOrdersRecord, Integer> ACCOUNT_ID = createField(DSL.name("account_id"), SQLDataType.INTEGER.nullable(false).identity(true), this, "");
+    public final TableField<AccountsOrdersRecord, Integer> ACCOUNT_ID = createField(DSL.name("account_id"), SQLDataType.INTEGER.nullable(false).identity(true), this, "User id");
 
     /**
-     * The column <code>public.accounts_orders.order_id</code>.
+     * The column <code>public.accounts_orders.order_id</code>. Order id
      */
-    public final TableField<AccountsOrdersRecord, Integer> ORDER_ID = createField(DSL.name("order_id"), SQLDataType.INTEGER.nullable(false).identity(true), this, "");
+    public final TableField<AccountsOrdersRecord, Integer> ORDER_ID = createField(DSL.name("order_id"), SQLDataType.INTEGER.nullable(false).identity(true), this, "Order id");
 
     private AccountsOrders(Name alias, Table<AccountsOrdersRecord> aliased) {
         this(alias, aliased, null);

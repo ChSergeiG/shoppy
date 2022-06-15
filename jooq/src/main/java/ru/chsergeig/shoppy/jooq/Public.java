@@ -15,6 +15,7 @@ import ru.chsergeig.shoppy.jooq.tables.Accounts;
 import ru.chsergeig.shoppy.jooq.tables.AccountsOrders;
 import ru.chsergeig.shoppy.jooq.tables.AccountsRoles;
 import ru.chsergeig.shoppy.jooq.tables.Goods;
+import ru.chsergeig.shoppy.jooq.tables.JwtTokens;
 import ru.chsergeig.shoppy.jooq.tables.Orders;
 import ru.chsergeig.shoppy.jooq.tables.OrdersGoods;
 
@@ -53,6 +54,11 @@ public class Public extends SchemaImpl {
     public final Goods GOODS = Goods.GOODS;
 
     /**
+     * The table <code>public.jwt_tokens</code>.
+     */
+    public final JwtTokens JWT_TOKENS = JwtTokens.JWT_TOKENS;
+
+    /**
      * The table <code>public.orders</code>.
      */
     public final Orders ORDERS = Orders.ORDERS;
@@ -82,6 +88,7 @@ public class Public extends SchemaImpl {
             AccountsOrders.ACCOUNTS_ORDERS,
             AccountsRoles.ACCOUNTS_ROLES,
             Goods.GOODS,
+            JwtTokens.JWT_TOKENS,
             Orders.ORDERS,
             OrdersGoods.ORDERS_GOODS
         );

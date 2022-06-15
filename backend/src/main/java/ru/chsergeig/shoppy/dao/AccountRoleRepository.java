@@ -7,12 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import ru.chsergeig.shoppy.jooq.enums.AccountRole;
 import ru.chsergeig.shoppy.jooq.tables.daos.AccountsRolesDao;
-import ru.chsergeig.shoppy.jooq.tables.pojos.AccountsRoles;
-import ru.chsergeig.shoppy.jooq.tables.records.AccountsRolesRecord;
 
-import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static ru.chsergeig.shoppy.jooq.Tables.ACCOUNTS;
 import static ru.chsergeig.shoppy.jooq.Tables.ACCOUNTS_ROLES;

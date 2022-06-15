@@ -38,7 +38,7 @@ public class OrdersRecord extends UpdatableRecordImpl<OrdersRecord> implements R
     }
 
     /**
-     * Setter for <code>public.orders.info</code>.
+     * Setter for <code>public.orders.info</code>. Info about order
      */
     public OrdersRecord setInfo(String value) {
         set(1, value);
@@ -46,14 +46,14 @@ public class OrdersRecord extends UpdatableRecordImpl<OrdersRecord> implements R
     }
 
     /**
-     * Getter for <code>public.orders.info</code>.
+     * Getter for <code>public.orders.info</code>. Info about order
      */
     public String getInfo() {
         return (String) get(1);
     }
 
     /**
-     * Setter for <code>public.orders.status</code>.
+     * Setter for <code>public.orders.status</code>. Order status
      */
     public OrdersRecord setStatus(Status value) {
         set(2, value);
@@ -61,14 +61,14 @@ public class OrdersRecord extends UpdatableRecordImpl<OrdersRecord> implements R
     }
 
     /**
-     * Getter for <code>public.orders.status</code>.
+     * Getter for <code>public.orders.status</code>. Order status
      */
     public Status getStatus() {
         return (Status) get(2);
     }
 
     /**
-     * Setter for <code>public.orders.guid</code>.
+     * Setter for <code>public.orders.guid</code>. Unique order guid
      */
     public OrdersRecord setGuid(String value) {
         set(3, value);
@@ -76,7 +76,7 @@ public class OrdersRecord extends UpdatableRecordImpl<OrdersRecord> implements R
     }
 
     /**
-     * Getter for <code>public.orders.guid</code>.
+     * Getter for <code>public.orders.guid</code>. Unique order guid
      */
     public String getGuid() {
         return (String) get(3);

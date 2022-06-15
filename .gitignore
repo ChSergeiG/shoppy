@@ -2,5 +2,7 @@
 **/.idea
 **/.node
 **/.DS_STORE
+**/.vscode
 **/build
+**/bin
 **/node_modules

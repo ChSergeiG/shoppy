@@ -1,3 +1,4 @@
+import io.freefair.gradle.plugins.lombok.tasks.LombokConfig
 import ru.chsergeig.shoppy.gradle.LIQUIBASE_VERSION
 import ru.chsergeig.shoppy.gradle.MAPSTRUCT_VERSION
 import ru.chsergeig.shoppy.gradle.POSTGRES_VERSION

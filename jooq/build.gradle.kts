@@ -1,4 +1,3 @@
-import com.bmuschko.gradle.docker.tasks.container.DockerCreateContainer
 import com.bmuschko.gradle.docker.tasks.container.DockerStartContainer
 import com.bmuschko.gradle.docker.tasks.container.DockerStopContainer
 import com.bmuschko.gradle.docker.tasks.image.DockerPullImage
@@ -6,8 +5,8 @@ import ru.chsergeig.shoppy.gradle.LIQUIBASE_VERSION
 import ru.chsergeig.shoppy.gradle.SOURCE_COMPATIBILITY
 import ru.chsergeig.shoppy.gradle.task.CheckDockerContainerHealthy
 import ru.chsergeig.shoppy.gradle.task.GetDockerImageIdTask
-import ru.chsergeig.shoppy.gradle.task.JooqGenerateClasses
-import java.util.concurrent.atomic.AtomicReference
+import ru.chsergeig.shoppy.gradle.task.createPostgresContainerConfig
+import ru.chsergeig.shoppy.gradle.task.jooqCodeGenConfig
 
 plugins {
     `java-library`
@@ -46,31 +45,25 @@ liquibase {
 }
 
 tasks {
-    val postgresImageId: AtomicReference<String> = AtomicReference("")
+
+    val postgresImage = "postgres:13.2"
 
     val pullPostgresImage = register<DockerPullImage>("pullPostgresImage") {
-        image.set("postgres:13.2")
+        image.set(postgresImage)
     }
 
     val inspectPostgresImage = register<GetDockerImageIdTask>("inspectPostgresImage") {
         dependsOn(pullPostgresImage)
-        filterForImageName.set("postgres:13.2")
-        doLast {
-            postgresImageId.set(imageId.get())
-        }
+        filterForImageName.set(postgresImage)
     }
 
-    val createPostgresContainer = register<DockerCreateContainer>("createPostgresContainer") {
-        dependsOn(inspectPostgresImage)
-        imageId.set(postgresImageId.get())
-        image.set("postgres:13.2")
-        hostConfig.portBindings.add("5433:5432")
-        withEnvVar("POSTGRES_DB", "shoppy")
-        withEnvVar("POSTGRES_USER", "shoppy")
-        withEnvVar("POSTGRES_PASSWORD", "shoppy")
-        healthCheck.cmd("pg_isready -U shoppy")
-        hostConfig.autoRemove.set(true)
-    }
+    val createPostgresContainer = register(
+        "createPostgresContainer",
+        createPostgresContainerConfig(
+            inspectPostgresImage.get().imageId,
+            inspectPostgresImage
+        )
+    )
 
     val startPostgresContainer = register<DockerStartContainer>("startPostgresContainer") {
         dependsOn(createPostgresContainer)
@@ -87,26 +80,28 @@ tasks {
         containerId.set(createPostgresContainer.get().containerId)
     }
 
+    val jooqCodeGen = register(
+        "jooqCodeGen",
+        jooqCodeGenConfig(
+            stopPostgresContainer,
+            clean, update, waitPostgresContainer
+        )
+    )
+
     update {
         dependsOn(waitPostgresContainer)
-    }
-
-    val jooqCodeGen = register<JooqGenerateClasses>("jooqCodeGen") {
-        dependsOn(clean, update, waitPostgresContainer)
-        finalizedBy(stopPostgresContainer)
-        jdbcUrl.set("jdbc:postgresql://localhost:5433/shoppy")
-        jdbcUsername.set("shoppy")
-        jdbcPassword.set("shoppy")
-        targetDirectory.set("src/main/java")
-        targetPackage.set("ru.chsergeig.shoppy.jooq")
     }
 
     compileJava {
         dependsOn(jooqCodeGen)
     }
 
+    compileKotlin {
+        dependsOn(jooqCodeGen)
+    }
+
     jar {
-        dependsOn(compileJava)
+        dependsOn(compileJava, compileKotlin)
         enabled = true
     }
 }

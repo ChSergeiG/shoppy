@@ -8,6 +8,7 @@ import ru.chsergeig.shoppy.jooq.tables.Accounts;
 import ru.chsergeig.shoppy.jooq.tables.AccountsOrders;
 import ru.chsergeig.shoppy.jooq.tables.AccountsRoles;
 import ru.chsergeig.shoppy.jooq.tables.Goods;
+import ru.chsergeig.shoppy.jooq.tables.JwtTokens;
 import ru.chsergeig.shoppy.jooq.tables.Orders;
 import ru.chsergeig.shoppy.jooq.tables.OrdersGoods;
 
@@ -37,6 +38,11 @@ public class Tables {
      * The table <code>public.goods</code>.
      */
     public static final Goods GOODS = Goods.GOODS;
+
+    /**
+     * The table <code>public.jwt_tokens</code>.
+     */
+    public static final JwtTokens JWT_TOKENS = JwtTokens.JWT_TOKENS;
 
     /**
      * The table <code>public.orders</code>.

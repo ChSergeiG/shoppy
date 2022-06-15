@@ -36,14 +36,14 @@ public class AccountsRoles implements Serializable {
     }
 
     /**
-     * Getter for <code>public.accounts_roles.account_id</code>.
+     * Getter for <code>public.accounts_roles.account_id</code>. User id
      */
     public Integer getAccountId() {
         return this.accountId;
     }
 
     /**
-     * Setter for <code>public.accounts_roles.account_id</code>.
+     * Setter for <code>public.accounts_roles.account_id</code>. User id
      */
     public AccountsRoles setAccountId(Integer accountId) {
         this.accountId = accountId;
@@ -51,14 +51,14 @@ public class AccountsRoles implements Serializable {
     }
 
     /**
-     * Getter for <code>public.accounts_roles.role</code>.
+     * Getter for <code>public.accounts_roles.role</code>. Assigned role
      */
     public AccountRole getRole() {
         return this.role;
     }
 
     /**
-     * Setter for <code>public.accounts_roles.role</code>.
+     * Setter for <code>public.accounts_roles.role</code>. Assigned role
      */
     public AccountsRoles setRole(AccountRole role) {
         this.role = role;

@@ -19,13 +19,28 @@ import org.jooq.meta.jaxb.Target
 open class JooqGenerateClasses : DefaultTask() {
 
     @Input
-    val jdbcPassword: Property<String> = project.objects.property(String::class.java)
+    val jdbcDriver: Property<String> = project.objects.property(String::class.java)
 
     @Input
     val jdbcUrl: Property<String> = project.objects.property(String::class.java)
 
     @Input
     val jdbcUsername: Property<String> = project.objects.property(String::class.java)
+
+    @Input
+    val jdbcPassword: Property<String> = project.objects.property(String::class.java)
+
+    @Input
+    val generatorName: Property<String> = project.objects.property(String::class.java)
+
+    @Input
+    val generatorDatabaseName: Property<String> = project.objects.property(String::class.java)
+
+    @Input
+    val generatorInputSchema: Property<String> = project.objects.property(String::class.java)
+
+    @Input
+    val strategyName: Property<String> = project.objects.property(String::class.java)
 
     @Input
     val targetDirectory: Property<String> = project.objects.property(String::class.java)
@@ -40,20 +55,20 @@ open class JooqGenerateClasses : DefaultTask() {
             .withLogging(Logging.INFO)
             .withJdbc(
                 Jdbc()
-                    .withDriver("org.postgresql.Driver")
+                    .withDriver(jdbcDriver.get())
                     .withUrl(jdbcUrl.get())
                     .withUser(jdbcUsername.get())
                     .withPassword(jdbcPassword.get())
             )
             .withGenerator(
                 Generator()
-                    .withName("org.jooq.codegen.JavaGenerator")
+                    .withName(generatorName.get())
                     .withDatabase(
                         Database()
-                            .withName("org.jooq.meta.postgres.PostgresDatabase")
+                            .withName(generatorDatabaseName.get())
                             .withIncludes(".*")
                             .withExcludes("DATABASECHANGELOG|DATABASECHANGELOGLOCK")
-                            .withInputSchema("public")
+                            .withInputSchema(generatorInputSchema.get())
                     )
                     .withGenerate(
                         Generate()
@@ -69,9 +84,10 @@ open class JooqGenerateClasses : DefaultTask() {
                     )
                     .withStrategy(
                         Strategy()
-                            .withName("org.jooq.codegen.DefaultGeneratorStrategy")
+                            .withName(strategyName.get())
                     )
             )
         GenerationTool.generate(configuration)
     }
+
 }

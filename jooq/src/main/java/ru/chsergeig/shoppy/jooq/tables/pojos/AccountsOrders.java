@@ -34,14 +34,14 @@ public class AccountsOrders implements Serializable {
     }
 
     /**
-     * Getter for <code>public.accounts_orders.account_id</code>.
+     * Getter for <code>public.accounts_orders.account_id</code>. User id
      */
     public Integer getAccountId() {
         return this.accountId;
     }
 
     /**
-     * Setter for <code>public.accounts_orders.account_id</code>.
+     * Setter for <code>public.accounts_orders.account_id</code>. User id
      */
     public AccountsOrders setAccountId(Integer accountId) {
         this.accountId = accountId;
@@ -49,14 +49,14 @@ public class AccountsOrders implements Serializable {
     }
 
     /**
-     * Getter for <code>public.accounts_orders.order_id</code>.
+     * Getter for <code>public.accounts_orders.order_id</code>. Order id
      */
     public Integer getOrderId() {
         return this.orderId;
     }
 
     /**
-     * Setter for <code>public.accounts_orders.order_id</code>.
+     * Setter for <code>public.accounts_orders.order_id</code>. Order id
      */
     public AccountsOrders setOrderId(Integer orderId) {
         this.orderId = orderId;

@@ -54,24 +54,24 @@ public class Goods extends TableImpl<GoodsRecord> {
     public final TableField<GoodsRecord, Integer> ID = createField(DSL.name("id"), SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>public.goods.name</code>.
+     * The column <code>public.goods.name</code>. Title of good
      */
-    public final TableField<GoodsRecord, String> NAME = createField(DSL.name("name"), SQLDataType.VARCHAR(1024).nullable(false), this, "");
+    public final TableField<GoodsRecord, String> NAME = createField(DSL.name("name"), SQLDataType.VARCHAR(1024).nullable(false), this, "Title of good");
 
     /**
-     * The column <code>public.goods.article</code>.
+     * The column <code>public.goods.article</code>. Unique good article
      */
-    public final TableField<GoodsRecord, String> ARTICLE = createField(DSL.name("article"), SQLDataType.VARCHAR(1024), this, "");
+    public final TableField<GoodsRecord, String> ARTICLE = createField(DSL.name("article"), SQLDataType.VARCHAR(1024), this, "Unique good article");
 
     /**
-     * The column <code>public.goods.price</code>.
+     * The column <code>public.goods.price</code>. Price
      */
-    public final TableField<GoodsRecord, BigDecimal> PRICE = createField(DSL.name("price"), SQLDataType.NUMERIC.defaultValue(DSL.field("0.0", SQLDataType.NUMERIC)), this, "");
+    public final TableField<GoodsRecord, BigDecimal> PRICE = createField(DSL.name("price"), SQLDataType.NUMERIC.defaultValue(DSL.field("0.0", SQLDataType.NUMERIC)), this, "Price");
 
     /**
-     * The column <code>public.goods.status</code>.
+     * The column <code>public.goods.status</code>. Given good status
      */
-    public final TableField<GoodsRecord, Status> STATUS = createField(DSL.name("status"), SQLDataType.VARCHAR.nullable(false).defaultValue(DSL.field("'ADDED'::status", SQLDataType.VARCHAR)).asEnumDataType(ru.chsergeig.shoppy.jooq.enums.Status.class), this, "");
+    public final TableField<GoodsRecord, Status> STATUS = createField(DSL.name("status"), SQLDataType.VARCHAR.nullable(false).defaultValue(DSL.field("'ADDED'::status", SQLDataType.VARCHAR)).asEnumDataType(ru.chsergeig.shoppy.jooq.enums.Status.class), this, "Given good status");
 
     private Goods(Name alias, Table<GoodsRecord> aliased) {
         this(alias, aliased, null);

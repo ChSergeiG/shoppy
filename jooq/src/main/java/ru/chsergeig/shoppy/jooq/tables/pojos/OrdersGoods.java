@@ -38,14 +38,14 @@ public class OrdersGoods implements Serializable {
     }
 
     /**
-     * Getter for <code>public.orders_goods.order_id</code>.
+     * Getter for <code>public.orders_goods.order_id</code>. Order id
      */
     public Integer getOrderId() {
         return this.orderId;
     }
 
     /**
-     * Setter for <code>public.orders_goods.order_id</code>.
+     * Setter for <code>public.orders_goods.order_id</code>. Order id
      */
     public OrdersGoods setOrderId(Integer orderId) {
         this.orderId = orderId;
@@ -53,14 +53,14 @@ public class OrdersGoods implements Serializable {
     }
 
     /**
-     * Getter for <code>public.orders_goods.good_id</code>.
+     * Getter for <code>public.orders_goods.good_id</code>. Good id
      */
     public Integer getGoodId() {
         return this.goodId;
     }
 
     /**
-     * Setter for <code>public.orders_goods.good_id</code>.
+     * Setter for <code>public.orders_goods.good_id</code>. Good id
      */
     public OrdersGoods setGoodId(Integer goodId) {
         this.goodId = goodId;
@@ -68,14 +68,14 @@ public class OrdersGoods implements Serializable {
     }
 
     /**
-     * Getter for <code>public.orders_goods.count</code>.
+     * Getter for <code>public.orders_goods.count</code>. Count of ordered goods
      */
     public Long getCount() {
         return this.count;
     }
 
     /**
-     * Setter for <code>public.orders_goods.count</code>.
+     * Setter for <code>public.orders_goods.count</code>. Count of ordered goods
      */
     public OrdersGoods setCount(Long count) {
         this.count = count;

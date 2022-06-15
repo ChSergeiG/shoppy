@@ -47,14 +47,14 @@ public class AccountsRoles extends TableImpl<AccountsRolesRecord> {
     }
 
     /**
-     * The column <code>public.accounts_roles.account_id</code>.
+     * The column <code>public.accounts_roles.account_id</code>. User id
      */
-    public final TableField<AccountsRolesRecord, Integer> ACCOUNT_ID = createField(DSL.name("account_id"), SQLDataType.INTEGER.nullable(false).identity(true), this, "");
+    public final TableField<AccountsRolesRecord, Integer> ACCOUNT_ID = createField(DSL.name("account_id"), SQLDataType.INTEGER.nullable(false).identity(true), this, "User id");
 
     /**
-     * The column <code>public.accounts_roles.role</code>.
+     * The column <code>public.accounts_roles.role</code>. Assigned role
      */
-    public final TableField<AccountsRolesRecord, AccountRole> ROLE = createField(DSL.name("role"), SQLDataType.VARCHAR.nullable(false).defaultValue(DSL.field("'ROLE_GUEST'::account_role", SQLDataType.VARCHAR)).asEnumDataType(ru.chsergeig.shoppy.jooq.enums.AccountRole.class), this, "");
+    public final TableField<AccountsRolesRecord, AccountRole> ROLE = createField(DSL.name("role"), SQLDataType.VARCHAR.nullable(false).defaultValue(DSL.field("'ROLE_GUEST'::account_role", SQLDataType.VARCHAR)).asEnumDataType(ru.chsergeig.shoppy.jooq.enums.AccountRole.class), this, "Assigned role");
 
     private AccountsRoles(Name alias, Table<AccountsRolesRecord> aliased) {
         this(alias, aliased, null);

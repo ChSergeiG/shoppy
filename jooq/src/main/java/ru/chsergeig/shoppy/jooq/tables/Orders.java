@@ -52,19 +52,19 @@ public class Orders extends TableImpl<OrdersRecord> {
     public final TableField<OrdersRecord, Integer> ID = createField(DSL.name("id"), SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>public.orders.info</code>.
+     * The column <code>public.orders.info</code>. Info about order
      */
-    public final TableField<OrdersRecord, String> INFO = createField(DSL.name("info"), SQLDataType.VARCHAR(2048).defaultValue(DSL.field("''::character varying", SQLDataType.VARCHAR)), this, "");
+    public final TableField<OrdersRecord, String> INFO = createField(DSL.name("info"), SQLDataType.VARCHAR(2048).defaultValue(DSL.field("''::character varying", SQLDataType.VARCHAR)), this, "Info about order");
 
     /**
-     * The column <code>public.orders.status</code>.
+     * The column <code>public.orders.status</code>. Order status
      */
-    public final TableField<OrdersRecord, Status> STATUS = createField(DSL.name("status"), SQLDataType.VARCHAR.nullable(false).defaultValue(DSL.field("'ADDED'::status", SQLDataType.VARCHAR)).asEnumDataType(ru.chsergeig.shoppy.jooq.enums.Status.class), this, "");
+    public final TableField<OrdersRecord, Status> STATUS = createField(DSL.name("status"), SQLDataType.VARCHAR.nullable(false).defaultValue(DSL.field("'ADDED'::status", SQLDataType.VARCHAR)).asEnumDataType(ru.chsergeig.shoppy.jooq.enums.Status.class), this, "Order status");
 
     /**
-     * The column <code>public.orders.guid</code>.
+     * The column <code>public.orders.guid</code>. Unique order guid
      */
-    public final TableField<OrdersRecord, String> GUID = createField(DSL.name("guid"), SQLDataType.VARCHAR(36).defaultValue(DSL.field("NULL::character varying", SQLDataType.VARCHAR)), this, "");
+    public final TableField<OrdersRecord, String> GUID = createField(DSL.name("guid"), SQLDataType.VARCHAR(36).defaultValue(DSL.field("NULL::character varying", SQLDataType.VARCHAR)), this, "Unique order guid");
 
     private Orders(Name alias, Table<OrdersRecord> aliased) {
         this(alias, aliased, null);

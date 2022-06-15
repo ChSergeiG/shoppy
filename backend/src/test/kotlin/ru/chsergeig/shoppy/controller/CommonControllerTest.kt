@@ -11,6 +11,9 @@ import ru.chsergeig.shoppy.jooq.enums.Status
 
 open class CommonControllerTest : AbstractApiTest() {
 
+    override fun flushMocks() {
+    }
+
     @Test
     open fun getStatuses() {
         var validatableResponse = RestAssured.given()

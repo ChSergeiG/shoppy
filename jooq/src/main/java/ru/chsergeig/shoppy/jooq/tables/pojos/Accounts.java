@@ -63,14 +63,14 @@ public class Accounts implements Serializable {
     }
 
     /**
-     * Getter for <code>public.accounts.login</code>.
+     * Getter for <code>public.accounts.login</code>. User login
      */
     public String getLogin() {
         return this.login;
     }
 
     /**
-     * Setter for <code>public.accounts.login</code>.
+     * Setter for <code>public.accounts.login</code>. User login
      */
     public Accounts setLogin(String login) {
         this.login = login;
@@ -78,14 +78,14 @@ public class Accounts implements Serializable {
     }
 
     /**
-     * Getter for <code>public.accounts.password</code>.
+     * Getter for <code>public.accounts.password</code>. Password of the user
      */
     public String getPassword() {
         return this.password;
     }
 
     /**
-     * Setter for <code>public.accounts.password</code>.
+     * Setter for <code>public.accounts.password</code>. Password of the user
      */
     public Accounts setPassword(String password) {
         this.password = password;
@@ -93,14 +93,14 @@ public class Accounts implements Serializable {
     }
 
     /**
-     * Getter for <code>public.accounts.salted</code>.
+     * Getter for <code>public.accounts.salted</code>. Is password salted
      */
     public Boolean getSalted() {
         return this.salted;
     }
 
     /**
-     * Setter for <code>public.accounts.salted</code>.
+     * Setter for <code>public.accounts.salted</code>. Is password salted
      */
     public Accounts setSalted(Boolean salted) {
         this.salted = salted;
@@ -108,14 +108,14 @@ public class Accounts implements Serializable {
     }
 
     /**
-     * Getter for <code>public.accounts.status</code>.
+     * Getter for <code>public.accounts.status</code>. User account status
      */
     public Status getStatus() {
         return this.status;
     }
 
     /**
-     * Setter for <code>public.accounts.status</code>.
+     * Setter for <code>public.accounts.status</code>. User account status
      */
     public Accounts setStatus(Status status) {
         this.status = status;

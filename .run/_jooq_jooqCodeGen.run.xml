@@ -1,10 +1,10 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name=":backend:bootRun" type="GradleRunConfiguration" factoryName="Gradle">
+  <configuration default="false" name=":jooq:jooqCodeGen" type="GradleRunConfiguration" factoryName="Gradle">
     <ExternalSystemSettings>
       <option name="executionName" />
       <option name="externalProjectPath" value="$PROJECT_DIR$" />
       <option name="externalSystemIdString" value="GRADLE" />
-      <option name="scriptParameters" value=":backend:bootRun -x :jooq:jooqCodeGen" />
+      <option name="scriptParameters" value=":jooq:jooqCodeGen" />
       <option name="taskDescriptions">
         <list />
       </option>

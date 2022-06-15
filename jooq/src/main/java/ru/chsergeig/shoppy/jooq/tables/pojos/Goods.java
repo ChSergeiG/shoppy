@@ -64,14 +64,14 @@ public class Goods implements Serializable {
     }
 
     /**
-     * Getter for <code>public.goods.name</code>.
+     * Getter for <code>public.goods.name</code>. Title of good
      */
     public String getName() {
         return this.name;
     }
 
     /**
-     * Setter for <code>public.goods.name</code>.
+     * Setter for <code>public.goods.name</code>. Title of good
      */
     public Goods setName(String name) {
         this.name = name;
@@ -79,14 +79,14 @@ public class Goods implements Serializable {
     }
 
     /**
-     * Getter for <code>public.goods.article</code>.
+     * Getter for <code>public.goods.article</code>. Unique good article
      */
     public String getArticle() {
         return this.article;
     }
 
     /**
-     * Setter for <code>public.goods.article</code>.
+     * Setter for <code>public.goods.article</code>. Unique good article
      */
     public Goods setArticle(String article) {
         this.article = article;
@@ -94,14 +94,14 @@ public class Goods implements Serializable {
     }
 
     /**
-     * Getter for <code>public.goods.price</code>.
+     * Getter for <code>public.goods.price</code>. Price
      */
     public BigDecimal getPrice() {
         return this.price;
     }
 
     /**
-     * Setter for <code>public.goods.price</code>.
+     * Setter for <code>public.goods.price</code>. Price
      */
     public Goods setPrice(BigDecimal price) {
         this.price = price;
@@ -109,14 +109,14 @@ public class Goods implements Serializable {
     }
 
     /**
-     * Getter for <code>public.goods.status</code>.
+     * Getter for <code>public.goods.status</code>. Given good status
      */
     public Status getStatus() {
         return this.status;
     }
 
     /**
-     * Setter for <code>public.goods.status</code>.
+     * Setter for <code>public.goods.status</code>. Given good status
      */
     public Goods setStatus(Status status) {
         this.status = status;

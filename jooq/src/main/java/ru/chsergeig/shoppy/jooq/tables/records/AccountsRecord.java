@@ -38,7 +38,7 @@ public class AccountsRecord extends UpdatableRecordImpl<AccountsRecord> implemen
     }
 
     /**
-     * Setter for <code>public.accounts.login</code>.
+     * Setter for <code>public.accounts.login</code>. User login
      */
     public AccountsRecord setLogin(String value) {
         set(1, value);
@@ -46,14 +46,14 @@ public class AccountsRecord extends UpdatableRecordImpl<AccountsRecord> implemen
     }
 
     /**
-     * Getter for <code>public.accounts.login</code>.
+     * Getter for <code>public.accounts.login</code>. User login
      */
     public String getLogin() {
         return (String) get(1);
     }
 
     /**
-     * Setter for <code>public.accounts.password</code>.
+     * Setter for <code>public.accounts.password</code>. Password of the user
      */
     public AccountsRecord setPassword(String value) {
         set(2, value);
@@ -61,14 +61,14 @@ public class AccountsRecord extends UpdatableRecordImpl<AccountsRecord> implemen
     }
 
     /**
-     * Getter for <code>public.accounts.password</code>.
+     * Getter for <code>public.accounts.password</code>. Password of the user
      */
     public String getPassword() {
         return (String) get(2);
     }
 
     /**
-     * Setter for <code>public.accounts.salted</code>.
+     * Setter for <code>public.accounts.salted</code>. Is password salted
      */
     public AccountsRecord setSalted(Boolean value) {
         set(3, value);
@@ -76,14 +76,14 @@ public class AccountsRecord extends UpdatableRecordImpl<AccountsRecord> implemen
     }
 
     /**
-     * Getter for <code>public.accounts.salted</code>.
+     * Getter for <code>public.accounts.salted</code>. Is password salted
      */
     public Boolean getSalted() {
         return (Boolean) get(3);
     }
 
     /**
-     * Setter for <code>public.accounts.status</code>.
+     * Setter for <code>public.accounts.status</code>. User account status
      */
     public AccountsRecord setStatus(Status value) {
         set(4, value);
@@ -91,7 +91,7 @@ public class AccountsRecord extends UpdatableRecordImpl<AccountsRecord> implemen
     }
 
     /**
-     * Getter for <code>public.accounts.status</code>.
+     * Getter for <code>public.accounts.status</code>. User account status
      */
     public Status getStatus() {
         return (Status) get(4);

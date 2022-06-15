@@ -57,24 +57,24 @@ public class Accounts extends TableImpl<AccountsRecord> {
     public final TableField<AccountsRecord, Integer> ID = createField(DSL.name("id"), SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>public.accounts.login</code>.
+     * The column <code>public.accounts.login</code>. User login
      */
-    public final TableField<AccountsRecord, String> LOGIN = createField(DSL.name("login"), SQLDataType.VARCHAR(1024).nullable(false), this, "");
+    public final TableField<AccountsRecord, String> LOGIN = createField(DSL.name("login"), SQLDataType.VARCHAR(1024).nullable(false), this, "User login");
 
     /**
-     * The column <code>public.accounts.password</code>.
+     * The column <code>public.accounts.password</code>. Password of the user
      */
-    public final TableField<AccountsRecord, String> PASSWORD = createField(DSL.name("password"), SQLDataType.VARCHAR(1024).nullable(false), this, "");
+    public final TableField<AccountsRecord, String> PASSWORD = createField(DSL.name("password"), SQLDataType.VARCHAR(1024).nullable(false), this, "Password of the user");
 
     /**
-     * The column <code>public.accounts.salted</code>.
+     * The column <code>public.accounts.salted</code>. Is password salted
      */
-    public final TableField<AccountsRecord, Boolean> SALTED = createField(DSL.name("salted"), SQLDataType.BOOLEAN.nullable(false).defaultValue(DSL.field("false", SQLDataType.BOOLEAN)), this, "");
+    public final TableField<AccountsRecord, Boolean> SALTED = createField(DSL.name("salted"), SQLDataType.BOOLEAN.nullable(false).defaultValue(DSL.field("false", SQLDataType.BOOLEAN)), this, "Is password salted");
 
     /**
-     * The column <code>public.accounts.status</code>.
+     * The column <code>public.accounts.status</code>. User account status
      */
-    public final TableField<AccountsRecord, Status> STATUS = createField(DSL.name("status"), SQLDataType.VARCHAR.nullable(false).defaultValue(DSL.field("'ADDED'::status", SQLDataType.VARCHAR)).asEnumDataType(ru.chsergeig.shoppy.jooq.enums.Status.class), this, "");
+    public final TableField<AccountsRecord, Status> STATUS = createField(DSL.name("status"), SQLDataType.VARCHAR.nullable(false).defaultValue(DSL.field("'ADDED'::status", SQLDataType.VARCHAR)).asEnumDataType(ru.chsergeig.shoppy.jooq.enums.Status.class), this, "User account status");
 
     private Accounts(Name alias, Table<AccountsRecord> aliased) {
         this(alias, aliased, null);

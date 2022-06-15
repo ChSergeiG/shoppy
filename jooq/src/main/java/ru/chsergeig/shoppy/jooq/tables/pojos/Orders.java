@@ -59,14 +59,14 @@ public class Orders implements Serializable {
     }
 
     /**
-     * Getter for <code>public.orders.info</code>.
+     * Getter for <code>public.orders.info</code>. Info about order
      */
     public String getInfo() {
         return this.info;
     }
 
     /**
-     * Setter for <code>public.orders.info</code>.
+     * Setter for <code>public.orders.info</code>. Info about order
      */
     public Orders setInfo(String info) {
         this.info = info;
@@ -74,14 +74,14 @@ public class Orders implements Serializable {
     }
 
     /**
-     * Getter for <code>public.orders.status</code>.
+     * Getter for <code>public.orders.status</code>. Order status
      */
     public Status getStatus() {
         return this.status;
     }
 
     /**
-     * Setter for <code>public.orders.status</code>.
+     * Setter for <code>public.orders.status</code>. Order status
      */
     public Orders setStatus(Status status) {
         this.status = status;
@@ -89,14 +89,14 @@ public class Orders implements Serializable {
     }
 
     /**
-     * Getter for <code>public.orders.guid</code>.
+     * Getter for <code>public.orders.guid</code>. Unique order guid
      */
     public String getGuid() {
         return this.guid;
     }
 
     /**
-     * Setter for <code>public.orders.guid</code>.
+     * Setter for <code>public.orders.guid</code>. Unique order guid
      */
     public Orders setGuid(String guid) {
         this.guid = guid;

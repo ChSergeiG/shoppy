@@ -49,19 +49,19 @@ public class OrdersGoods extends TableImpl<OrdersGoodsRecord> {
     }
 
     /**
-     * The column <code>public.orders_goods.order_id</code>.
+     * The column <code>public.orders_goods.order_id</code>. Order id
      */
-    public final TableField<OrdersGoodsRecord, Integer> ORDER_ID = createField(DSL.name("order_id"), SQLDataType.INTEGER.nullable(false).identity(true), this, "");
+    public final TableField<OrdersGoodsRecord, Integer> ORDER_ID = createField(DSL.name("order_id"), SQLDataType.INTEGER.nullable(false).identity(true), this, "Order id");
 
     /**
-     * The column <code>public.orders_goods.good_id</code>.
+     * The column <code>public.orders_goods.good_id</code>. Good id
      */
-    public final TableField<OrdersGoodsRecord, Integer> GOOD_ID = createField(DSL.name("good_id"), SQLDataType.INTEGER.nullable(false).identity(true), this, "");
+    public final TableField<OrdersGoodsRecord, Integer> GOOD_ID = createField(DSL.name("good_id"), SQLDataType.INTEGER.nullable(false).identity(true), this, "Good id");
 
     /**
-     * The column <code>public.orders_goods.count</code>.
+     * The column <code>public.orders_goods.count</code>. Count of ordered goods
      */
-    public final TableField<OrdersGoodsRecord, Long> COUNT = createField(DSL.name("count"), SQLDataType.BIGINT.nullable(false).defaultValue(DSL.field("0", SQLDataType.BIGINT)), this, "");
+    public final TableField<OrdersGoodsRecord, Long> COUNT = createField(DSL.name("count"), SQLDataType.BIGINT.nullable(false).defaultValue(DSL.field("0", SQLDataType.BIGINT)), this, "Count of ordered goods");
 
     private OrdersGoods(Name alias, Table<OrdersGoodsRecord> aliased) {
         this(alias, aliased, null);

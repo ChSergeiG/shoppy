@@ -22,7 +22,7 @@ public class OrdersGoodsRecord extends UpdatableRecordImpl<OrdersGoodsRecord> im
     private static final long serialVersionUID = 1L;
 
     /**
-     * Setter for <code>public.orders_goods.order_id</code>.
+     * Setter for <code>public.orders_goods.order_id</code>. Order id
      */
     public OrdersGoodsRecord setOrderId(Integer value) {
         set(0, value);
@@ -30,14 +30,14 @@ public class OrdersGoodsRecord extends UpdatableRecordImpl<OrdersGoodsRecord> im
     }
 
     /**
-     * Getter for <code>public.orders_goods.order_id</code>.
+     * Getter for <code>public.orders_goods.order_id</code>. Order id
      */
     public Integer getOrderId() {
         return (Integer) get(0);
     }
 
     /**
-     * Setter for <code>public.orders_goods.good_id</code>.
+     * Setter for <code>public.orders_goods.good_id</code>. Good id
      */
     public OrdersGoodsRecord setGoodId(Integer value) {
         set(1, value);
@@ -45,14 +45,14 @@ public class OrdersGoodsRecord extends UpdatableRecordImpl<OrdersGoodsRecord> im
     }
 
     /**
-     * Getter for <code>public.orders_goods.good_id</code>.
+     * Getter for <code>public.orders_goods.good_id</code>. Good id
      */
     public Integer getGoodId() {
         return (Integer) get(1);
     }
 
     /**
-     * Setter for <code>public.orders_goods.count</code>.
+     * Setter for <code>public.orders_goods.count</code>. Count of ordered goods
      */
     public OrdersGoodsRecord setCount(Long value) {
         set(2, value);
@@ -60,7 +60,7 @@ public class OrdersGoodsRecord extends UpdatableRecordImpl<OrdersGoodsRecord> im
     }
 
     /**
-     * Getter for <code>public.orders_goods.count</code>.
+     * Getter for <code>public.orders_goods.count</code>. Count of ordered goods
      */
     public Long getCount() {
         return (Long) get(2);

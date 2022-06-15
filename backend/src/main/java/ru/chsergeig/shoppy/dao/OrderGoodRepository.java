@@ -25,7 +25,8 @@ public class OrderGoodRepository
     }
 
     public Map<Goods, Long> getGoodsByOrderId(Integer orderId) {
-        Result<Record6<Integer, String, String, BigDecimal, Status, Long>> records = ctx().select(
+        Result<Record6<Integer, String, String, BigDecimal, Status, Long>> records = ctx()
+                .select(
                         GOODS.ID,
                         GOODS.NAME,
                         GOODS.ARTICLE,

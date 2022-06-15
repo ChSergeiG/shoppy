@@ -21,7 +21,7 @@ public class AccountsOrdersRecord extends UpdatableRecordImpl<AccountsOrdersReco
     private static final long serialVersionUID = 1L;
 
     /**
-     * Setter for <code>public.accounts_orders.account_id</code>.
+     * Setter for <code>public.accounts_orders.account_id</code>. User id
      */
     public AccountsOrdersRecord setAccountId(Integer value) {
         set(0, value);
@@ -29,14 +29,14 @@ public class AccountsOrdersRecord extends UpdatableRecordImpl<AccountsOrdersReco
     }
 
     /**
-     * Getter for <code>public.accounts_orders.account_id</code>.
+     * Getter for <code>public.accounts_orders.account_id</code>. User id
      */
     public Integer getAccountId() {
         return (Integer) get(0);
     }
 
     /**
-     * Setter for <code>public.accounts_orders.order_id</code>.
+     * Setter for <code>public.accounts_orders.order_id</code>. Order id
      */
     public AccountsOrdersRecord setOrderId(Integer value) {
         set(1, value);
@@ -44,7 +44,7 @@ public class AccountsOrdersRecord extends UpdatableRecordImpl<AccountsOrdersReco
     }
 
     /**
-     * Getter for <code>public.accounts_orders.order_id</code>.
+     * Getter for <code>public.accounts_orders.order_id</code>. Order id
      */
     public Integer getOrderId() {
         return (Integer) get(1);

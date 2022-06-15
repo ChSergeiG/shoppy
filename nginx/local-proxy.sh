@@ -1,3 +1,3 @@
 #!/bin/bash
 
-nginx -c ~/IdeaProjects/shoppy/nginx/nginx.conf
+nginx -c ~/Projects/shoppy/nginx/nginx.conf

@@ -22,7 +22,7 @@ public class AccountsRolesRecord extends UpdatableRecordImpl<AccountsRolesRecord
     private static final long serialVersionUID = 1L;
 
     /**
-     * Setter for <code>public.accounts_roles.account_id</code>.
+     * Setter for <code>public.accounts_roles.account_id</code>. User id
      */
     public AccountsRolesRecord setAccountId(Integer value) {
         set(0, value);
@@ -30,14 +30,14 @@ public class AccountsRolesRecord extends UpdatableRecordImpl<AccountsRolesRecord
     }
 
     /**
-     * Getter for <code>public.accounts_roles.account_id</code>.
+     * Getter for <code>public.accounts_roles.account_id</code>. User id
      */
     public Integer getAccountId() {
         return (Integer) get(0);
     }
 
     /**
-     * Setter for <code>public.accounts_roles.role</code>.
+     * Setter for <code>public.accounts_roles.role</code>. Assigned role
      */
     public AccountsRolesRecord setRole(AccountRole value) {
         set(1, value);
@@ -45,7 +45,7 @@ public class AccountsRolesRecord extends UpdatableRecordImpl<AccountsRolesRecord
     }
 
     /**
-     * Getter for <code>public.accounts_roles.role</code>.
+     * Getter for <code>public.accounts_roles.role</code>. Assigned role
      */
     public AccountRole getRole() {
         return (AccountRole) get(1);
