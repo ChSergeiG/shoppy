@@ -18,7 +18,7 @@ abstract class AbstractApiTest {
     @BeforeEach
     fun setup() {
         spec = RequestSpecBuilder()
-            .setBaseUri("http://localhost:${port}")
+            .setBaseUri("http://localhost:$port")
             .setContentType(ContentType.JSON)
             .build()
     }
@@ -28,10 +28,8 @@ abstract class AbstractApiTest {
         flushMocks()
     }
 
-    abstract fun flushMocks();
+    abstract fun flushMocks()
 
     fun login(token: String) {
-
     }
-
 }

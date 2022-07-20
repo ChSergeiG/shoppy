@@ -18,6 +18,8 @@ import ru.chsergeig.shoppy.service.admin.AdminOrderService;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static ru.chsergeig.shoppy.jooq.Tables.ORDERS;
+
 @Service
 @RequiredArgsConstructor
 public class AdminOrderServiceImpl implements AdminOrderService {
@@ -32,7 +34,10 @@ public class AdminOrderServiceImpl implements AdminOrderService {
 
     @Override
     public List<OrderDto> getAllOrders() {
-        List<Orders> orders = orderRepository.fetchByStatus(Status.ADDED, Status.ACTIVE, Status.DISABLED);
+        List<Orders> orders = orderRepository.fetch(
+                ORDERS.STATUS,
+                Status.ADDED, Status.ACTIVE, Status.DISABLED
+        );
         return orders.stream()
                 .map(orderMapper::map)
                 .collect(Collectors.toList());
@@ -40,7 +45,10 @@ public class AdminOrderServiceImpl implements AdminOrderService {
 
     @Override
     public OrderDto getOrderById(Long id) {
-        List<Orders> orders = orderRepository.fetchById(id.intValue());
+        List<Orders> orders = orderRepository.fetch(
+                ORDERS.ID,
+                id.intValue()
+        );
         if (orders.isEmpty()) {
             return null;
         } else {
@@ -70,8 +78,11 @@ public class AdminOrderServiceImpl implements AdminOrderService {
     }
 
     @Override
-    public Integer deleteOrder(Integer id) {
-        List<Orders> orders = orderRepository.fetchById(id);
+    public int deleteOrder(Integer id) {
+        List<Orders> orders = orderRepository.fetch(
+                ORDERS.ID,
+                id
+        );
         orders.forEach(o -> o.setStatus(Status.REMOVED));
         orderRepository.update(orders);
         return orders.size();

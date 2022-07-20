@@ -83,5 +83,4 @@ class GoodMapperTest {
         listToMap.add(Goods())
         Assertions.assertEquals(2, mapper.mapList(listToMap).size)
     }
-
 }

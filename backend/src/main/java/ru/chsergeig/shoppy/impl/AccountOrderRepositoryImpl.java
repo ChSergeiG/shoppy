@@ -1,8 +1,9 @@
-package ru.chsergeig.shoppy.dao;
+package ru.chsergeig.shoppy.impl;
 
 import org.jooq.Configuration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import ru.chsergeig.shoppy.dao.AccountOrderRepository;
 import ru.chsergeig.shoppy.jooq.tables.daos.AccountsOrdersDao;
 import ru.chsergeig.shoppy.jooq.tables.pojos.Accounts;
 
@@ -12,9 +13,11 @@ import static ru.chsergeig.shoppy.jooq.Tables.ACCOUNTS;
 import static ru.chsergeig.shoppy.jooq.Tables.ACCOUNTS_ORDERS;
 
 @Repository
-public class AccountOrderRepository extends AccountsOrdersDao {
+public class AccountOrderRepositoryImpl
+        extends AccountsOrdersDao
+        implements AccountOrderRepository {
 
-    public AccountOrderRepository(@Autowired Configuration configuration) {
+    public AccountOrderRepositoryImpl(@Autowired Configuration configuration) {
         super(configuration);
     }
 

@@ -1,12 +1,23 @@
 @file:Suppress("UnstableApiUsage")
 
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import ru.chsergeig.shoppy.gradle.JAVA_COMPATIBILITY
+
 plugins {
     java
     jacoco
+    id("com.diffplug.spotless") version "6.8.0"
 }
 
 val projectVersion: String by rootProject
 val projectGroup: String by rootProject
+
+spotless {
+    kotlinGradle {
+        target("*.gradle.kts")
+        ktlint()
+    }
+}
 
 jacoco {
     toolVersion = "0.8.7"
@@ -20,15 +31,28 @@ repositories {
 subprojects {
     version = projectVersion
     group = projectGroup
+
+    apply(plugin = "com.diffplug.spotless")
 }
 
 val javaProjects = listOf(project(":backend"), project(":jooq"))
+val kotlinProjects = listOf(project(":backend"))
 
 configure(javaProjects) {
-
-    apply(plugin = "java")
-    apply(plugin = "org.jetbrains.kotlin.jvm")
     apply(plugin = "jacoco")
+    apply(plugin = "java")
+
+    spotless {
+        java {
+            importOrder("", "javax", "java", "\\#")
+            removeUnusedImports()
+        }
+    }
+
+    java {
+        sourceCompatibility = JAVA_COMPATIBILITY
+        targetCompatibility = JAVA_COMPATIBILITY
+    }
 
     configurations.all {
         resolutionStrategy.eachDependency {
@@ -53,9 +77,33 @@ configure(javaProjects) {
     }
 
     tasks {
+        withType<JavaCompile> {
+            sourceCompatibility = "$JAVA_COMPATIBILITY"
+            targetCompatibility = "$JAVA_COMPATIBILITY"
+        }
+
         withType<Test> {
             systemProperty("spring.profiles.active", "test")
             useJUnitPlatform()
+        }
+    }
+}
+
+configure(kotlinProjects) {
+    apply(plugin = "jacoco")
+    apply(plugin = "org.jetbrains.kotlin.jvm")
+
+    spotless {
+        kotlin {
+            ktlint()
+        }
+    }
+
+    tasks {
+        withType<KotlinCompile> {
+            kotlinOptions {
+                jvmTarget = "$JAVA_COMPATIBILITY"
+            }
         }
     }
 }
@@ -64,7 +112,7 @@ val coverageExclusions = listOf(
     "**/Application**",
     "**/dao/**",
     "**/dto/**",
-    "**/jooq/**",
+    "**/jooq/**"
 )
 
 tasks {
@@ -92,6 +140,4 @@ tasks {
             csv.required.set(false)
         }
     }
-
 }
-

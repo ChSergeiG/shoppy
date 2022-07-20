@@ -16,9 +16,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static ru.chsergeig.shoppy.jooq.Tables.GOODS;
+
 @Service
 @RequiredArgsConstructor
-public class CommonGoodServiceImpl implements CommonGoodService {
+public class CommonGoodServiceImpl
+        implements CommonGoodService {
 
     private final GoodMapper goodMapper;
 
@@ -36,7 +39,10 @@ public class CommonGoodServiceImpl implements CommonGoodService {
 
     @Override
     public List<GoodDto> getGoodsByIds(Set<Integer> ids) {
-        final List<Goods> goods = goodRepository.getGoodsByIds(ids);
+        final List<Goods> goods = goodRepository.fetch(
+                GOODS.ID,
+                ids.toArray(Integer[]::new)
+        );
         return goodMapper.mapList(goods);
     }
 

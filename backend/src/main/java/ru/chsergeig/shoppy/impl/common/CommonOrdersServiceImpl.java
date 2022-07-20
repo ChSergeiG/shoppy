@@ -28,6 +28,10 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static ru.chsergeig.shoppy.jooq.Tables.ACCOUNTS;
+import static ru.chsergeig.shoppy.jooq.Tables.GOODS;
+import static ru.chsergeig.shoppy.jooq.Tables.ORDERS;
+
 @Service
 @RequiredArgsConstructor
 public class CommonOrdersServiceImpl implements CommonOrdersService {
@@ -42,8 +46,11 @@ public class CommonOrdersServiceImpl implements CommonOrdersService {
 
     @Override
     @Transactional
-    public String createOrder(List<GoodDto> goods, String username) {
-        List<Accounts> accounts = accountRepository.fetchByLogin(username);
+    public String createOrder(List<? extends GoodDto> goods, String username) {
+        List<Accounts> accounts = accountRepository.fetch(
+                ACCOUNTS.LOGIN,
+                username
+        );
         if (accounts.size() != 1 || accounts.get(0) == null) {
             throw new RuntimeException("Invalid username");
         }
@@ -75,7 +82,8 @@ public class CommonOrdersServiceImpl implements CommonOrdersService {
                             return map2;
                         }
                 );
-        List<Goods> resolvedGoods = goodRepository.fetchByArticle(
+        List<Goods> resolvedGoods = goodRepository.fetch(
+                GOODS.ARTICLE,
                 mapOfGoods.keySet().stream()
                         .map(GoodDto::getArticle)
                         .toArray(String[]::new)
@@ -98,7 +106,10 @@ public class CommonOrdersServiceImpl implements CommonOrdersService {
 
     @Override
     public ExtendedOrderDto getOrderByGuid(String guid, String username) {
-        List<Orders> orders = orderRepository.fetchByGuid(guid);
+        List<Orders> orders = orderRepository.fetch(
+                ORDERS.GUID,
+                guid
+        );
         if (orders.size() != 1) {
             return null;
         }

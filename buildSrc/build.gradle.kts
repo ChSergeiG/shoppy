@@ -1,5 +1,5 @@
 plugins {
-    kotlin("jvm") version "1.6.10"
+    kotlin("jvm") version "1.7.0"
 }
 
 repositories {
@@ -11,7 +11,7 @@ dependencies {
     implementation(
         group = "org.jetbrains.kotlin",
         name = "kotlin-gradle-plugin",
-        version = "1.6.21"
+        version = "1.7.0"
     )
     implementation(
         group = "com.bmuschko.docker-remote-api",
@@ -31,6 +31,6 @@ dependencies {
     implementation(
         group = "org.postgresql",
         name = "postgresql",
-        version = "42.2.18"
+        version = "42.3.3"
     )
 }

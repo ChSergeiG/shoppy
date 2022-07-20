@@ -65,5 +65,4 @@ open class OrderMapperTest {
             { Assertions.assertEquals(dto.guid, pojo.guid) }
         )
     }
-
 }

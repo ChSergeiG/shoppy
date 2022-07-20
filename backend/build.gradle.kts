@@ -1,11 +1,9 @@
-import io.freefair.gradle.plugins.lombok.tasks.LombokConfig
 import ru.chsergeig.shoppy.gradle.LIQUIBASE_VERSION
 import ru.chsergeig.shoppy.gradle.MAPSTRUCT_VERSION
 import ru.chsergeig.shoppy.gradle.POSTGRES_VERSION
-import ru.chsergeig.shoppy.gradle.SOURCE_COMPATIBILITY
+import ru.chsergeig.shoppy.gradle.REST_ASSURED_VERSION
 
 plugins {
-    java
     id("org.springframework.boot") version "2.6.4"
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
     id("io.freefair.lombok") version "6.4.1"
@@ -42,19 +40,16 @@ dependencies {
     implementation(group = "org.mapstruct", name = "mapstruct", version = MAPSTRUCT_VERSION)
     implementation(group = "org.postgresql", name = "postgresql", version = POSTGRES_VERSION)
 
-    testImplementation(group = "io.rest-assured", name = "rest-assured", version = "4.5.1")
-    testImplementation(group = "io.rest-assured", name = "json-path", version = "4.5.1")
-    testImplementation(group = "io.rest-assured", name = "xml-path", version = "4.5.1")
-    testImplementation(group = "io.rest-assured", name = "json-schema-validator", version = "4.5.1")
+    testImplementation(group = "io.rest-assured", name = "rest-assured", version = REST_ASSURED_VERSION)
+    testImplementation(group = "io.rest-assured", name = "json-path", version = REST_ASSURED_VERSION)
+    testImplementation(group = "io.rest-assured", name = "xml-path", version = REST_ASSURED_VERSION)
+    testImplementation(group = "io.rest-assured", name = "json-schema-validator", version = REST_ASSURED_VERSION)
 
     testImplementation(group = "org.hamcrest", name = "hamcrest", version = "2.2")
 }
 
-java {
-    sourceCompatibility = SOURCE_COMPATIBILITY
-}
-
 tasks {
+
     bootJar {
         layered {
             enabled = true

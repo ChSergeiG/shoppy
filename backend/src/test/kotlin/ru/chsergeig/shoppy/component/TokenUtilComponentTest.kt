@@ -1,4 +1,4 @@
-package ru.chsergeig.shoppy.component;
+package ru.chsergeig.shoppy.component
 
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
@@ -52,6 +52,4 @@ open class TokenUtilComponentTest {
             tokenUtilComponent.validateTokenAndGetUsername(token)
         }
     }
-
-
 }

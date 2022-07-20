@@ -84,6 +84,25 @@ public class JwtAuthenticationController {
         }
     }
 
+    @Operation(
+            summary = "Do logout",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "All good"),
+                    @ApiResponse(responseCode = "500", description = "Error in wrapper")
+            }
+    )
+    @GetMapping(
+            value = "logout",
+            produces = MediaType.TEXT_PLAIN_VALUE
+    )
+    public ResponseEntity<Void> logout(
+            HttpServletRequest httpServletRequest
+    ) {
+        String token = httpServletRequest.getHeader(securityProperties.getJwt().getAuthorizationHeader());
+        authenticationService.logout(token);
+        return ResponseEntity.ok(null);
+    }
+
     @ExceptionHandler({AuthenticationException.class})
     public ResponseEntity<String> handleAuthenticationException(AuthenticationException e) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getLocalizedMessage());

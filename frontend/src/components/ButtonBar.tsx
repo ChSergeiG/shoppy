@@ -34,7 +34,7 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import type {LinkProps} from "react-router-dom";
 import {Link} from "react-router-dom";
 import {ShoppingBag} from "@mui/icons-material";
-import {getCreatedOrderInfo, getGoodsByIds, logoutRequest, postOrder} from "../utils/API";
+import {getCreatedOrderInfo, getGoodsByIds, getLogout, postOrder} from "../utils/API";
 import {removeAllFromBasket, selectedGoods} from "../store/UserBucketStore";
 import {logout} from "../store/UserAuthorizationStore";
 import {placeSnackBarAlert} from "../store/SnackBarStore";
@@ -258,8 +258,6 @@ const ButtonBar: React.FC<PropsWithChildren<{}>> = (props) => {
     const doLogout = (e: any) => {
         handleDrawerClose();
         logout();
-        logoutRequest().then(_ => {
-        });
     };
 
     return (

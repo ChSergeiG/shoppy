@@ -3,7 +3,6 @@ package ru.chsergeig.shoppy.controller.jwt
 import io.restassured.RestAssured.given
 import io.restassured.http.ContentType
 import org.hamcrest.Matchers.equalTo
-import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchers.eq
@@ -196,5 +195,4 @@ class JwtAuthenticationControllerTest : AbstractApiTest() {
             .statusCode(HttpStatus.OK.value())
             .contentType(ContentType.TEXT)
     }
-
 }

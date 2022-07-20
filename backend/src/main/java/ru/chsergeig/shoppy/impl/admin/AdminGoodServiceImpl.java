@@ -14,16 +14,22 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static ru.chsergeig.shoppy.jooq.Tables.GOODS;
+
 @Service
 @RequiredArgsConstructor
-public class AdminGoodServiceImpl implements AdminGoodService {
+public class AdminGoodServiceImpl
+        implements AdminGoodService {
 
     private final GoodRepository goodRepository;
     private final GoodMapper goodMapper;
 
     @Override
     public List<GoodDto> getAllGoods() {
-        List<Goods> goods = goodRepository.fetchByStatus(Status.ADDED, Status.ACTIVE, Status.DISABLED);
+        List<Goods> goods = goodRepository.fetch(
+                GOODS.STATUS,
+                Status.ADDED, Status.ACTIVE, Status.DISABLED
+        );
         return goods.stream()
                 .map(goodMapper::map)
                 .collect(Collectors.toList());
@@ -31,7 +37,10 @@ public class AdminGoodServiceImpl implements AdminGoodService {
 
     @Override
     public GoodDto getGoodById(Long id) {
-        List<Goods> goods = goodRepository.fetchById(id.intValue());
+        List<Goods> goods = goodRepository.fetch(
+                GOODS.ID,
+                id.intValue()
+        );
         if (goods.isEmpty()) {
             return null;
         } else {
@@ -62,8 +71,11 @@ public class AdminGoodServiceImpl implements AdminGoodService {
 
     @Override
     @Transactional
-    public Integer deleteGood(String article) {
-        List<Goods> goods = goodRepository.fetchByArticle(article);
+    public int deleteGood(String article) {
+        List<Goods> goods = goodRepository.fetch(
+                GOODS.ARTICLE,
+                article
+        );
         goods.forEach(g -> g.setStatus(Status.REMOVED));
         goodRepository.update(goods);
         return goods.size();

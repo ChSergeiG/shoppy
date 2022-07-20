@@ -88,5 +88,4 @@ open class AccountMapperTest {
         listToMap.add(Accounts())
         assertEquals(2, mapper.mapList(listToMap).size)
     }
-
 }

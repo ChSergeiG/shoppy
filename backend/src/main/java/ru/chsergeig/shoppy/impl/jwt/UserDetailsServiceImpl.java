@@ -16,6 +16,8 @@ import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static ru.chsergeig.shoppy.jooq.Tables.ACCOUNTS;
+
 @Service
 @RequiredArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
@@ -27,8 +29,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     @SneakyThrows
     public UserDetails loadUserByUsername(String username) {
-        List<Accounts> accounts = accountRepository.fetchByLogin(username);
-        if (accounts == null || accounts.isEmpty()) {
+        List<Accounts> accounts = accountRepository.fetch(
+                ACCOUNTS.LOGIN,
+                username
+        );
+        if (accounts.isEmpty()) {
             throw new UserPrincipalNotFoundException(username);
         }
         List<AccountRole> roles = accountRoleRepository.fetchRolesByLogin(username);

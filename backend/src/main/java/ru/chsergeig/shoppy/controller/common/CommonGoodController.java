@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,6 +22,7 @@ import ru.chsergeig.shoppy.service.UserService;
 import ru.chsergeig.shoppy.service.common.CommonGoodService;
 
 import javax.servlet.http.HttpServletRequest;
+
 import java.util.List;
 import java.util.Set;
 

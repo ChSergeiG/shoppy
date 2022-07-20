@@ -2,9 +2,8 @@ package ru.chsergeig.shoppy.controller.common
 
 import io.restassured.RestAssured.given
 import io.restassured.http.ContentType
-import org.hamcrest.Matchers.`is`
 import org.hamcrest.Matchers.equalTo
-import org.junit.jupiter.api.AfterEach
+import org.hamcrest.Matchers.`is`
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.eq
 import org.mockito.Mockito
@@ -27,7 +26,6 @@ import java.util.UUID
 import java.util.stream.IntStream
 import kotlin.random.Random
 import org.mockito.Mockito.`when` as mockitoWhen
-
 
 open class CommonGoodControllerTest : AbstractApiTest() {
 
@@ -69,7 +67,7 @@ open class CommonGoodControllerTest : AbstractApiTest() {
         given()
             .spec(spec)
             .`when`()
-            .get("/goods/get_all?filter=${filter}&size=${size}&page=${page}")
+            .get("/goods/get_all?filter=$filter&size=$size&page=$page")
             .then()
             .statusCode(HttpStatus.OK.value())
             .contentType(ContentType.JSON)
@@ -123,5 +121,4 @@ open class CommonGoodControllerTest : AbstractApiTest() {
             .contentType(ContentType.JSON)
             .body("size()", `is`(0))
     }
-
 }

@@ -2,9 +2,9 @@ package ru.chsergeig.shoppy.controller
 
 import io.restassured.RestAssured
 import io.restassured.http.ContentType
-import org.hamcrest.Matchers.`is`
 import org.hamcrest.Matchers.empty
 import org.hamcrest.Matchers.hasItem
+import org.hamcrest.Matchers.`is`
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.eq
 import org.mockito.Mockito.reset
@@ -72,5 +72,4 @@ open class UserControllerTest : AbstractApiTest() {
             .contentType(ContentType.JSON)
             .body("$", `is`(empty<String>()))
     }
-
 }

@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static ru.chsergeig.shoppy.jooq.Tables.ACCOUNTS;
+
 @Service
 @RequiredArgsConstructor
 public class AdminAccountServiceImpl implements AdminAccountService {
@@ -27,14 +29,17 @@ public class AdminAccountServiceImpl implements AdminAccountService {
 
     @Override
     public List<AccountDto> getAllAccounts() {
-        List<Accounts> accountPojos = accountRepository.fetchByStatus(Status.ADDED, Status.ACTIVE, Status.DISABLED);
+        List<Accounts> accountPojos = accountRepository.fetch(
+                ACCOUNTS.STATUS,
+                Status.ADDED, Status.ACTIVE, Status.DISABLED
+        );
         List<AccountDto> accountDtos = accountPojos.stream()
                 .map(accountMapper::map)
                 .collect(Collectors.toList());
         List<AccountsRoles> accountRoles = accountRoleRepository.fetchByAccountId(
                 accountPojos.stream()
                         .map(Accounts::getId)
-                        .toArray(Integer[]::new)
+                        .collect(Collectors.toList())
         );
 
         accountDtos.parallelStream().forEach(dto ->
@@ -50,12 +55,18 @@ public class AdminAccountServiceImpl implements AdminAccountService {
 
     @Override
     public AccountDto getAccountByLogin(String login) {
-        List<Accounts> users = accountRepository.fetchByLogin(login);
+        List<Accounts> users = accountRepository.fetch(
+                ACCOUNTS.LOGIN,
+                login
+        );
         AccountDto dto = users.isEmpty() ? null : accountMapper.map(users.get(0));
         if (dto == null) {
             return null;
         }
-        List<AccountsRoles> accountRoles = accountRoleRepository.fetchByAccountId(dto.getId());
+        List<AccountsRoles> accountRoles = accountRoleRepository.fetch(
+                ACCOUNTS.ID,
+                dto.getId()
+        );
         dto.setAccountRoles(
                 accountRoles.stream()
                         .map(AccountsRoles::getRole)
@@ -106,8 +117,8 @@ public class AdminAccountServiceImpl implements AdminAccountService {
     }
 
     @Override
-    public Integer deleteAccount(String login) {
-        List<Accounts> users = accountRepository.fetchByLogin(login);
+    public int deleteAccount(String login) {
+        List<Accounts> users = accountRepository.fetch(ACCOUNTS.LOGIN, login);
         users.forEach(o -> o.setStatus(Status.REMOVED));
         accountRepository.update(users);
         return users.size();

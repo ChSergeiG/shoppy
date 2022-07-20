@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +22,7 @@ import ru.chsergeig.shoppy.properties.SecurityProperties;
 import ru.chsergeig.shoppy.service.admin.AdminAccountService;
 
 import javax.servlet.http.HttpServletRequest;
+
 import java.util.List;
 
 @RequiredArgsConstructor

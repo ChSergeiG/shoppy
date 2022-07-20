@@ -2,7 +2,8 @@ import com.bmuschko.gradle.docker.tasks.container.DockerStartContainer
 import com.bmuschko.gradle.docker.tasks.container.DockerStopContainer
 import com.bmuschko.gradle.docker.tasks.image.DockerPullImage
 import ru.chsergeig.shoppy.gradle.LIQUIBASE_VERSION
-import ru.chsergeig.shoppy.gradle.SOURCE_COMPATIBILITY
+import ru.chsergeig.shoppy.gradle.JAVA_COMPATIBILITY
+import ru.chsergeig.shoppy.gradle.POSTGRES_VERSION
 import ru.chsergeig.shoppy.gradle.task.CheckDockerContainerHealthy
 import ru.chsergeig.shoppy.gradle.task.GetDockerImageIdTask
 import ru.chsergeig.shoppy.gradle.task.createPostgresContainerConfig
@@ -11,21 +12,20 @@ import ru.chsergeig.shoppy.gradle.task.jooqCodeGenConfig
 plugins {
     `java-library`
     id("org.liquibase.gradle") version "2.1.0"
+    id("com.bmuschko.docker-remote-api")
 }
-
-apply(plugin = "com.bmuschko.docker-remote-api")
 
 dependencies {
     api(group = "org.jooq", name = "jooq", version = "3.16.5")
 
     liquibaseRuntime(group = "com.h2database", name = "h2", version = "2.1.212")
     liquibaseRuntime(group = "jakarta.xml.bind", name = "jakarta.xml.bind-api", version = "3.0.1")
-    liquibaseRuntime(group = "org.postgresql", name = "postgresql", version = "42.2.18")
+    liquibaseRuntime(group = "org.postgresql", name = "postgresql", version = POSTGRES_VERSION)
     liquibaseRuntime(group = "org.liquibase", name = "liquibase-core", version = LIQUIBASE_VERSION)
 }
 
 java {
-    sourceCompatibility = SOURCE_COMPATIBILITY
+    sourceCompatibility = JAVA_COMPATIBILITY
 }
 
 liquibase {
@@ -96,12 +96,8 @@ tasks {
         dependsOn(jooqCodeGen)
     }
 
-    compileKotlin {
-        dependsOn(jooqCodeGen)
-    }
-
     jar {
-        dependsOn(compileJava, compileKotlin)
+        dependsOn(compileJava)
         enabled = true
     }
 }

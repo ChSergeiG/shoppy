@@ -17,6 +17,7 @@ import ru.chsergeig.shoppy.properties.SecurityProperties;
 import ru.chsergeig.shoppy.service.UserService;
 
 import javax.servlet.http.HttpServletRequest;
+
 import java.util.List;
 
 @RequiredArgsConstructor

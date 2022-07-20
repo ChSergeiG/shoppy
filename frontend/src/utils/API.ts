@@ -1,4 +1,4 @@
-import axios, {AxiosInstance, AxiosResponse} from "axios";
+import axios, {AxiosInstance, AxiosRequestConfig, AxiosRequestHeaders, AxiosResponse} from "axios";
 import type {IAccount, IGood, IJwtRequest, IJwtResponse, IOrder} from "../../types/AdminTypes";
 import type {IStatus} from "../../types/IStatus";
 import type {IResponseType} from "../../types/IResponseType";
@@ -17,203 +17,203 @@ function authStore() {
     return authorizationStore.getState();
 }
 
-/////////
-// mvc //
-/////////
+const get = <RQ, RS>(url: string, config: AxiosRequestConfig<RQ> = {}): Promise<AxiosResponse<RS>> => {
+    return client().get(url, {
+        ...config,
+        headers: resolveHeaders(config.headers)
+    });
+};
 
-export async function logoutRequest(): Promise<void> {
-    return client()
-        .get("/logout")
-}
+const put = <RQ, RS>(url: string, data: RQ, config: AxiosRequestConfig<RQ> = {}): Promise<AxiosResponse<RS>> => {
+    return client().put(url, data, {
+        ...config,
+        headers: resolveHeaders(config.headers)
+    });
+};
+
+const post = <RQ, RS>(url: string, data: RQ, config: AxiosRequestConfig<RQ> = {}): Promise<AxiosResponse<RS>> => {
+    return client().post(url, data, {
+        ...config,
+        headers: resolveHeaders(config.headers)
+    });
+};
+
+const deleteRq = <RQ, RS>(url: string, data: RQ, config: AxiosRequestConfig<RQ> = {}): Promise<AxiosResponse<RS>> => {
+    return client().delete(url, {
+        ...config,
+        data: data,
+        headers: resolveHeaders(config.headers)
+    });
+};
+
+const resolveHeaders =
+    (headers?: AxiosRequestHeaders): AxiosRequestHeaders | undefined => {
+        if (headers?.["X-Authorization"]) {
+            return headers;
+        } else {
+            return {
+                ...headers,
+                "X-Authorization": authStore().token || ""
+            };
+        }
+    };
 
 /////////////////////////////
 // admin/AccountController //
 /////////////////////////////
 
-export async function getAccounts(): Promise<IResponseType<IAccount[]>> {
-    return client()
-        .get("/admin/account/get_all", {headers: {"X-Authorization": authStore().token || ""}});
-}
+export const getAccounts =
+    async (): Promise<IResponseType<IAccount[]>> =>
+        get("/admin/account/get_all");
 
-export async function getAccount(login: string): Promise<IResponseType<IAccount>> {
-    return client()
-        .get(`/admin/account/${login}`, {headers: {"X-Authorization": authStore().token || ""}});
-}
+export const getAccount =
+    async (login: string): Promise<IResponseType<IAccount>> =>
+        get(`/admin/account/${login}`)
 
-export async function createNewDefaultAccount(login: string): Promise<IResponseType<void>> {
-    return client()
-        .put(`/admin/account/${login}`, {}, {headers: {"X-Authorization": authStore().token || ""}});
-}
+export const createNewDefaultAccount =
+    async (login: string): Promise<IResponseType<void>> =>
+        put(`/admin/account/${login}`, {});
 
-export async function createNewAccount(accountToCreate: IAccount): Promise<IResponseType<IAccount>> {
-    return client()
-        .post("/admin/account/add", accountToCreate, {headers: {"X-Authorization": authStore().token || ""}});
-}
+export const createNewAccount =
+    async (accountToCreate: IAccount): Promise<IResponseType<IAccount>> =>
+        post("/admin/account/add", accountToCreate);
 
-export async function updateExistingAccount(accountToUpdate: IAccount): Promise<IResponseType<IAccount>> {
-    return client()
-        .post("/admin/account/update", accountToUpdate, {headers: {"X-Authorization": authStore().token || ""}});
-}
+export const updateExistingAccount =
+    (accountToUpdate: IAccount): Promise<IResponseType<IAccount>> =>
+        post("/admin/account/update", accountToUpdate);
 
-export async function deleteExistingAccount(accountToDelete: IAccount): Promise<IResponseType<number>> {
-    return client()
-        .delete(`/admin/account/${accountToDelete.login}`, {headers: {"X-Authorization": authStore().token || ""}});
-}
+export const deleteExistingAccount =
+    (accountToDelete: IAccount): Promise<IResponseType<number>> =>
+        deleteRq(`/admin/account/${accountToDelete.login}`, {});
 
 //////////////////////////
 // admin/GoodController //
 //////////////////////////
 
-export async function getGoods(): Promise<AxiosResponse<IGood[]>> {
-    return client()
-        .get("/admin/good/get_all", {headers: {"X-Authorization": authStore().token || ""}});
-}
+export const getGoods =
+    (): Promise<AxiosResponse<IGood[]>> =>
+        get("/admin/good/get_all");
 
-export async function getGood(id: number | undefined): Promise<AxiosResponse<IGood> | undefined> {
-    return client()
-        .get(`/admin/good/${id}`, {headers: {"X-Authorization": authStore().token || ""}});
-}
+export const getGood =
+    (id: number | undefined): Promise<AxiosResponse<IGood> | undefined> =>
+        get(`/admin/good/${id}`);
 
-export async function createNewDefaultGood(name: string): Promise<AxiosResponse<IGood>> {
-    return client()
-        .put(`/admin/good/${name}`, {}, {headers: {"X-Authorization": authStore().token || ""}});
-}
+export const createNewDefaultGood =
+    (name: string): Promise<AxiosResponse<IGood>> =>
+        put(`/admin/good/${name}`, {});
 
-export async function createNewGood(goodToCreate: IGood): Promise<AxiosResponse<IGood>> {
-    return client()
-        .post("/admin/good/add", goodToCreate, {headers: {"X-Authorization": authStore().token || ""}});
-}
+export const createNewGood =
+    (goodToCreate: IGood): Promise<AxiosResponse<IGood>> =>
+        post("/admin/good/add", goodToCreate);
 
-export async function updateExistingGood(goodToUpdate: IGood): Promise<AxiosResponse<IGood>> {
-    return client()
-        .post("/admin/good/update", goodToUpdate, {headers: {"X-Authorization": authStore().token || ""}});
-}
+export const updateExistingGood =
+    (goodToUpdate: IGood): Promise<AxiosResponse<IGood>> =>
+        post("/admin/good/update", goodToUpdate);
 
-export async function deleteExistingGood(goodToDelete: IGood): Promise<AxiosResponse<number>> {
-    return client()
-        .delete(`/admin/good/${goodToDelete.article}`, {headers: {"X-Authorization": authStore().token || ""}});
-}
+export const deleteExistingGood =
+    (goodToDelete: IGood): Promise<AxiosResponse<number>> =>
+        deleteRq(`/admin/good/${goodToDelete.article}`, {});
 
 ///////////////////////////
 // admin/OrderController //
 ///////////////////////////
 
-export async function getOrders(): Promise<AxiosResponse<IOrder[]>> {
-    return client()
-        .get("/admin/order/get_all", {headers: {"X-Authorization": authStore().token || ""}});
-}
+export const getOrders =
+    (): Promise<AxiosResponse<IOrder[]>> =>
+        get("/admin/order/get_all");
 
-export async function getOrder(id: number | undefined): Promise<AxiosResponse<IOrder> | undefined> {
-    return client()
-        .get(`/admin/order/${id}`, {headers: {"X-Authorization": authStore().token || ""}});
-}
+export const getOrder =
+    (id: number | undefined): Promise<AxiosResponse<IOrder> | undefined> =>
+        get(`/admin/order/${id}`);
 
-export async function createNewDefaultOrder(info: string): Promise<AxiosResponse<IOrder>> {
-    return client()
-        .put(`/admin/order/${info}`, {}, {headers: {"X-Authorization": authStore().token || ""}});
-}
+export const createNewDefaultOrder =
+    (info: string): Promise<AxiosResponse<IOrder>> =>
+        put(`/admin/order/${info}`, {});
 
-export async function createNewOrder(orderToCreate: IOrder): Promise<AxiosResponse<IOrder>> {
-    return client()
-        .post("/admin/order/add", orderToCreate, {headers: {"X-Authorization": authStore().token || ""}});
-}
+export const createNewOrder =
+    (orderToCreate: IOrder): Promise<AxiosResponse<IOrder>> =>
+        post("/admin/order/add", orderToCreate);
 
-export async function updateExistingOrder(orderToUpdate: IOrder): Promise<AxiosResponse<IOrder>> {
-    return client()
-        .post("/admin/order/update", orderToUpdate, {headers: {"X-Authorization": authStore().token || ""}});
-}
+export const updateExistingOrder =
+    (orderToUpdate: IOrder): Promise<AxiosResponse<IOrder>> =>
+        post("/admin/order/update", orderToUpdate);
 
-export async function deleteExistingOrder(orderToDelete: IOrder): Promise<AxiosResponse<number>> {
-    return client()
-        .delete(`/admin/order/${orderToDelete.id}`, {headers: {"X-Authorization": authStore().token || ""}});
-}
+export const deleteExistingOrder =
+    (orderToDelete: IOrder): Promise<AxiosResponse<number>> =>
+        deleteRq(`/admin/order/${orderToDelete.id}`, {});
 
-export async function getAccountsByOrderId(orderToGetInfo: IOrder): Promise<AxiosResponse<IAccount[]>> {
-    return client()
-        .get(`/admin/order/accounts/${orderToGetInfo.id}`, {headers: {"X-Authorization": authStore().token || ""}});
+export const getAccountsByOrderId =
+    (orderToGetInfo: IOrder): Promise<AxiosResponse<IAccount[]>> =>
+        get(`/admin/order/accounts/${orderToGetInfo.id}`);
 
-}
-
-export async function getGoodsByOrderId(orderToGetInfo: IOrder): Promise<AxiosResponse<(IGood & { count: number })[]>> {
-    return client()
-        .get(`/admin/order/goods/${orderToGetInfo.id}`, {headers: {"X-Authorization": authStore().token || ""}});
-}
+export const getGoodsByOrderId =
+    (orderToGetInfo: IOrder): Promise<AxiosResponse<(IGood & { count: number })[]>> =>
+        get(`/admin/order/goods/${orderToGetInfo.id}`);
 
 /////////////////////////////////
 // common/CommonGoodController //
 /////////////////////////////////
 
-export async function getAllGoods(
+export const getAllGoods = (
     filter?: string,
     page?: number,
     pageSize?: number
-): Promise<AxiosResponse<IPage<IGood>>> {
-    const params: string[] = []
+): Promise<AxiosResponse<IPage<IGood>>> => {
+    const params: Record<string, string | number> = {}
     if (filter && filter.trim().length !== 0) {
-        params.push(`filter=${filter.trim()}`);
+        params["filter"] = filter.trim();
     }
-    if (page !== undefined) {
-        params.push(`page=${page}`);
+    if (page) {
+        params["page"] = page;
     }
-    if (pageSize !== undefined) {
-        params.push(`size=${pageSize}`);
+    if (pageSize) {
+        params["size"] = pageSize;
     }
-    if (params.length > 0) {
-        return client()
-            .get(`/goods/get_all?${params.join("&")}`);
-    } else {
-        return client()
-            .get(`/goods/get_all`);
-    }
+    return get("/goods/get_all", {params})
 }
 
-export async function getGoodsByIds(
-    ids: number[]
-): Promise<AxiosResponse<IGood[]>> {
-    return client()
-        .post("/goods/get_by_id", ids, {headers: {"X-Authorization": authStore().token || ""}});
-}
+export const getGoodsByIds =
+    (ids: number[]): Promise<AxiosResponse<IGood[]>> =>
+        post("/goods/get_by_id", ids);
+
 
 //////////////////////////////////
 // common/CommonOrderController //
 //////////////////////////////////
 
-export async function postOrder(
-    body: IGood[]
-): Promise<AxiosResponse<string>> {
-    return client()
-        .post(`/orders/create`, body, {headers: {"X-Authorization": authStore().token || ""}})
-}
+export const postOrder =
+    (body: IGood[]): Promise<AxiosResponse<string>> =>
+        post(`/orders/create`, body);
 
-export async function getCreatedOrderInfo(
-    url: string
-): Promise<AxiosResponse<IOrder & { guid: string, goods: { good: IGood, count: number }[] }>> {
-    return client()
-        .get(url, {headers: {"X-Authorization": authStore().token || ""}});
-}
+export const getCreatedOrderInfo =
+    (url: string): Promise<AxiosResponse<IOrder & { guid: string, goods: { good: IGood, count: number }[] }>> =>
+        get(url);
 
 /////////////////////////////////////
 // jwt/JwtAuthenticationController //
 /////////////////////////////////////
 
-export async function postLogin(loginRequest: IJwtRequest): Promise<AxiosResponse<IJwtResponse>> {
-    return client()
-        .post(`/jwt/login`, loginRequest);
-}
+export const postLogin =
+    (loginRequest: IJwtRequest): Promise<AxiosResponse<IJwtResponse>> =>
+        post("/jwt/login", loginRequest);
 
-export async function getProbeLogin(token: string): Promise<AxiosResponse<boolean>> {
-    return client()
-        .get("/jwt/probe", {headers: {"X-Authorization": token}})
-}
+export const getProbeLogin =
+    (token: string): Promise<AxiosResponse<boolean>> =>
+        get("/jwt/probe", {headers: {"X-Authorization": token}});
+
+export const getLogout =
+    (): Promise<AxiosResponse<void>> =>
+        get("/jwt/logout");
+
 
 //////////////////////
 // CommonController //
 //////////////////////
 
-export async function getAccountRoles(): Promise<AxiosResponse<IAccountRole[]>> {
-    return client().get("/common/enum/account-roles");
-}
+export const getAccountRoles =
+    (): Promise<AxiosResponse<IAccountRole[]>> =>
+        get("/common/enum/account-roles");
 
-export async function getStatuses(): Promise<AxiosResponse<IStatus[]>> {
-    return client().get("/common/enum/statuses");
-}
+export const getStatuses =
+    (): Promise<AxiosResponse<IStatus[]>> =>
+        get("/common/enum/statuses");

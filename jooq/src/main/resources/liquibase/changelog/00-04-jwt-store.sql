@@ -1,6 +1,6 @@
 --liquibase formatted sql
 
---changeset ChSergeiG:add_comments:ddl
+--changeset ChSergeiG:add_comments context:ddl
 COMMENT ON COLUMN ACCOUNTS.LOGIN IS 'User login';
 COMMENT ON COLUMN ACCOUNTS.PASSWORD IS 'Password of the user';
 COMMENT ON COLUMN ACCOUNTS.SALTED IS 'Is password salted';
@@ -25,11 +25,11 @@ COMMENT ON COLUMN ORDERS_GOODS.ORDER_ID IS 'Order id';
 COMMENT ON COLUMN ORDERS_GOODS.GOOD_ID IS 'Good id';
 COMMENT ON COLUMN ORDERS_GOODS.COUNT IS 'Count of ordered goods';
 
---changeset ChSergeiG:create_jwt_storage:ddl
+--changeset ChSergeiG:create_jwt_storage context:ddl
 
 CREATE TABLE JWT_TOKENS
 (
-    TOKEN       VARCHAR(64)              NOT NULL DEFAULT '',
+    TOKEN       VARCHAR(2048)            NOT NULL DEFAULT '',
     VALID_UNTIL TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
     STATUS      STATUS                   NOT NULL DEFAULT 'ADDED'
 );

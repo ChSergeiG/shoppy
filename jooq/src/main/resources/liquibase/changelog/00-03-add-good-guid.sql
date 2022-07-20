@@ -1,3 +1,5 @@
+--liquibase formatted sql
+
 --changeset ChSergeiG:order_guid context:ddl
 
 ALTER TABLE ORDERS

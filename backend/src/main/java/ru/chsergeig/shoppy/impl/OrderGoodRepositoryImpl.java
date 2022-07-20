@@ -1,10 +1,11 @@
-package ru.chsergeig.shoppy.dao;
+package ru.chsergeig.shoppy.impl;
 
 import org.jooq.Configuration;
 import org.jooq.Record6;
 import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import ru.chsergeig.shoppy.dao.OrderGoodRepository;
 import ru.chsergeig.shoppy.jooq.enums.Status;
 import ru.chsergeig.shoppy.jooq.tables.daos.OrdersGoodsDao;
 import ru.chsergeig.shoppy.jooq.tables.pojos.Goods;
@@ -17,10 +18,11 @@ import static ru.chsergeig.shoppy.jooq.Tables.GOODS;
 import static ru.chsergeig.shoppy.jooq.Tables.ORDERS_GOODS;
 
 @Repository
-public class OrderGoodRepository
-        extends OrdersGoodsDao {
+public class OrderGoodRepositoryImpl
+        extends OrdersGoodsDao
+        implements OrderGoodRepository {
 
-    public OrderGoodRepository(@Autowired Configuration configuration) {
+    public OrderGoodRepositoryImpl(@Autowired Configuration configuration) {
         super(configuration);
     }
 
