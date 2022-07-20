@@ -48,7 +48,7 @@ public class JwtTokens extends TableImpl<JwtTokensRecord> {
     /**
      * The column <code>public.jwt_tokens.token</code>. Token sha256
      */
-    public final TableField<JwtTokensRecord, String> TOKEN = createField(DSL.name("token"), SQLDataType.VARCHAR(64).nullable(false).defaultValue(DSL.field("''::character varying", SQLDataType.VARCHAR)), this, "Token sha256");
+    public final TableField<JwtTokensRecord, String> TOKEN = createField(DSL.name("token"), SQLDataType.VARCHAR(2048).nullable(false).defaultValue(DSL.field("''::character varying", SQLDataType.VARCHAR)), this, "Token sha256");
 
     /**
      * The column <code>public.jwt_tokens.valid_until</code>. Token expiration
