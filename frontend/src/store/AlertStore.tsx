@@ -1,3 +1,6 @@
+/**
+ * Store for overlay alert component {@link AlertDialog}
+ */
 import {createEvent, createStore} from "effector";
 
 export type IAlertStore = {

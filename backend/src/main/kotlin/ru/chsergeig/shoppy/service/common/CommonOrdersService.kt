@@ -1,12 +1,12 @@
 package ru.chsergeig.shoppy.service.common
 
-import ru.chsergeig.shoppy.dto.ExtendedOrderDto
-import ru.chsergeig.shoppy.dto.admin.GoodDto
+import ru.chsergeig.shoppy.model.CommonGoodDto
+import ru.chsergeig.shoppy.model.ExtendedOrderDto
 
 interface CommonOrdersService {
 
     fun createOrder(
-        goods: List<GoodDto?>?,
+        goods: List<CommonGoodDto?>?,
         username: String?
     ): String
 

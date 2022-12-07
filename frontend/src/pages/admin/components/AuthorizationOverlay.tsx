@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import {Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField} from "@mui/material";
-import {postLogin} from "../../../utils/API";
+import {doLogin} from "../../../utils/API";
 import {Link} from "react-router-dom";
 import {
     authorizationStore,
@@ -34,13 +34,13 @@ const AuthorizationOverlay: React.FC = () => {
 
     const handleSubmit = async (e: any) => {
         e.preventDefault();
-        const tokenResponse = await postLogin({...state})
+        const tokenResponse = await doLogin({...state})
             .catch((r) => {
                 updateAuthorizationState(false);
                 placeSnackBarAlert({message: r.response.data, color: "error"});
             });
         if (tokenResponse !== undefined) {
-            updateAuthorizationToken(tokenResponse.data.token);
+            updateAuthorizationToken(tokenResponse.data.token || "");
             verifyAuthorization();
         }
     }

@@ -1,9 +1,8 @@
 import React, {useEffect, useState} from "react";
 import {Autocomplete, MenuItem, Select, Table, TableBody, TableHead, TextField} from "@mui/material";
-import type {IAccount, IAdminTableProps, IAdminTableState} from "../../../../types/AdminTypes";
-import type {IAccountRole} from "../../../../types/IAccountRole";
+import type {AccountRole, AdminAccountDto, IAdminTableProps, IAdminTableState, Status} from "../../../types";
 import {SpinnerOverlay} from "../../../components/Spinner";
-import {getAccounts} from "../../../utils/API";
+import {getAllAccountsInAdminArea} from "../../../utils/API";
 import {
     checkFilterCondition,
     commonCreateBodyRow,
@@ -11,19 +10,18 @@ import {
     commonCreatePlusRow,
     commonRenderActionsInput
 } from "../../../utils/admin-tables";
-import type {IStatus} from "../../../../types/IStatus";
 import {useStore} from "effector-react";
 import {staticsStore} from "../../../store/StaticsStore";
 import {adminFilterStore} from "../../../store/AdminFilterStore";
 import {ADMIN_ACCOUNTS_KEY} from "../admin.page";
 
-const AccountsTable: React.FC<IAdminTableProps<IAccount>  > = (props) => {
+const AccountsTable: React.FC<IAdminTableProps<AdminAccountDto>> = (props) => {
 
     const contextStore = useStore(staticsStore);
 
     const adminFilter = useStore(adminFilterStore);
 
-    const [state, setState] = useState<IAdminTableState<IAccount>>({
+    const [state, setState] = useState<IAdminTableState<AdminAccountDto>>({
         isLoading: true,
         statuses: contextStore.statuses,
         accountRoles: contextStore.accountRoles,
@@ -42,7 +40,7 @@ const AccountsTable: React.FC<IAdminTableProps<IAccount>  > = (props) => {
             {columnNumber: 5, width: "20%", align: "center", key: "actions", value: "Actions"},
         ]);
 
-    const renderLoginInput = (entity: IAccount) => {
+    const renderLoginInput = (entity: AdminAccountDto) => {
         return (
             <TextField
                 fullWidth={true}
@@ -61,7 +59,7 @@ const AccountsTable: React.FC<IAdminTableProps<IAccount>  > = (props) => {
         );
     };
 
-    const renderPasswordInput = (entity: IAccount) => {
+    const renderPasswordInput = (entity: AdminAccountDto) => {
         return (
             <TextField
                 fullWidth={true}
@@ -81,10 +79,10 @@ const AccountsTable: React.FC<IAdminTableProps<IAccount>  > = (props) => {
         );
     };
 
-    const renderGroupInput = (entity: IAccount) => {
+    const renderGroupInput = (entity: AdminAccountDto) => {
         return (
             <Autocomplete
-                getOptionLabel={(option: IAccountRole) => option.toUpperCase()}
+                getOptionLabel={(option: AccountRole) => option.toUpperCase()}
                 onChange={(e, v) => {
                     setState(prevState => {
                         const index = prevState.rows.indexOf(entity);
@@ -102,7 +100,7 @@ const AccountsTable: React.FC<IAdminTableProps<IAccount>  > = (props) => {
         );
     };
 
-    const renderStatusInput = (entity: IAccount) => {
+    const renderStatusInput = (entity: AdminAccountDto) => {
         return (
             <Select
                 value={entity.status}
@@ -111,7 +109,7 @@ const AccountsTable: React.FC<IAdminTableProps<IAccount>  > = (props) => {
                         ...state,
                         rows: [
                             ...state.rows.filter(r => r !== entity),
-                            {...entity, status: (e.target.value) as IStatus}
+                            {...entity, status: (e.target.value) as Status}
                         ]
                     })
                 }}
@@ -131,7 +129,7 @@ const AccountsTable: React.FC<IAdminTableProps<IAccount>  > = (props) => {
         );
     };
 
-    const renderActionsInput = (entity: IAccount) => commonRenderActionsInput<IAccount>(
+    const renderActionsInput = (entity: AdminAccountDto) => commonRenderActionsInput<AdminAccountDto>(
         entity,
         {
             save: entity.login !== undefined && entity.login.trim() !== "" && entity.password !== undefined && entity.password.trim() !== "",
@@ -142,7 +140,7 @@ const AccountsTable: React.FC<IAdminTableProps<IAccount>  > = (props) => {
         setState
     );
 
-    const createBodyRow = (entity: IAccount) => commonCreateBodyRow(
+    const createBodyRow = (entity: AdminAccountDto) => commonCreateBodyRow(
         `row-${state.rows.indexOf(entity)}`,
         [
             {columnNumber: 0, key: "id", content: entity.id},
@@ -155,7 +153,7 @@ const AccountsTable: React.FC<IAdminTableProps<IAccount>  > = (props) => {
     );
 
     useEffect(() => {
-        getAccounts()
+        getAllAccountsInAdminArea()
             .then(r => setState({...state, rows: r.data, isLoading: false}))
     }, []);
 
@@ -174,7 +172,7 @@ const AccountsTable: React.FC<IAdminTableProps<IAccount>  > = (props) => {
                             .sort((r1, r2) => (r1.id ? r1.id : 0xffff) - (r2.id ? r2.id : 0xffff))
                             .map(r => createBodyRow(r))}
                         {
-                            commonCreatePlusRow<IAccount>(
+                            commonCreatePlusRow<AdminAccountDto>(
                                 props.columns,
                                 {
                                     id: undefined,

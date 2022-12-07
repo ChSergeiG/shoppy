@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Application" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <option name="ACTIVE_PROFILES" />
+    <module name="shoppy.backend.main" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="ru.chsergeig.shoppy.Application" />
+    <method v="2">
+      <option name="Gradle.BeforeRunTask" enabled="true" tasks=":openapi:build spotlessApply :backend:build" externalProjectPath="$PROJECT_DIR$" vmOptions="" scriptParameters=" -x :jooq:jooqCodeGen -x test" />
+    </method>
+  </configuration>
+</component>

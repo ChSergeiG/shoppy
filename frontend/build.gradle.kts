@@ -12,7 +12,7 @@ node {
 
 tasks {
     "npm_start" {
-        dependsOn(npmInstall)
+        dependsOn(npmInstall, ":openapi:build")
     }
     "npm_run_build" {
         dependsOn(npmInstall)

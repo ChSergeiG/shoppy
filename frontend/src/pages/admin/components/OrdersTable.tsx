@@ -16,7 +16,14 @@ import {
     TextField,
     Typography
 } from "@mui/material";
-import type {IAccount, IAdminTableProps, IAdminTableState, IGood, IOrder} from "../../../../types/AdminTypes";
+import type {
+    AdminAccountDto,
+    AdminCountedGoodDto,
+    AdminOrderDto,
+    IAdminTableProps,
+    IAdminTableState,
+    Status
+} from "../../../types";
 import {
     checkFilterCondition,
     commonCreateBodyRow,
@@ -24,19 +31,17 @@ import {
     commonCreatePlusRow,
     commonRenderActionsInput
 } from "../../../utils/admin-tables";
-import {getAccountsByOrderId, getGoodsByOrderId, getOrders} from "../../../utils/API";
-import type {IStatus} from "../../../../types/IStatus";
+import {
+    getAccountsInAdminAreaByOrderIds,
+    getAllOrdersInAdminArea,
+    getGoodsInAdminAreaByOrderIds
+} from "../../../utils/API";
 import {InlineSpinner, SpinnerOverlay} from "../../../components/Spinner";
 import {Close} from "@mui/icons-material";
 import {useStore} from "effector-react";
 import {IStaticsStore, staticsStore} from "../../../store/StaticsStore";
 import {adminFilterStore} from "../../../store/AdminFilterStore";
 import {ADMIN_ORDERS_KEY} from "../admin.page";
-
-type IFetching = {
-    id?: number;
-    isFetching: boolean;
-};
 
 type IEntitiesFetching<T> = {
     id?: number;
@@ -74,13 +79,13 @@ const DetailsModal: React.FC<{
     );
 };
 
-const OrdersTable: React.FC<IAdminTableProps<IOrder>> = (props) => {
+const OrdersTable: React.FC<IAdminTableProps<AdminOrderDto>> = (props) => {
 
     const contextStore = useStore<IStaticsStore>(staticsStore);
 
     const adminFilter = useStore(adminFilterStore);
 
-    const [state, setState] = useState<IAdminTableState<IOrder>>({
+    const [state, setState] = useState<IAdminTableState<AdminOrderDto>>({
         isLoading: true,
         statuses: contextStore.statuses,
         accountRoles: contextStore.accountRoles,
@@ -89,14 +94,14 @@ const OrdersTable: React.FC<IAdminTableProps<IOrder>> = (props) => {
     });
 
     const [fetchingState, setFetchingState] = useState<{
-        loginFetching: IFetching[];
-        logins: IEntitiesFetching<IAccount>[];
-        goodsFetching: IFetching[];
-        goods: IEntitiesFetching<IGood & { count: number }>[];
+        loginFetching: boolean;
+        logins: IEntitiesFetching<AdminAccountDto>[];
+        goodsFetching: boolean;
+        goods: IEntitiesFetching<AdminCountedGoodDto>[];
     }>({
-        loginFetching: [],
+        loginFetching: false,
         logins: [],
-        goodsFetching: [],
+        goodsFetching: false,
         goods: [],
     });
 
@@ -112,6 +117,73 @@ const OrdersTable: React.FC<IAdminTableProps<IOrder>> = (props) => {
         modalFooter: undefined
     });
 
+
+    useEffect(() => {
+        if (state.isLoading) {
+            getAllOrdersInAdminArea()
+                .then(r => {
+                    setState(prevState => {
+                        return {
+                            ...prevState,
+                            rows: r.data,
+                            isLoading: false
+                        };
+                    });
+                    setFetchingState((prev) => {
+                        return {
+                            ...prev,
+                            loginFetching: true,
+                            goodsFetching: true
+                        };
+                    });
+                })
+        }
+    }, [state.isLoading]);
+
+    useEffect(() => {
+        if (fetchingState.loginFetching) {
+            getAccountsInAdminAreaByOrderIds(
+                state.rows.map((i) => i.id || -1).filter((i) => i !== -1)
+            ).then((result) => {
+                setFetchingState((prev) => {
+                    return {
+                        ...prev,
+                        loginFetching: false,
+                        logins: result.data.map((a) => {
+                            return {
+                                id: a.orderId,
+                                entities: (a.accounts || []).map((l) => {
+                                    return {login: l} as AdminAccountDto
+                                })
+                            };
+                        })
+                    };
+                });
+            })
+        }
+    }, [fetchingState.loginFetching, state.rows]);
+
+    useEffect(() => {
+        if (fetchingState.goodsFetching) {
+            getGoodsInAdminAreaByOrderIds(
+                state.rows.map((i) => i.id || -1).filter((i) => i !== -1)
+            ).then((result) => {
+                setFetchingState((prev) => {
+                    return {
+                        ...prev,
+                        goodsFetching: false,
+                        goods: result.data.map((g) => {
+                            return {
+                                id: g.orderId,
+                                entities: g.goods || []
+                            };
+                        })
+                    };
+                })
+            })
+        }
+    }, [fetchingState.goodsFetching, state.rows]);
+
     const switchModalState = (e: any, entity: any, footerText: string) => {
         setModalState(prevState => {
             return {
@@ -124,7 +196,7 @@ const OrdersTable: React.FC<IAdminTableProps<IOrder>> = (props) => {
     }
 
     const createHeaderRow = () => commonCreateHeaderRow(
-        "header-IOrder",
+        "header-AdminOrderDto",
         [
             {columnNumber: 0, width: "5%", align: "center", key: "id", value: "ID"},
             {columnNumber: 1, width: "40%", key: "info", value: "Info"},
@@ -134,8 +206,7 @@ const OrdersTable: React.FC<IAdminTableProps<IOrder>> = (props) => {
             {columnNumber: 5, width: "20%", align: "center", key: "actions", value: "Actions"},
         ]);
 
-
-    const renderActionsInput = (entity: IOrder) => commonRenderActionsInput<IOrder>(
+    const renderActionsInput = (entity: AdminOrderDto) => commonRenderActionsInput<AdminOrderDto>(
         entity,
         {
             save: entity.info !== undefined && entity.info.trim() !== "",
@@ -146,8 +217,7 @@ const OrdersTable: React.FC<IAdminTableProps<IOrder>> = (props) => {
         setState
     );
 
-
-    const createBodyRow = (entity: IOrder) => commonCreateBodyRow(
+    const createBodyRow = (entity: AdminOrderDto) => commonCreateBodyRow(
         `row-${state.rows.indexOf(entity)}`,
         [
             {columnNumber: 0, key: "id", content: entity.id},
@@ -159,7 +229,7 @@ const OrdersTable: React.FC<IAdminTableProps<IOrder>> = (props) => {
         ]
     );
 
-    const renderInfoInput = (entity: IOrder) => {
+    const renderInfoInput = (entity: AdminOrderDto) => {
         return (
             <TextField
                 fullWidth={true}
@@ -178,7 +248,7 @@ const OrdersTable: React.FC<IAdminTableProps<IOrder>> = (props) => {
         );
     }
 
-    const renderStatusInput = (entity: IOrder) => {
+    const renderStatusInput = (entity: AdminOrderDto) => {
         return (
             <Select
                 value={entity.status}
@@ -187,7 +257,7 @@ const OrdersTable: React.FC<IAdminTableProps<IOrder>> = (props) => {
                         ...state,
                         rows: [
                             ...state.rows.filter(r => r !== entity),
-                            {...entity, status: (e.target.value) as IStatus}
+                            {...entity, status: (e.target.value) as Status}
                         ]
                     })
                 }}
@@ -207,8 +277,8 @@ const OrdersTable: React.FC<IAdminTableProps<IOrder>> = (props) => {
         );
     };
 
-    const renderCustomerCell = (entity: IOrder) => {
-        return fetchingState.loginFetching.filter(lf => lf.id === entity.id)?.[0]?.isFetching
+    const renderCustomerCell = (entity: AdminOrderDto) => {
+        return fetchingState.loginFetching
             ? (<InlineSpinner/>)
             : (
                 <Button
@@ -226,8 +296,8 @@ const OrdersTable: React.FC<IAdminTableProps<IOrder>> = (props) => {
             );
     }
 
-    const renderContentCell = (entity: IOrder) => {
-        return fetchingState.goodsFetching.filter(lf => lf.id === entity.id)?.[0]?.isFetching
+    const renderContentCell = (entity: AdminOrderDto) => {
+        return fetchingState.goodsFetching
             ? (<InlineSpinner/>)
             : (
                 <Button
@@ -278,7 +348,7 @@ const OrdersTable: React.FC<IAdminTableProps<IOrder>> = (props) => {
                         "Total price: " + fetchingState.goods
                             .filter(g => g.id === entity.id)[0]
                             ?.entities
-                            .map(g => g.count * g.price)
+                            .map(g => (g?.count !== undefined ? g?.count : 0) * (g.price !== undefined ? g.price : 0))
                             .reduce((p, c) => p + c, 0) + " RUB"
                     )}
                 >
@@ -287,70 +357,61 @@ const OrdersTable: React.FC<IAdminTableProps<IOrder>> = (props) => {
             );
     }
 
-    useEffect(() => {
-        getOrders()
-            .then(r => {
-                setState(prevState => {
-                    return {...prevState, rows: r.data, isLoading: false};
-                });
-            })
-    }, []);
-
-    useEffect(() => {
-        setFetchingState(prevState => {
-            return {
-                ...prevState,
-                loginFetching: state.rows.map((o, i): IFetching => {
-                    return {id: o.id, isFetching: true};
-                }),
-                logins: state.rows.map((o, i): IEntitiesFetching<IAccount> => {
-                    return {id: o.id, entities: []};
-                }),
-                goodsFetching: state.rows.map((o, i): IFetching => {
-                    return {id: o.id, isFetching: true};
-                }),
-                goods: state.rows.map((o, i): IEntitiesFetching<IGood & { count: number }> => {
-                    return {id: o.id, entities: []};
-                })
-            };
-        });
-        state.rows.map((o, i) => {
-            getAccountsByOrderId(o)
-                .then(response => {
-                    setFetchingState(prevState => {
-                        const indexLf = prevState.loginFetching.indexOf(prevState.loginFetching.filter(lf => lf.id === o.id)[0]);
-                        const newLoginFetching = [...prevState.loginFetching];
-                        newLoginFetching[indexLf] = {id: o.id, isFetching: false};
-
-                        const indexLs = prevState.logins.indexOf(prevState.logins.filter(ls => ls.id === o.id)[0]);
-                        const newLogins = [...prevState.logins];
-                        newLogins[indexLs] = {id: o.id, entities: response.data};
-                        return {
-                            ...prevState,
-                            loginFetching: newLoginFetching,
-                            logins: newLogins
-                        };
-                    });
-                });
-            getGoodsByOrderId(o)
-                .then(response => {
-                    setFetchingState(prevState => {
-                        const indexGf = prevState.goodsFetching.indexOf(prevState.goodsFetching.filter(gf => gf.id === o.id)[0]);
-                        const newGoodsFetching = [...prevState.goodsFetching];
-                        newGoodsFetching[indexGf] = {id: o.id, isFetching: false};
-
-                        const indexGs = prevState.goods.indexOf(prevState.goods.filter(gs => gs.id === o.id)[0]);
-                        const newGoods = [...prevState.goods];
-                        newGoods[indexGs] = {id: o.id, entities: response.data};
-                        return {
-                            ...prevState,
-                            goodsFetching: newGoodsFetching,
-                            goods: newGoods
-                        };
-                    });
-                });
-        });
-    }, [state.rows]);
+    // useEffect(() => {
+    //     setFetchingState(prevState => {
+    //         return {
+    //             ...prevState,
+    //             loginFetching: state.rows.map((o, i): IFetching => {
+    //                 return {id: o.id, isFetching: true};
+    //             }),
+    //             logins: state.rows.map((o, i): IEntitiesFetching<AdminAccountDto> => {
+    //                 return {id: o.id, entities: []};
+    //             }),
+    //             goodsFetching: state.rows.map((o, i): IFetching => {
+    //                 return {id: o.id, isFetching: true};
+    //             }),
+    //             goods: state.rows.map((o, i): IEntitiesFetching<AdminGoodDto & { count: number }> => {
+    //                 return {id: o.id, entities: []};
+    //             })
+    //         };
+    //     });
+    //     state.rows.map((o, i) => {
+    //         getAccountsInAdminAreaByOrderId(o.id)
+    //             .then(response => {
+    //                 setFetchingState(prevState => {
+    //                     const indexLf = prevState.loginFetching.indexOf(prevState.loginFetching.filter(lf => lf.id === o.id)[0]);
+    //                     const newLoginFetching = [...prevState.loginFetching];
+    //                     newLoginFetching[indexLf] = {id: o.id, isFetching: false};
+    //
+    //                     const indexLs = prevState.logins.indexOf(prevState.logins.filter(ls => ls.id === o.id)[0]);
+    //                     const newLogins = [...prevState.logins];
+    //                     newLogins[indexLs] = {id: o.id, entities: response.data};
+    //                     return {
+    //                         ...prevState,
+    //                         loginFetching: newLoginFetching,
+    //                         logins: newLogins
+    //                     };
+    //                 });
+    //             });
+    //         getGoodsInAdminAreaByOrderId(o.id)
+    //             .then(response => {
+    //                 setFetchingState(prevState => {
+    //                     const indexGf = prevState.goodsFetching.indexOf(prevState.goodsFetching.filter(gf => gf.id === o.id)[0]);
+    //                     const newGoodsFetching = [...prevState.goodsFetching];
+    //                     newGoodsFetching[indexGf] = {id: o.id, isFetching: false};
+    //
+    //                     const indexGs = prevState.goods.indexOf(prevState.goods.filter(gs => gs.id === o.id)[0]);
+    //                     const newGoods = [...prevState.goods];
+    //                     newGoods[indexGs] = {id: o.id, entities: [response.data]};
+    //                     return {
+    //                         ...prevState,
+    //                         goodsFetching: newGoodsFetching,
+    //                         goods: newGoods
+    //                     };
+    //                 });
+    //             });
+    //     });
+    // }, [state.rows]);
 
     return (
         (state.isLoading === undefined || state.isLoading)
@@ -376,10 +437,10 @@ const OrdersTable: React.FC<IAdminTableProps<IOrder>> = (props) => {
                                 state.rows
                                     .filter(r => checkFilterCondition(ADMIN_ORDERS_KEY, adminFilter, r.info))
                                     .sort((r1, r2) => (r1 && r1.id ? r1.id : 0xffff) - (r2 && r2.id ? r2.id : 0xffff))
-                                    .map(r => createBodyRow(r as IOrder))
+                                    .map(r => createBodyRow(r as AdminOrderDto))
                             }
                             {
-                                commonCreatePlusRow<IOrder>(
+                                commonCreatePlusRow<AdminOrderDto>(
                                     props.columns,
                                     {
                                         id: undefined,
@@ -394,7 +455,6 @@ const OrdersTable: React.FC<IAdminTableProps<IOrder>> = (props) => {
                 </>
             )
     );
-
 }
 
 export default OrdersTable;

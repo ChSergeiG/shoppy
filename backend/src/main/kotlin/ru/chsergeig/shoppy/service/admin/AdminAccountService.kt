@@ -1,26 +1,26 @@
 package ru.chsergeig.shoppy.service.admin
 
-import ru.chsergeig.shoppy.dto.admin.AccountDto
+import ru.chsergeig.shoppy.model.AdminAccountDto
 
 interface AdminAccountService {
 
-    fun getAllAccounts(): List<AccountDto?>
+    fun getAllAccounts(): List<AdminAccountDto?>
 
     fun getAccountByLogin(
         login: String?
-    ): AccountDto
+    ): AdminAccountDto
 
     fun addAccount(
         name: String?
-    ): AccountDto
+    ): AdminAccountDto
 
     fun addAccount(
-        dto: AccountDto?
-    ): AccountDto
+        dto: AdminAccountDto?
+    ): AdminAccountDto
 
     fun updateAccount(
-        dto: AccountDto?
-    ): AccountDto
+        dto: AdminAccountDto?
+    ): AdminAccountDto
 
     fun deleteAccount(
         name: String?

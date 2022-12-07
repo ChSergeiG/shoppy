@@ -1,13 +1,13 @@
 import {Button, ButtonGroup, TableCell, TableRow} from "@mui/material";
-import type {IAdminContent, IAdminTableProps, IAdminTableState} from "../../types/AdminTypes";
+import type {IAdminContent, IAdminTableProps, IAdminTableState} from "../types";
 import React from "react";
 import type {TableCellProps} from "@mui/material/TableCell/TableCell";
 import floppyIcon from "../img/floppy.svg";
 import binIcon from "../img/bin.svg";
 import refreshIcon from "../img/refresh.svg";
-import type {IResponseType} from "../../types/IResponseType";
 import {placeSnackBarAlert} from "../store/SnackBarStore";
 import type {IFilterEntry} from "../store/AdminFilterStore";
+import type {AxiosResponse} from "axios";
 
 export const commonCreateHeaderRow = (
     rowKey: string,
@@ -94,7 +94,7 @@ export const commonRenderActionsInput = <T extends IAdminContent>(
             <Button
                 disabled={!isButtonActive.save}
                 onClick={async () => {
-                    let newEntity: IResponseType<T> | void;
+                    let newEntity: AxiosResponse<T> | void;
                     if (entity.id) {
                         newEntity = await props.updateCallback(entity)
                             .catch((r) => {

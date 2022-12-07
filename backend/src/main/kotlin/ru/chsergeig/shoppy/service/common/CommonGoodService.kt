@@ -2,8 +2,7 @@ package ru.chsergeig.shoppy.service.common
 
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
-import ru.chsergeig.shoppy.dto.CommonGoodDto
-import ru.chsergeig.shoppy.dto.admin.GoodDto
+import ru.chsergeig.shoppy.model.CommonGoodDto
 
 interface CommonGoodService {
 
@@ -15,10 +14,10 @@ interface CommonGoodService {
      */
     fun getAllGoodsUsingFilterAndPagination(
         filter: String?,
-        pageable: Pageable?
+        pageable: Pageable
     ): Page<CommonGoodDto>
 
     fun getGoodsByIds(
-        ids: Set<Int?>
-    ): List<GoodDto>
+        ids: Collection<Int>
+    ): List<CommonGoodDto>?
 }

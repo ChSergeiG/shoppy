@@ -11,7 +11,7 @@ import org.jooq.codegen.JavaGenerator
 import org.jooq.meta.postgres.PostgresDatabase
 import org.postgresql.Driver
 
-fun <T : Task> createPostgresContainerConfig(
+inline fun <reified T : Task> createPostgresContainerConfig(
     imageID: Property<String>,
     vararg dependsOnTasks: TaskProvider<T>
 ): DockerCreateContainer.() -> Unit = {

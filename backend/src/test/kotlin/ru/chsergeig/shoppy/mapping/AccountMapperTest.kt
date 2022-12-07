@@ -1,31 +1,33 @@
 package ru.chsergeig.shoppy.mapping
 
 import org.junit.jupiter.api.Assertions.assertAll
-import org.junit.jupiter.api.Assertions.assertDoesNotThrow
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import ru.chsergeig.shoppy.ShoppyTest
-import ru.chsergeig.shoppy.dto.admin.AccountDto
 import ru.chsergeig.shoppy.jooq.enums.AccountRole
 import ru.chsergeig.shoppy.jooq.enums.Status
 import ru.chsergeig.shoppy.jooq.tables.pojos.Accounts
+import ru.chsergeig.shoppy.model.AdminAccountDto
 import java.util.UUID
 import kotlin.random.Random
 
 @ShoppyTest
-open class AccountMapperTest {
+internal class AccountMapperTest {
 
     @Autowired
     lateinit var mapper: AccountMapper
 
+    @Autowired
+    lateinit var enumMapper: EnumMapper
+
     @Test
-    fun dtoToPojo() {
-        val dto = AccountDto()
-        assertDoesNotThrow { mapper.map(dto) }
-        var pojo: Accounts = mapper.map(dto)
+    fun mapAdminDtoTest() {
+        assertNull(mapper.mapAdmin(null as AdminAccountDto?))
+
+        val dto = AdminAccountDto()
+        var pojo: Accounts = mapper.mapAdmin(dto)
         assertAll(
             { assertNull(pojo.id) },
             { assertNull(pojo.login) },
@@ -37,23 +39,24 @@ open class AccountMapperTest {
         dto.login = UUID.randomUUID().toString()
         dto.password = UUID.randomUUID().toString()
         dto.salted = false
-        dto.status = Status.ADDED
+        dto.status = ru.chsergeig.shoppy.model.Status.aDDED
         dto.accountRoles = listOf(AccountRole.ROLE_GUEST, AccountRole.ROLE_ADMIN)
-        pojo = mapper.map(dto)
+        pojo = mapper.mapAdmin(dto)
         assertAll(
             { assertEquals(dto.id, pojo.id) },
             { assertEquals(dto.login, pojo.login) },
             { assertEquals(dto.password, pojo.password) },
             { assertEquals(dto.salted, pojo.salted) },
-            { assertEquals(dto.status, pojo.status) }
+            { assertEquals(dto.status, enumMapper.fromJooq(pojo.status)) }
         )
     }
 
     @Test
-    fun pojoToDto() {
+    fun mapAdminPojoTest() {
+        assertNull(mapper.mapAdmin(null as Accounts?))
+
         val pojo = Accounts()
-        assertDoesNotThrow { mapper.map(pojo) }
-        var dto: AccountDto = mapper.map(pojo)
+        var dto: AdminAccountDto = mapper.mapAdmin(pojo)
         assertAll(
             { assertNull(dto.id) },
             { assertNull(dto.login) },
@@ -66,26 +69,13 @@ open class AccountMapperTest {
         pojo.password = UUID.randomUUID().toString()
         pojo.salted = false
         pojo.status = Status.ADDED
-        dto = mapper.map(pojo)
+        dto = mapper.mapAdmin(pojo)
         assertAll(
             { assertEquals(pojo.id, dto.id) },
             { assertEquals(pojo.login, dto.login) },
             { assertEquals(pojo.password, dto.password) },
             { assertEquals(pojo.salted, dto.salted) },
-            { assertEquals(pojo.status, dto.status) }
+            { assertEquals(pojo.status, enumMapper.toJooq(dto.status)) }
         )
-    }
-
-    @Test
-    fun mapList() {
-        var listToMap: MutableList<Accounts>? = null
-        assertDoesNotThrow { mapper.mapList(listToMap) }
-        assertNull(mapper.mapList(listToMap))
-        listToMap = mutableListOf()
-        assertTrue(mapper.mapList(listToMap).isEmpty())
-        listToMap.add(Accounts())
-        assertEquals(1, mapper.mapList(listToMap).size)
-        listToMap.add(Accounts())
-        assertEquals(2, mapper.mapList(listToMap).size)
     }
 }

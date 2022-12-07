@@ -4,9 +4,10 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import ru.chsergeig.shoppy.ShoppyTest
-import ru.chsergeig.shoppy.dto.admin.GoodDto
 import ru.chsergeig.shoppy.jooq.enums.Status
 import ru.chsergeig.shoppy.jooq.tables.pojos.Goods
+import ru.chsergeig.shoppy.model.AdminGoodDto
+import ru.chsergeig.shoppy.model.CommonGoodDto
 import java.util.UUID
 import kotlin.random.Random
 
@@ -14,41 +15,18 @@ import kotlin.random.Random
 class GoodMapperTest {
 
     @Autowired
+    lateinit var enumMapper: EnumMapper
+
+    @Autowired
     lateinit var mapper: GoodMapper
 
     @Test
-    fun dtoToPojo() {
-        val dto = GoodDto()
-        Assertions.assertDoesNotThrow { mapper.map(dto) }
-        var pojo: Goods = mapper.map(dto)
-        Assertions.assertAll(
-            { Assertions.assertNull(pojo.id) },
-            { Assertions.assertNull(pojo.name) },
-            { Assertions.assertNull(pojo.article) },
-            { Assertions.assertNull(pojo.price) },
-            { Assertions.assertNull(pojo.status) }
-        )
-        dto.id = Random.nextInt()
-        dto.name = UUID.randomUUID().toString()
-        dto.article = UUID.randomUUID().toString()
-        dto.status = Status.ADDED
-        dto.price = Random.nextDouble().toBigDecimal()
+    fun mapAdminPojoTest() {
+        Assertions.assertNull(mapper.mapAdmin(null as Goods?))
 
-        pojo = mapper.map(dto)
-        Assertions.assertAll(
-            { Assertions.assertEquals(dto.id, pojo.id) },
-            { Assertions.assertEquals(dto.name, pojo.name) },
-            { Assertions.assertEquals(dto.article, pojo.article) },
-            { Assertions.assertEquals(dto.price, pojo.price) },
-            { Assertions.assertEquals(dto.status, pojo.status) }
-        )
-    }
-
-    @Test
-    fun pojoToDto() {
         val pojo = Goods()
-        Assertions.assertDoesNotThrow { mapper.map(pojo) }
-        var dto: GoodDto = mapper.map(pojo)
+        var dto: AdminGoodDto = mapper.mapAdmin(pojo)
+
         Assertions.assertAll(
             { Assertions.assertNull(dto.id) },
             { Assertions.assertNull(dto.name) },
@@ -56,31 +34,138 @@ class GoodMapperTest {
             { Assertions.assertNull(dto.price) },
             { Assertions.assertNull(dto.status) }
         )
+
         pojo.id = Random.nextInt()
         pojo.name = UUID.randomUUID().toString()
         pojo.article = UUID.randomUUID().toString()
         pojo.price = Random.nextDouble().toBigDecimal()
         pojo.status = Status.ADDED
-        dto = mapper.map(pojo)
+        dto = mapper.mapAdmin(pojo)
+
         Assertions.assertAll(
-            { Assertions.assertEquals(dto.id, pojo.id) },
-            { Assertions.assertEquals(dto.name, pojo.name) },
-            { Assertions.assertEquals(dto.article, pojo.article) },
-            { Assertions.assertEquals(dto.price, pojo.price) },
-            { Assertions.assertEquals(dto.status, pojo.status) }
+            { Assertions.assertEquals(pojo.id, dto.id) },
+            { Assertions.assertEquals(pojo.name, dto.name) },
+            { Assertions.assertEquals(pojo.article, dto.article) },
+            { Assertions.assertEquals(pojo.price, dto.price) },
+            { Assertions.assertEquals(pojo.status, enumMapper.toJooq(dto.status)) }
         )
     }
 
     @Test
-    fun mapList() {
-        var listToMap: MutableList<Goods>? = null
-        Assertions.assertDoesNotThrow { mapper.mapList(listToMap) }
-        Assertions.assertNull(mapper.mapList(listToMap))
-        listToMap = mutableListOf()
-        Assertions.assertTrue(mapper.mapList(listToMap).isEmpty())
-        listToMap.add(Goods())
-        Assertions.assertEquals(1, mapper.mapList(listToMap).size)
-        listToMap.add(Goods())
-        Assertions.assertEquals(2, mapper.mapList(listToMap).size)
+    fun mapAdminDtoTest() {
+        Assertions.assertNull(mapper.mapAdmin(null as AdminGoodDto?))
+
+        val dto = AdminGoodDto()
+
+        var pojo: Goods = mapper.mapAdmin(dto)
+        Assertions.assertAll(
+            { Assertions.assertNull(pojo.id) },
+            { Assertions.assertNull(pojo.name) },
+            { Assertions.assertNull(pojo.article) },
+            { Assertions.assertNull(pojo.price) },
+            { Assertions.assertNull(pojo.status) }
+        )
+        dto.name = UUID.randomUUID().toString()
+        dto.status = ru.chsergeig.shoppy.model.Status.aDDED
+        dto.article = UUID.randomUUID().toString()
+        dto.price = Random.nextDouble().toBigDecimal()
+        dto.id = Random.nextInt()
+
+        pojo = mapper.mapAdmin(dto)
+        Assertions.assertAll(
+            { Assertions.assertEquals(dto.name, pojo.name) },
+            { Assertions.assertEquals(dto.status, enumMapper.fromJooq(pojo.status)) },
+            { Assertions.assertEquals(dto.article, pojo.article) },
+            { Assertions.assertEquals(dto.price, pojo.price) },
+            { Assertions.assertEquals(dto.id, pojo.id) }
+        )
+    }
+
+    @Test
+    fun mapCommonPojoTest() {
+        Assertions.assertNull(mapper.mapCommon(null as Goods?))
+
+        val pojo = Goods()
+        var dto: CommonGoodDto = mapper.mapCommon(pojo)
+
+        Assertions.assertAll(
+            { Assertions.assertNull(dto.name) },
+            { Assertions.assertNull(dto.article) },
+            { Assertions.assertNull(dto.status) },
+            { Assertions.assertNull(dto.price) }
+        )
+
+        pojo.id = Random.nextInt()
+        pojo.name = UUID.randomUUID().toString()
+        pojo.article = UUID.randomUUID().toString()
+        pojo.price = Random.nextDouble().toBigDecimal()
+        pojo.status = Status.ADDED
+        dto = mapper.mapCommon(pojo)
+
+        Assertions.assertAll(
+            { Assertions.assertEquals(pojo.name, dto.name) },
+            { Assertions.assertEquals(pojo.article, dto.article) },
+            { Assertions.assertEquals(pojo.status, enumMapper.toJooq(dto.status)) },
+            { Assertions.assertEquals(pojo.price, dto.price) }
+        )
+    }
+
+    @Test
+    fun mapAdminCountedPojoTest() {
+        Assertions.assertNull(mapper.mapCommon(null as Goods?))
+
+        val pojo = Goods()
+        var dto: CommonGoodDto = mapper.mapCommon(pojo)
+
+        Assertions.assertAll(
+            { Assertions.assertNull(dto.name) },
+            { Assertions.assertNull(dto.article) },
+            { Assertions.assertNull(dto.status) },
+            { Assertions.assertNull(dto.price) }
+        )
+
+        pojo.id = Random.nextInt()
+        pojo.name = UUID.randomUUID().toString()
+        pojo.article = UUID.randomUUID().toString()
+        pojo.price = Random.nextDouble().toBigDecimal()
+        pojo.status = Status.ADDED
+        dto = mapper.mapCommon(pojo)
+
+        Assertions.assertAll(
+            { Assertions.assertEquals(pojo.name, dto.name) },
+            { Assertions.assertEquals(pojo.article, dto.article) },
+            { Assertions.assertEquals(pojo.status, enumMapper.toJooq(dto.status)) },
+            { Assertions.assertEquals(pojo.price, dto.price) }
+        )
+    }
+
+    //
+//    Goods mapCommon(CommonGoodDto dto);
+    @Test
+    fun mapCommonDtoTest() {
+        Assertions.assertNull(mapper.mapCommon(null as CommonGoodDto?))
+
+        val dto = CommonGoodDto()
+
+        var pojo: Goods = mapper.mapCommon(dto)
+        Assertions.assertAll(
+            { Assertions.assertNull(pojo.id) },
+            { Assertions.assertNull(pojo.name) },
+            { Assertions.assertNull(pojo.article) },
+            { Assertions.assertNull(pojo.price) },
+            { Assertions.assertNull(pojo.status) }
+        )
+        dto.name = UUID.randomUUID().toString()
+        dto.status = ru.chsergeig.shoppy.model.Status.aDDED
+        dto.article = UUID.randomUUID().toString()
+        dto.price = Random.nextDouble().toBigDecimal()
+
+        pojo = mapper.mapCommon(dto)
+        Assertions.assertAll(
+            { Assertions.assertEquals(dto.name, pojo.name) },
+            { Assertions.assertEquals(dto.status, enumMapper.fromJooq(pojo.status)) },
+            { Assertions.assertEquals(dto.article, pojo.article) },
+            { Assertions.assertEquals(dto.price, pojo.price) }
+        )
     }
 }

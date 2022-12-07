@@ -1,3 +1,6 @@
+/**
+ * Store for ButtonBar in main menu {@link ButtonBar}
+ */
 import {createEvent, createStore} from "effector";
 import type {IButtonBarItem} from "../components/ButtonBar";
 

@@ -1,3 +1,6 @@
+/**
+ * Store for snack bar {@link ShopSnackBar}
+ */
 import {createEvent, createStore} from "effector";
 import type {AlertColor} from "@mui/material";
 

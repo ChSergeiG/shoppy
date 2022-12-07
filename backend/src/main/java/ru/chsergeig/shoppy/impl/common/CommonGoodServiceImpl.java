@@ -1,19 +1,20 @@
 package ru.chsergeig.shoppy.impl.common;
 
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.chsergeig.shoppy.dao.GoodRepository;
-import ru.chsergeig.shoppy.dto.CommonGoodDto;
-import ru.chsergeig.shoppy.dto.admin.GoodDto;
 import ru.chsergeig.shoppy.jooq.tables.pojos.Goods;
 import ru.chsergeig.shoppy.mapping.GoodMapper;
+import ru.chsergeig.shoppy.model.CommonGoodDto;
 import ru.chsergeig.shoppy.service.common.CommonGoodService;
 
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import static ru.chsergeig.shoppy.jooq.Tables.GOODS;
@@ -28,17 +29,24 @@ public class CommonGoodServiceImpl
     private final GoodRepository goodRepository;
 
     @Override
-    public Page<CommonGoodDto> getAllGoodsUsingFilterAndPagination(String filter, Pageable pageable) {
+    @NotNull
+    public Page<CommonGoodDto> getAllGoodsUsingFilterAndPagination(
+            @Nullable String filter,
+            @NotNull Pageable pageable
+    ) {
         final List<Goods> goods = goodRepository.fetchByFilterAndPagination(filter, pageable);
-        final Integer total = goodRepository.countActive();
+        final int total = goodRepository.countActive();
         final List<CommonGoodDto> dtos = goods.stream()
-                .map(pojo -> new CommonGoodDto(goodMapper.map(pojo)))
+                .map(goodMapper::mapCommon)
                 .collect(Collectors.toList());
         return new PageImpl<>(dtos, pageable, total);
     }
 
     @Override
-    public List<GoodDto> getGoodsByIds(Set<Integer> ids) {
+    @Nullable
+    public List<CommonGoodDto> getGoodsByIds(
+            @NotNull Collection<Integer> ids
+    ) {
         final List<Goods> goods = goodRepository.fetch(
                 GOODS.ID,
                 ids.toArray(Integer[]::new)

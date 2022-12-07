@@ -1,26 +1,26 @@
 package ru.chsergeig.shoppy.service.admin
 
-import ru.chsergeig.shoppy.dto.admin.GoodDto
+import ru.chsergeig.shoppy.model.AdminGoodDto
 
 interface AdminGoodService {
 
-    fun getAllGoods(): List<GoodDto?>
+    fun getAllGoods(): List<AdminGoodDto?>
 
     fun getGoodById(
         id: Long?
-    ): GoodDto
+    ): AdminGoodDto
 
     fun addGood(
         name: String?
-    ): GoodDto
+    ): AdminGoodDto
 
     fun addGood(
-        dto: GoodDto?
-    ): GoodDto
+        dto: AdminGoodDto?
+    ): AdminGoodDto
 
     fun updateGood(
-        dto: GoodDto?
-    ): GoodDto
+        dto: AdminGoodDto?
+    ): AdminGoodDto
 
     fun deleteGood(
         article: String?

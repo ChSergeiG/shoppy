@@ -1,0 +1,856 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: Shoppy
+  description: Common spec
+
+servers:
+  - url: /
+    description: prod
+
+paths:
+  /admin/account/add:
+    post:
+      tags:
+        - admin-account-controller
+      summary: "Create account"
+      operationId: addAccountInAdminArea
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminAccountDto"
+      responses:
+        201:
+          description: "Created"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminAccountDto"
+        401:
+          description: "Not authorized"
+        499:
+          description: "Cant create account"
+        500:
+          description: "Error"
+  /admin/account/get_all:
+    get:
+      tags:
+        - admin-account-controller
+      summary: "Get all not removed accounts"
+      operationId: getAllAccountsInAdminArea
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AdminAccountDto"
+        401:
+          description: "Need authorization"
+        499:
+          description: "Error in backend"
+        500:
+          description: "Error"
+  /admin/account/update:
+    post:
+      tags:
+        - admin-account-controller
+      summary: "Update existing account"
+      operationId: updateAccountInAdminArea
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminAccountDto"
+      responses:
+        202:
+          description: "Updated"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminAccountDto"
+        401:
+          description: "Not authorized"
+        499:
+          description: "Cant update account"
+        500:
+          description: "Error"
+  /admin/account/{login}:
+    get:
+      tags:
+        - admin-account-controller
+      summary: "Get account by id"
+      operationId: getAccountInAdminAreaByLogin
+      parameters:
+        - name: login
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminAccountDto"
+        401:
+          description: "Need authorization"
+        499:
+          description: "Error in backend"
+        500:
+          description: "Error"
+    put:
+      tags:
+        - admin-account-controller
+      summary: "Create default account"
+      operationId: addDefaultAccountInAdminArea
+      parameters:
+        - name: login
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        201:
+          description: "Account created"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminAccountDto"
+        401:
+          description: "Need authorization"
+        499:
+          description: "Cant create account"
+        500:
+          description: "Error"
+    delete:
+      tags:
+        - admin-account-controller
+      summary: "Delete existing account"
+      operationId: deleteAccountInAdminAreaByLogin
+      parameters:
+        - name: login
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        202:
+          description: "Account deleted"
+          content:
+            text/plain:
+              schema:
+                type: string
+        401:
+          description: "Need authorization"
+        499:
+          description: "Cant create account"
+        500:
+          description: "Error"
+  /admin/good/add:
+    post:
+      tags:
+        - admin-goods-controller
+      summary: "Create good"
+      operationId: addGoodInAdminArea
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminGoodDto"
+      responses:
+        201:
+          description: "Created"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminGoodDto"
+        401:
+          description: "Need authorization"
+        499:
+          description: "Cant create good"
+        500:
+          description: "Error"
+  /admin/good/get_all:
+    get:
+      tags:
+        - admin-goods-controller
+      summary: "Get all not removed goods"
+      operationId: getAllGoodsInAdminArea
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AdminGoodDto"
+        401:
+          description: "Need authorization"
+        499:
+          description: "Error in backend"
+        500:
+          description: "Error"
+  /admin/good/update:
+    post:
+      tags:
+        - admin-goods-controller
+      summary: "Update existing good"
+      operationId: updateGoodInAdminArea
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminGoodDto"
+      responses:
+        202:
+          description: "Updated"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminGoodDto"
+        401:
+          description: "Need authorization"
+        499:
+          description: "Cant update good"
+        500:
+          description: "Error"
+  /admin/good/{article}:
+    delete:
+      tags:
+        - admin-goods-controller
+      summary: "Delete existing good"
+      operationId: deleteGoodInAdminAreaByArticle
+      parameters:
+        - name: article
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        202:
+          description: "Deleted"
+          content:
+            text/plain:
+              schema:
+                type: string
+        401:
+          description: "Need authorization"
+        499:
+          description: "Cant delete good"
+        500:
+          description: "Error"
+  /admin/good/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - admin-goods-controller
+      summary: "Get good by id"
+      operationId: "getGoodInAdminAreaById"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminGoodDto"
+        401:
+          description: "Need authorization"
+        499:
+          description: "Error in backend"
+        500:
+          description: "Error"
+    put:
+      tags:
+        - admin-goods-controller
+      summary: "Create default good"
+      operationId: putDefaultGoodInAdminArea
+      responses:
+        201:
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminGoodDto"
+        401:
+          description: "Need authorization"
+        499:
+          description: "Cant create good"
+        500:
+          description: "Error"
+  /admin/order/accounts:
+    post:
+      tags:
+        - admin-order-controller
+      summary: "Get all accounts assigned to given orders"
+      operationId: getAccountsInAdminAreaByOrderIds
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: integer
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AdminOrderAccountsDto"
+        401:
+          description: "Need authorization"
+  /admin/order/accounts/{orderId}:
+    get:
+      tags:
+        - admin-order-controller
+      summary: "Get all accounts assigned to given order"
+      operationId: getAccountsInAdminAreaByOrderId
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AdminAccountDto"
+        401:
+          description: "Need authorization"
+  /admin/order/add:
+    post:
+      tags:
+        - admin-order-controller
+      summary: "Create order"
+      operationId: addOrderInAdminArea
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminOrderDto"
+      responses:
+        201:
+          description: "Created"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminOrderDto"
+        401:
+          description: "Need authorization"
+        499:
+          description: "Cant create order"
+        500:
+          description: "Error"
+  /admin/order/get_all:
+    get:
+      tags:
+        - admin-order-controller
+      summary: "Get all not removed orders"
+      operationId: getAllOrdersInAdminArea
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AdminOrderDto"
+        401:
+          description: "Need authorization"
+        499:
+          description: "Error in backend"
+        500:
+          description: "Error"
+  /admin/order/goods:
+    post:
+      tags:
+        - admin-order-controller
+      summary: "Get all goods assigned to given orders"
+      operationId: getGoodsInAdminAreaByOrderIds
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: integer
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AdminOrderGoodsDto'
+        401:
+          description: "Need authorization"
+        499:
+          description: "Error in backend"
+        500:
+          description: "Error"
+  /admin/order/goods/{orderId}:
+    get:
+      tags:
+        - admin-order-controller
+      summary: "Get all goods assigned to given order"
+      operationId: getGoodsInAdminAreaByOrderId
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AdminCountedGoodDto"
+        401:
+          description: "Need authorization"
+        499:
+          description: "Error in backend"
+        500:
+          description: "Error"
+  /admin/order/update:
+    post:
+      tags:
+        - admin-order-controller
+      summary: "Update existing order"
+      operationId: updateOrderInAdminArea
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminOrderDto"
+      responses:
+        202:
+          description: "Updated"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminOrderDto"
+        401:
+          description: "Need authorization"
+        499:
+          description: "Cant update order"
+        500:
+          description: "Error"
+  /admin/order/{id}:
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - admin-order-controller
+      summary: "Get order by id"
+      operationId: getOrderInAdminAreaById
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminOrderDto"
+        401:
+          description: "Need authorization"
+        499:
+          description: "Error in backend"
+        500:
+          description: "Error"
+    put:
+      tags:
+        - admin-order-controller
+      summary: "Create default order"
+      operationId: addDefaultOrderInAdminArea
+      responses:
+        201:
+          description: "Created"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminOrderDto"
+        401:
+          description: "Need authorization"
+        499:
+          description: "Error in backend"
+        500:
+          description: "Error"
+    delete:
+      tags:
+        - admin-order-controller
+      summary: "Delete existing order"
+      operationId: deleteOrderInAdminAreaById
+      responses:
+        202:
+          description: "Deleted"
+          content:
+            text/plain:
+              schema:
+                type: string
+        401:
+          description: "Need authorization"
+        499:
+          description: "Cant delete order"
+        500:
+          description: "Error"
+  /common/enum/account-roles:
+    get:
+      tags:
+        - common-controller
+      summary: "Get available role to assign account"
+      operationId: getAllRoles
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AccountRole"
+  /common/enum/statuses:
+    get:
+      tags:
+        - common-controller
+      summary: "Get available status to assign entity"
+      operationId: getAllStatuses
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Status"
+  /goods/get_all:
+    get:
+      tags:
+        - goods-controller
+      summary: "Get paginated goods according filter query and pagination"
+      operationId: getAllGoodsUsingFilterAndPagination
+      x-spring-paginated: true
+      parameters:
+        - name: filter
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: size
+          in: query
+          required: false
+          schema:
+            type: integer
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CommonGoodDto"
+  /goods/get_by_id:
+    post:
+      tags:
+        - goods-controller
+      summary: "Get goods by ids list"
+      operationId: getGoodsByIds
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CommonGoodDto"
+  /jwt/login:
+    post:
+      tags:
+        - jwt-controller
+      summary: "Do login"
+      operationId: doLogin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/JwtRequestDto"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JwtResponseDto"
+        401:
+          description: "Need authorization"
+        500:
+          description: "Error"
+  /jwt/logout:
+    get:
+      tags:
+        - jwt-controller
+      summary: "Do logout"
+      operationId: logout
+      responses:
+        200:
+          description: "OK"
+          content:
+            text/plain:
+              schema:
+                type: string
+        500:
+          description: "Error"
+  /jwt/probe:
+    get:
+      tags:
+        - jwt-controller
+      summary: "Check, that authorization header contains valid token"
+      operationId: probeToken
+      responses:
+        200:
+          description: "OK"
+          content:
+            text/plain:
+              schema:
+                type: string
+        500:
+          description: "Error"
+  /orders/create:
+    post:
+      tags:
+        - orders-controller
+      summary: "Place order"
+      operationId: createOrder
+      responses:
+        201:
+          description: "Order created, returns path to order view"
+        401:
+          description: "Credentials error"
+        499:
+          description: "Request error"
+  /orders/get/{guid}:
+    get:
+      tags:
+        - orders-controller
+      summary: "Get order info"
+      operationId: getOrderInfoByGuid
+      parameters:
+        - name: guid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExtendedOrderDto"
+        401:
+          description: "Credentials error"
+        499:
+          description: "Request error"
+  /user/roles:
+    get:
+      tags:
+        - users-controller
+      summary: "Get user roles"
+      operationId: getUserRoles
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AccountRole"
+  /user/roles/{login}:
+    get:
+      tags:
+        - users-controller
+      summary: "Get user roles"
+      operationId: getUserRolesByLogin
+      parameters:
+        - name: login
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AccountRole"
+components:
+  schemas:
+    AdminAccountDto:
+      type: object
+      properties:
+        id:
+          type: integer
+        login:
+          type: string
+        password:
+          type: string
+        salted:
+          type: boolean
+        status:
+          $ref: "#/components/schemas/Status"
+        accountRoles:
+          type: array
+          items:
+            $ref: "#/components/schemas/AccountRole"
+    AdminCountedGoodDto:
+      allOf:
+        - $ref: "#/components/schemas/AdminGoodDto"
+        - type: object
+          properties:
+            count:
+              type: integer
+    AdminGoodDto:
+      allOf:
+        - $ref: "#/components/schemas/CommonGoodDto"
+        - type: object
+          properties:
+            id:
+              type: integer
+    AdminOrderDto:
+      allOf:
+        - $ref: "#/components/schemas/CommonOrderDto"
+        - type: object
+          properties:
+            guid:
+              type: string
+    AdminOrderAccountsDto:
+      type: object
+      properties:
+        orderId:
+          type: integer
+        accounts:
+          type: array
+          items:
+            type: string
+    AdminOrderGoodsDto:
+      type: object
+      properties:
+        orderId:
+          type: integer
+        goods:
+          type: array
+          items:
+            $ref: '#/components/schemas/AdminCountedGoodDto'
+    JwtRequestDto:
+      type: object
+      properties:
+        login:
+          type: string
+        password:
+          type: string
+    JwtResponseDto:
+      type: object
+      properties:
+        token:
+          type: string
+        expirationTime:
+          type: object
+          x-type: java.time.OffsetDateTime
+          x-defaultValue: java.time.OffsetDateTime.now()
+    CommonGoodDto:
+      type: object
+      properties:
+        name:
+          type: string
+        article:
+          type: string
+        status:
+          $ref: "#/components/schemas/Status"
+        price:
+          type: number
+    CommonOrderDto:
+      type: object
+      properties:
+        id:
+          type: integer
+        info:
+          type: string
+        status:
+          $ref: "#/components/schemas/Status"
+    ExtendedOrderDto:
+      allOf:
+        - $ref: "#/components/schemas/CommonOrderDto"
+        - type: object
+          properties:
+            guid:
+              type: string
+            entries:
+              type: array
+              items:
+                $ref: "#/components/schemas/OrderEntry"
+    OrderEntry:
+      type: object
+      properties:
+        good:
+          $ref: "#/components/schemas/CommonGoodDto"
+        count:
+          type: integer
+    AccountRole:
+      type: string
+      enum:
+        - "ROLE_ADMIN"
+        - "ROLE_USER"
+        - "ROLE_GUEST"
+    Status:
+      type: string
+      enum:
+        - "ADDED"
+        - "ACTIVE"
+        - "REMOVED"
+        - "DISABLED"
+

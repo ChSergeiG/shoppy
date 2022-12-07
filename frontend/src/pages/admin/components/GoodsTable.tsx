@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {MenuItem, Select, Table, TableBody, TableHead, TextField} from "@mui/material";
-import type {IAdminTableProps, IAdminTableState, IGood} from "../../../../types/AdminTypes";
+import type {AdminGoodDto, IAdminTableProps, IAdminTableState, Status} from "../../../types";
 import {SpinnerOverlay} from "../../../components/Spinner";
 import {
     checkFilterCondition,
@@ -9,20 +9,19 @@ import {
     commonCreatePlusRow,
     commonRenderActionsInput
 } from "../../../utils/admin-tables";
-import {getGoods} from "../../../utils/API";
-import type {IStatus} from "../../../../types/IStatus";
+import {getAllGoodsInAdminArea} from "../../../utils/API";
 import {useStore} from "effector-react";
 import {IStaticsStore, staticsStore} from "../../../store/StaticsStore";
 import {adminFilterStore} from "../../../store/AdminFilterStore";
 import {ADMIN_GOODS_KEY} from "../admin.page";
 
-const GoodsTable: React.FC<IAdminTableProps<IGood>> = (props) => {
+const GoodsTable: React.FC<IAdminTableProps<AdminGoodDto>> = (props) => {
 
     const contextStore = useStore<IStaticsStore>(staticsStore);
 
     const adminFilter = useStore(adminFilterStore);
 
-    const [state, setState] = useState<IAdminTableState<IGood>>({
+    const [state, setState] = useState<IAdminTableState<AdminGoodDto>>({
         isLoading: true,
         statuses: contextStore.statuses,
         accountRoles: contextStore.accountRoles,
@@ -41,7 +40,7 @@ const GoodsTable: React.FC<IAdminTableProps<IGood>> = (props) => {
             {columnNumber: 5, width: "20%", align: "center", key: "actions", value: "Actions"},
         ]);
 
-    const renderActionsInput = (entity: IGood) => commonRenderActionsInput<IGood>(
+    const renderActionsInput = (entity: AdminGoodDto) => commonRenderActionsInput<AdminGoodDto>(
         entity,
         {
             save: entity.name !== undefined && entity.name.trim() !== "" && entity.article !== undefined && entity.article.trim() !== "",
@@ -52,7 +51,7 @@ const GoodsTable: React.FC<IAdminTableProps<IGood>> = (props) => {
         setState
     );
 
-    const createBodyRow = (entity: IGood) => commonCreateBodyRow(
+    const createBodyRow = (entity: AdminGoodDto) => commonCreateBodyRow(
         `row-${state.rows.indexOf(entity)}`,
         [
             {columnNumber: 0, key: "id", content: entity.id},
@@ -64,7 +63,7 @@ const GoodsTable: React.FC<IAdminTableProps<IGood>> = (props) => {
         ]
     );
 
-    const renderNameInput = (entity: IGood) => {
+    const renderNameInput = (entity: AdminGoodDto) => {
         return (
             <TextField
                 fullWidth={true}
@@ -83,7 +82,7 @@ const GoodsTable: React.FC<IAdminTableProps<IGood>> = (props) => {
         );
     }
 
-    const renderPriceInput = (entity: IGood) => {
+    const renderPriceInput = (entity: AdminGoodDto) => {
         return (
             <TextField
                 fullWidth={true}
@@ -103,7 +102,7 @@ const GoodsTable: React.FC<IAdminTableProps<IGood>> = (props) => {
         );
     }
 
-    const renderArticleInput = (entity: IGood) => {
+    const renderArticleInput = (entity: AdminGoodDto) => {
         return (
             <TextField
                 fullWidth={true}
@@ -122,7 +121,7 @@ const GoodsTable: React.FC<IAdminTableProps<IGood>> = (props) => {
         );
     };
 
-    const renderStatusInput = (entity: IGood) => {
+    const renderStatusInput = (entity: AdminGoodDto) => {
         return (
             <Select
                 value={entity.status}
@@ -131,7 +130,7 @@ const GoodsTable: React.FC<IAdminTableProps<IGood>> = (props) => {
                         ...state,
                         rows: [
                             ...state.rows.filter(r => r !== entity),
-                            {...entity, status: (e.target.value) as IStatus}
+                            {...entity, status: (e.target.value) as Status}
                         ]
                     })
                 }}
@@ -152,7 +151,7 @@ const GoodsTable: React.FC<IAdminTableProps<IGood>> = (props) => {
     };
 
     useEffect(() => {
-        getGoods()
+        getAllGoodsInAdminArea()
             .then(r => setState({...state, rows: r.data, isLoading: false}))
     }, []);
 
@@ -173,7 +172,7 @@ const GoodsTable: React.FC<IAdminTableProps<IGood>> = (props) => {
                                 .map(r => createBodyRow(r))
                         }
                         {
-                            commonCreatePlusRow<IGood>(
+                            commonCreatePlusRow<AdminGoodDto>(
                                 props.columns,
                                 {
                                     id: undefined,

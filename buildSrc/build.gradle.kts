@@ -8,6 +8,7 @@ repositories {
 }
 
 dependencies {
+
     implementation(
         group = "org.jetbrains.kotlin",
         name = "kotlin-gradle-plugin",
@@ -22,6 +23,11 @@ dependencies {
         group = "jakarta.xml.bind",
         name = "jakarta.xml.bind-api",
         version = "3.0.1"
+    )
+    implementation(
+        group = "com.fasterxml.jackson.dataformat",
+        name = "jackson-dataformat-yaml",
+        version = "2.12.3"
     )
     implementation(
         group = "org.jooq",

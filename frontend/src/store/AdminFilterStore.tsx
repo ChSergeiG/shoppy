@@ -1,3 +1,6 @@
+/**
+ * Store to hold information about filtering in admin pages
+ */
 import {createEvent, createStore} from "effector";
 
 export type IFilterEntry = { key: string, value: string };

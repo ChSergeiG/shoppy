@@ -21,15 +21,15 @@ abstract class AbstractApiTest {
             .setBaseUri("http://localhost:$port")
             .setContentType(ContentType.JSON)
             .build()
+        // TODO
+        login()
     }
 
     @AfterEach
-    fun cleanupMocks() {
-        flushMocks()
-    }
+    fun cleanupMocks() = flushMocks()
 
     abstract fun flushMocks()
 
-    fun login(token: String) {
+    fun login(token: String = "") {
     }
 }

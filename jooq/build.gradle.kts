@@ -1,8 +1,8 @@
 import com.bmuschko.gradle.docker.tasks.container.DockerStartContainer
 import com.bmuschko.gradle.docker.tasks.container.DockerStopContainer
 import com.bmuschko.gradle.docker.tasks.image.DockerPullImage
-import ru.chsergeig.shoppy.gradle.LIQUIBASE_VERSION
 import ru.chsergeig.shoppy.gradle.JAVA_COMPATIBILITY
+import ru.chsergeig.shoppy.gradle.LIQUIBASE_VERSION
 import ru.chsergeig.shoppy.gradle.POSTGRES_VERSION
 import ru.chsergeig.shoppy.gradle.task.CheckDockerContainerHealthy
 import ru.chsergeig.shoppy.gradle.task.GetDockerImageIdTask
@@ -13,6 +13,12 @@ plugins {
     `java-library`
     id("org.liquibase.gradle") version "2.1.0"
     id("com.bmuschko.docker-remote-api")
+}
+
+spotless {
+    java {
+        targetExclude("src/main/java//**/*.*")
+    }
 }
 
 dependencies {
@@ -45,8 +51,7 @@ liquibase {
 }
 
 tasks {
-
-    val postgresImage = "postgres:13.2"
+    val postgresImage = "postgres"
 
     val pullPostgresImage = register<DockerPullImage>("pullPostgresImage") {
         image.set(postgresImage)
@@ -92,12 +97,7 @@ tasks {
         dependsOn(waitPostgresContainer)
     }
 
-    compileJava {
-        dependsOn(jooqCodeGen)
-    }
-
     jar {
-        dependsOn(compileJava)
         enabled = true
     }
 }

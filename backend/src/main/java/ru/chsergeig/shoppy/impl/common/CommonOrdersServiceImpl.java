@@ -1,6 +1,9 @@
 package ru.chsergeig.shoppy.impl.common;
 
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.chsergeig.shoppy.dao.AccountOrderRepository;
@@ -8,9 +11,7 @@ import ru.chsergeig.shoppy.dao.AccountRepository;
 import ru.chsergeig.shoppy.dao.GoodRepository;
 import ru.chsergeig.shoppy.dao.OrderGoodRepository;
 import ru.chsergeig.shoppy.dao.OrderRepository;
-import ru.chsergeig.shoppy.dto.ExtendedOrderDto;
-import ru.chsergeig.shoppy.dto.admin.GoodDto;
-import ru.chsergeig.shoppy.dto.admin.OrderDto;
+import ru.chsergeig.shoppy.exception.ControllerException;
 import ru.chsergeig.shoppy.jooq.enums.Status;
 import ru.chsergeig.shoppy.jooq.tables.pojos.Accounts;
 import ru.chsergeig.shoppy.jooq.tables.pojos.AccountsOrders;
@@ -19,6 +20,9 @@ import ru.chsergeig.shoppy.jooq.tables.pojos.Orders;
 import ru.chsergeig.shoppy.jooq.tables.pojos.OrdersGoods;
 import ru.chsergeig.shoppy.mapping.GoodMapper;
 import ru.chsergeig.shoppy.mapping.OrderMapper;
+import ru.chsergeig.shoppy.model.CommonGoodDto;
+import ru.chsergeig.shoppy.model.ExtendedOrderDto;
+import ru.chsergeig.shoppy.model.OrderEntry;
 import ru.chsergeig.shoppy.service.common.CommonOrdersService;
 
 import java.time.LocalDateTime;
@@ -44,9 +48,13 @@ public class CommonOrdersServiceImpl implements CommonOrdersService {
     private final OrderMapper orderMapper;
     private final OrderRepository orderRepository;
 
+    @NotNull
     @Override
     @Transactional
-    public String createOrder(List<? extends GoodDto> goods, String username) {
+    public String createOrder(
+            @Nullable List<CommonGoodDto> goods,
+            @Nullable String username
+    ) {
         List<Accounts> accounts = accountRepository.fetch(
                 ACCOUNTS.LOGIN,
                 username
@@ -60,7 +68,7 @@ public class CommonOrdersServiceImpl implements CommonOrdersService {
         orderRepository.insert(newOrder);
 
         accountOrderRepository.insert(new AccountsOrders(account.getId(), newOrder.getId()));
-        final Map<GoodDto, Integer> mapOfGoods = goods.stream()
+        final Map<CommonGoodDto, Integer> mapOfGoods = (goods == null ? List.<CommonGoodDto>of() : goods).stream()
                 .reduce(
                         new HashMap<>(),
                         (map, dto) -> {
@@ -72,7 +80,7 @@ public class CommonOrdersServiceImpl implements CommonOrdersService {
                             return map;
                         },
                         (map1, map2) -> {
-                            for (Map.Entry<GoodDto, Integer> entry : map1.entrySet()) {
+                            for (Map.Entry<CommonGoodDto, Integer> entry : map1.entrySet()) {
                                 if (map2.containsKey(entry.getKey())) {
                                     map2.put(entry.getKey(), entry.getValue() + map2.get(entry.getKey()));
                                 } else {
@@ -85,7 +93,7 @@ public class CommonOrdersServiceImpl implements CommonOrdersService {
         List<Goods> resolvedGoods = goodRepository.fetch(
                 GOODS.ARTICLE,
                 mapOfGoods.keySet().stream()
-                        .map(GoodDto::getArticle)
+                        .map(CommonGoodDto::getArticle)
                         .toArray(String[]::new)
         );
 
@@ -104,27 +112,29 @@ public class CommonOrdersServiceImpl implements CommonOrdersService {
         return guid;
     }
 
+    @NotNull
     @Override
-    public ExtendedOrderDto getOrderByGuid(String guid, String username) {
+    public ExtendedOrderDto getOrderByGuid(
+            @Nullable String guid,
+            @Nullable String username
+    ) {
         List<Orders> orders = orderRepository.fetch(
                 ORDERS.GUID,
                 guid
         );
         if (orders.size() != 1) {
-            return null;
+            throw new ControllerException(HttpStatus.EXPECTATION_FAILED, "Wrong orders count obtained by guid", null);
         }
         Orders pojo = orders.get(0);
         List<Accounts> associatedAccounts = accountOrderRepository.getAccountsByOrderId(pojo.getId());
         if (associatedAccounts.stream().noneMatch(a -> a.getLogin().equals(username))) {
-            return null;
+            throw new ControllerException(HttpStatus.UNAUTHORIZED, "Incorrect user", null);
         }
-        OrderDto orderDto = orderMapper.map(pojo);
-        ExtendedOrderDto result = new ExtendedOrderDto(orderDto);
+        ExtendedOrderDto result = orderMapper.mapExtended(pojo);
         result.setGuid(guid);
-
-        result.setGoods(
+        result.setPropertyEntries(
                 orderGoodRepository.getGoodsByOrderId(pojo.getId()).entrySet().stream()
-                        .map(e -> new ExtendedOrderDto.OrderEntry(goodMapper.map(e.getKey()), e.getValue()))
+                        .map(e -> new OrderEntry(goodMapper.mapCommon(e.getKey()), e.getValue().intValue()))
                         .collect(Collectors.toList())
         );
         return result;

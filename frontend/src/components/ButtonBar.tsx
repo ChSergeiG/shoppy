@@ -28,13 +28,10 @@ import {
     useTheme
 } from "@mui/material";
 import MuiAppBar from '@mui/material/AppBar';
-import MenuIcon from '@mui/icons-material/Menu';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import {ChevronLeft, ChevronRight, Menu, ShoppingBag} from '@mui/icons-material';
 import type {LinkProps} from "react-router-dom";
 import {Link} from "react-router-dom";
-import {ShoppingBag} from "@mui/icons-material";
-import {getCreatedOrderInfo, getGoodsByIds, getLogout, postOrder} from "../utils/API";
+import {getOrderInfoByGuid, getGoodsByIds, createOrder} from "../utils/API";
 import {removeAllFromBasket, selectedGoods} from "../store/UserBucketStore";
 import {logout} from "../store/UserAuthorizationStore";
 import {placeSnackBarAlert} from "../store/SnackBarStore";
@@ -42,6 +39,8 @@ import {useStore} from "effector-react";
 import {buttonBarStore} from "../store/ButtonBarStore";
 import {closeAlert, setAlertContent, showAlert} from "../store/AlertStore";
 import {InlineSpinner} from "./Spinner";
+import type {AdminGoodDto} from "../types";
+import {evaluateSum} from "../utils/number-utils";
 
 type ButtonBarState = {
     open: boolean;
@@ -148,10 +147,11 @@ const ButtonBar: React.FC<PropsWithChildren<{}>> = (props) => {
         if (goodsStore.length === 0) {
             return;
         }
-        postOrder(goodsStore)
+
+        createOrder(goodsStore)
             .then((or) => {
                 placeSnackBarAlert({
-                    message: or.data,
+                    message: "Created",
                     color: "success"
                 });
                 removeAllFromBasket();
@@ -159,16 +159,15 @@ const ButtonBar: React.FC<PropsWithChildren<{}>> = (props) => {
                 if (orderLocation) {
                     showAlert()
                     setAlertContent(<InlineSpinner/>)
-                    getCreatedOrderInfo(orderLocation)
+                    getOrderInfoByGuid(orderLocation)
                         .then((cor) => {
-                            console.log(cor)
                             const order = cor.data
-                            const goodIds: number[] = order.goods.map(g => g.good.id)
-                                .filter(id => id !== undefined) as number[]
-                            getGoodsByIds(goodIds)
+                            const goodIds: string[] = order.entries?.map(g => g?.good?.article)
+                                .filter(id => id !== undefined) as string[]
+                            getGoodsByIds(goodIds.map(i => parseInt(i)))
                                 .then((gbi) => {
 
-                                    const total = order.goods.map((g) => g.count * g.good.price)
+                                    const total = order.entries?.map((g) => (g?.count !== undefined ? g.count: 0) * (g?.good?.price !== undefined ? g.good.price : 0))
                                         .reduce((a, b) => a + b)
 
                                     setAlertContent(
@@ -192,25 +191,25 @@ const ButtonBar: React.FC<PropsWithChildren<{}>> = (props) => {
                                                     </TableHead>
                                                     <TableBody>
 
-                                                        {order.goods.map((g) => {
+                                                        {order.entries?.map((g) => {
                                                             return (
                                                                 <TableRow>
                                                                     <TableCell
-                                                                        key={`article-cell-${g.good.id}`}
+                                                                        key={`article-cell-${g.good?.article}`}
                                                                     >
                                                                         <Typography
                                                                             variant="overline"
                                                                         >
-                                                                            {g.good.article}
+                                                                            {g.good?.article}
                                                                         </Typography>
                                                                     </TableCell>
                                                                     <TableCell
-                                                                        key={`name-cell-${g.good.id}`}
+                                                                        key={`name-cell-${g.good?.article}`}
                                                                     >
-                                                                        {g.good.name}
+                                                                        {g.good?.name}
                                                                     </TableCell>
                                                                     <TableCell
-                                                                        key={`count-cell-${g.good.id}`}
+                                                                        key={`count-cell-${g.good?.article}`}
                                                                     >
                                                                         {g.count}
                                                                     </TableCell>
@@ -220,7 +219,11 @@ const ButtonBar: React.FC<PropsWithChildren<{}>> = (props) => {
                                                     </TableBody>
                                                 </Table>
                                                 <hr/>
-                                                <Typography variant="body1">{`Total: ${total} RUB`}</Typography>
+                                                {/*<Typography*/}
+                                                {/*    variant="body1"*/}
+                                                {/*>*/}
+                                                    {/*{`Total: ${evaluateSum<number>([total]., (totali) => i)} RUB`}*/}
+                                                {/*</Typography>*/}
                                             </DialogContent>
                                             <DialogActions>
                                                 <Button
@@ -236,9 +239,19 @@ const ButtonBar: React.FC<PropsWithChildren<{}>> = (props) => {
                 }
             })
             .catch((r) => {
+                if (r.response.status === 401) {
+                    placeSnackBarAlert({
+                        message: r.response.data,
+                        color: "warning"
+                    });
+                    console.log(3334)
+                    setAlertContent(<div>123</div>)
+                    showAlert()
+                    return;
+                }
                 placeSnackBarAlert({
                     message: r.response.data,
-                    color: r.response.status === 401 ? "warning" : "error"
+                    color: "error"
                 });
             })
     };
@@ -262,7 +275,9 @@ const ButtonBar: React.FC<PropsWithChildren<{}>> = (props) => {
 
     return (
         <Box
-            sx={{display: 'flex'}}
+            sx={{
+                display: 'flex'
+            }}
         >
             <CssBaseline/>
             <AppBar
@@ -280,18 +295,32 @@ const ButtonBar: React.FC<PropsWithChildren<{}>> = (props) => {
                             ...(state.open && {display: 'none'}),
                         }}
                     >
-                        <MenuIcon/>
+                        <Menu/>
                     </IconButton>
                     <Typography
                         variant="h6"
                         noWrap
                         component="div"
                     >
-                        Well well well //
+                        Shop of smth btw //
                     </Typography>
-                    <Box sx={{
-                        flexGrow: 1
-                    }}/>
+                    <Box
+                        sx={{
+                            flexGrow: 1
+                        }}
+                    />
+                    <Box
+                        sx={{
+                            paddingRight: '20px',
+                            paddingLeft: '20px',
+                        }}
+                    >
+                        {goodsStore.length > 0
+                            && <Typography>
+                                {`Total: ${evaluateSum<AdminGoodDto>(goodsStore, (good) => (good.price !== undefined ? good.price : 0))} RUB`}
+                            </Typography>
+                        }
+                    </Box>
                     <Box
                         sx={{
                             display: "flex"
@@ -326,7 +355,7 @@ const ButtonBar: React.FC<PropsWithChildren<{}>> = (props) => {
                     <IconButton
                         onClick={handleDrawerClose}
                     >
-                        {theme.direction === 'rtl' ? <ChevronRightIcon/> : <ChevronLeftIcon/>}
+                        {theme.direction === 'rtl' ? <ChevronRight/> : <ChevronLeft/>}
                     </IconButton>
                 </DrawerHeader>
                 <Divider/>

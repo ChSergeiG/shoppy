@@ -1,12 +1,15 @@
+/**
+ * Store for storable data like statuses or roles enum etc.
+ * These items obtained via API and stores locally until refresh invocation
+ */
 import {createEvent, createStore} from "effector";
-import type {IStatus} from "../../types/IStatus";
-import type {IAccountRole} from "../../types/IAccountRole";
-import {getAccountRoles, getStatuses} from "../utils/API";
+import type {AccountRole, Status} from "../types";
+import {getAllRoles, getAllStatuses} from "../utils/API";
 
 export type IStaticsStore = {
     cacheDate?: number;
-    statuses: IStatus[];
-    accountRoles: IAccountRole[];
+    statuses: Status[];
+    accountRoles: AccountRole[];
 };
 
 const STATICS_LOCAL_STORAGE_KEY = "STATICS_LOCAL_STORAGE_KEY";
@@ -20,9 +23,9 @@ export const staticsStore = createStore<IStaticsStore>({
 
 export const refreshStatics = createEvent<void>("Refresh all statics");
 
-export const refreshStatuses = createEvent<IStatus[]>("Refresh actual statuses");
+export const refreshStatuses = createEvent<Status[]>("Refresh actual statuses");
 
-export const refreshAccountRoles = createEvent<IAccountRole[]>("Refresh actual account roles");
+export const refreshAccountRoles = createEvent<AccountRole[]>("Refresh actual account roles");
 
 export const setCachedDate = createEvent<number>("Internal method to set last refresh date");
 
@@ -37,9 +40,9 @@ staticsStore
         return {...state, cacheDate: newDate};
     })
     .on(refreshStatics, (state) => {
-        getStatuses()
+        getAllStatuses()
             .then((r) => refreshStatuses(r.data));
-        getAccountRoles()
+        getAllRoles()
             .then((r) => refreshAccountRoles(r.data))
         setCachedDate(Date.now());
         localStorage.setItem(STATICS_LOCAL_STORAGE_KEY, JSON.stringify(staticsStore.getState()));

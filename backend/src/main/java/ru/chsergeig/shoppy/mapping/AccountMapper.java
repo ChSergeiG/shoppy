@@ -2,26 +2,26 @@ package ru.chsergeig.shoppy.mapping;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
-import ru.chsergeig.shoppy.dto.admin.AccountDto;
 import ru.chsergeig.shoppy.jooq.tables.pojos.Accounts;
+import ru.chsergeig.shoppy.model.AdminAccountDto;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE, uses = {EnumMapper.class})
 public interface AccountMapper {
 
-    AccountDto map(Accounts pojo);
+    AdminAccountDto mapAdmin(Accounts pojo);
 
-    Accounts map(AccountDto dto);
+    Accounts mapAdmin(AdminAccountDto dto);
 
-    default List<AccountDto> mapList(List<Accounts> pojos) {
+    default List<AdminAccountDto> mapAdminList(List<Accounts> pojos) {
         if (pojos == null) {
             return null;
         }
-        List<AccountDto> dtos = new ArrayList<>();
+        List<AdminAccountDto> dtos = new ArrayList<>();
         for (Accounts pojo : pojos) {
-            dtos.add(map(pojo));
+            dtos.add(mapAdmin(pojo));
         }
         return dtos;
     }

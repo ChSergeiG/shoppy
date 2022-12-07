@@ -1,20 +1,18 @@
 import React from "react";
-import type {IGood} from "../../types/AdminTypes";
+import type * as T from "../types";
 import {Badge, Box, Button, Card, CardContent, Typography} from "@mui/material";
 import type {CardProps} from "@mui/material/Card/Card";
 import {useStore} from "effector-react";
 import {addGoodToBasket, removeGoodFromBasket, selectedGoods} from "../store/UserBucketStore";
-import {Add, Remove, ShoppingBasket} from "@mui/icons-material";
+import {Remove, ShoppingBasket} from "@mui/icons-material";
+import {evaluateSum} from "../utils/number-utils";
 
-const cardWidth = 250;
-const cardHeight = 180;
-
-const evaluateCount = (store: IGood[], good: IGood): number | undefined => {
+const evaluateCount = (store: T.CommonGoodDto[], good: T.CommonGoodDto): number | undefined => {
     const count = store.filter(g => g.article === good.article).length;
     return count > 0 ? count : undefined;
 }
 
-const GoodCard: React.FC<CardProps & { good: IGood }> = (props) => {
+const GoodCard: React.FC<CardProps & { good: T.CommonGoodDto }> = (props) => {
     const store = useStore(selectedGoods);
     return <Box
         sx={{
@@ -23,8 +21,8 @@ const GoodCard: React.FC<CardProps & { good: IGood }> = (props) => {
     >
         <Badge
             sx={{
-                top: "15px",
-                left: `${cardWidth + 6}px`,
+                top: "12px",
+                right: "-12px",
             }}
             color="primary"
             badgeContent={evaluateCount(store, props.good)}
@@ -58,7 +56,9 @@ const GoodCard: React.FC<CardProps & { good: IGood }> = (props) => {
                         <Remove/>
                     </Button>
 
-                    <Typography variant="body1">{props.good.price.toFixed(2)}{' RUB'}</Typography>
+                    <Typography
+                        variant="body1">{evaluateSum<T.CommonGoodDto>([props.good], (good) => (good.price !== undefined ? good.price : 0))}{' RUB'}
+                    </Typography>
                     <Button
                         size="small"
                         onClick={() => addGoodToBasket(props.good)}

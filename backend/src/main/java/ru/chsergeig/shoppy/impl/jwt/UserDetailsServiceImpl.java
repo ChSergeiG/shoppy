@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.chsergeig.shoppy.dao.AccountRepository;
 import ru.chsergeig.shoppy.dao.AccountRoleRepository;
@@ -24,7 +23,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final AccountRepository accountRepository;
     private final AccountRoleRepository accountRoleRepository;
-    private final PasswordEncoder passwordEncoder;
+//    private final SecurityProperties securityProperties;
 
     @Override
     @SneakyThrows
@@ -36,11 +35,17 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         if (accounts.isEmpty()) {
             throw new UserPrincipalNotFoundException(username);
         }
+        Accounts account = accounts.get(0);
+//        if (!account.getSalted()) {
+//            account.setPassword(TokenUtils.saltValue(securityProperties, account.getPassword()));
+//            account.setSalted(true);
+//            accountRepository.update(account);
+//        }
         List<AccountRole> roles = accountRoleRepository.fetchRolesByLogin(username);
         return new JwtUserDetails(
-                accounts.get(0).getId().longValue(),
-                accounts.get(0).getLogin(),
-                passwordEncoder.encode(accounts.get(0).getPassword()),
+                account.getId().longValue(),
+                account.getLogin(),
+                account.getPassword(),
                 roles.stream().map(Object::toString).collect(Collectors.toList())
         );
     }

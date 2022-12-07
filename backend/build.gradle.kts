@@ -9,6 +9,21 @@ plugins {
     id("io.freefair.lombok") version "6.4.1"
 }
 
+spotless {
+    kotlin {
+        targetExclude("**/generated/**/*.*")
+    }
+    java {
+        targetExclude("**/generated/**/*.*")
+    }
+}
+
+kotlin {
+    sourceSets["main"].apply {
+        kotlin.srcDir("$buildDir/generated/openapi/src/main/kotlin")
+    }
+}
+
 sourceSets {
     main {
         resources {
@@ -19,6 +34,7 @@ sourceSets {
 
 dependencies {
     implementation(project(":jooq"))
+    implementation(project(":openapi"))
 
     annotationProcessor(group = "org.springframework.boot", name = "spring-boot-configuration-processor")
     annotationProcessor(group = "org.mapstruct", name = "mapstruct-processor", version = MAPSTRUCT_VERSION)
@@ -32,9 +48,19 @@ dependencies {
 
     testImplementation(group = "org.springframework.boot", name = "spring-boot-starter-test")
 
+    implementation(group = "org.jetbrains.kotlin", name = "kotlin-reflect")
+
     implementation(group = "io.jsonwebtoken", name = "jjwt", version = "0.9.1")
     implementation(group = "io.springfox", name = "springfox-boot-starter", version = "3.0.0")
     implementation(group = "io.springfox", name = "springfox-swagger-ui", version = "3.0.0")
+    implementation(group = "jakarta.annotation", name = "jakarta.annotation-api", version = "2.1.1")
+    implementation(group = "jakarta.validation", name = "jakarta.validation-api", version = "3.0.2")
+    implementation(group = "javax.annotation", name = "javax.annotation-api", version = "1.3.2")
+    implementation(group = "javax.validation", name = "validation-api", version = "2.0.1.Final")
+
+    implementation(group = "com.squareup.moshi", name = "moshi-kotlin", version = "1.13.0")
+    implementation(group = "com.squareup.moshi", name = "moshi-adapters", version = "1.13.0")
+    implementation(group = "com.squareup.okhttp3", name = "okhttp", version = "4.10.0")
 
     implementation(group = "org.liquibase", name = "liquibase-core", version = LIQUIBASE_VERSION)
     implementation(group = "org.mapstruct", name = "mapstruct", version = MAPSTRUCT_VERSION)
@@ -49,6 +75,13 @@ dependencies {
 }
 
 tasks {
+    compileJava {
+        dependsOn(":openapi:build")
+    }
+
+    compileKotlin {
+        dependsOn(":openapi:build")
+    }
 
     bootJar {
         layered {

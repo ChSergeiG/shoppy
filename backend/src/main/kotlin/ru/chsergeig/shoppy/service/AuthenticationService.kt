@@ -1,6 +1,6 @@
 package ru.chsergeig.shoppy.service
 
-import ru.chsergeig.shoppy.dto.jwt.ResponseDto
+import ru.chsergeig.shoppy.model.JwtResponseDto
 
 interface AuthenticationService {
 
@@ -8,9 +8,9 @@ interface AuthenticationService {
      * Process request to issue jwt token
      */
     fun authenticate(
-        login: String?,
-        password: String?
-    ): ResponseDto
+        login: String,
+        password: String
+    ): JwtResponseDto
 
     /**
      * Check is token healthy

@@ -24,7 +24,4 @@ open class TestConfigurationContext {
             }
         }
     }
-
-    open fun h2DataSource() {
-    }
 }

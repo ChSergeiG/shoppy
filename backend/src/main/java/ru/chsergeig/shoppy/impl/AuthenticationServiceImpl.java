@@ -8,19 +8,17 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-import ru.chsergeig.shoppy.component.TokenUtilComponent;
 import ru.chsergeig.shoppy.dao.JwtTokenRepository;
-import ru.chsergeig.shoppy.dto.jwt.ResponseDto;
 import ru.chsergeig.shoppy.exception.ServiceException;
 import ru.chsergeig.shoppy.jooq.enums.Status;
 import ru.chsergeig.shoppy.jooq.tables.pojos.JwtTokens;
+import ru.chsergeig.shoppy.model.JwtResponseDto;
 import ru.chsergeig.shoppy.model.JwtUserDetails;
+import ru.chsergeig.shoppy.properties.SecurityProperties;
 import ru.chsergeig.shoppy.service.AuthenticationService;
-
-import java.time.ZoneOffset;
-import java.util.Objects;
+import ru.chsergeig.shoppy.utils.TokenUtils;
 
 @Service
 @RequiredArgsConstructor
@@ -28,49 +26,51 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     private final AuthenticationManager authenticationManager;
     private final JwtTokenRepository jwtTokenRepository;
-    private final TokenUtilComponent tokenUtilComponent;
+    private final PasswordEncoder passwordEncoder;
     private final UserDetailsService userDetailsService;
+    private final SecurityProperties securityProperties;
 
+    @NotNull
     @Override
-    public @NotNull ResponseDto authenticate(String login, String password) {
-        try {
-            Objects.requireNonNull(login, "Given login is null");
-            Objects.requireNonNull(password, "Given password is null");
-        } catch (NullPointerException npe) {
-            throw new ServiceException(npe.getMessage(), npe);
-        }
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        login, password
-                )
-        );
+    public JwtResponseDto authenticate(
+            @NotNull String login,
+            @NotNull String password
+    ) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(login);
+        if (!passwordEncoder.matches(securityProperties.getJwt().getSalt() + "$$" + password, userDetails.getPassword())) {
+            throw new ServiceException("Incorrect credentials");
+        }
+
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(login, securityProperties.getJwt().getSalt() + "$$" + password)
+        );
+
         if (userDetails instanceof JwtUserDetails) {
-            String token = tokenUtilComponent.generateToken((JwtUserDetails) userDetails);
+            String token = TokenUtils.generateToken(securityProperties, (JwtUserDetails) userDetails);
             jwtTokenRepository.addToken(
                     token,
-                    tokenUtilComponent.getExpirationTimeFromToken(token).atOffset(ZoneOffset.ofHours(3)),
+                    TokenUtils.getExpirationTimeFromToken(securityProperties, token),
                     Status.ACTIVE
             );
-            return new ResponseDto(
+            return new JwtResponseDto(
                     token,
-                    tokenUtilComponent.getExpirationTimeFromToken(token)
+                    TokenUtils.getExpirationTimeFromToken(securityProperties, token)
             );
         }
-        throw new ServiceException(
-                "Cant authenticate user"
-        );
+        throw new ServiceException("Cant authenticate user");
     }
 
     @Override
     public Boolean probeToken(String token) {
-        UserDetails userDetails = userDetailsService.loadUserByUsername(tokenUtilComponent.getUsernameFromToken(token));
+        UserDetails userDetails = userDetailsService.loadUserByUsername(
+                TokenUtils.getUsernameFromToken(securityProperties, token)
+        );
         if (userDetails instanceof JwtUserDetails) {
             JwtTokens storedToken = jwtTokenRepository.getToken(token);
             if (storedToken == null || storedToken.getStatus() != Status.ACTIVE) {
                 return false;
             }
-            return tokenUtilComponent.isTokenValid(token, (JwtUserDetails) userDetails);
+            return TokenUtils.isTokenValid(securityProperties, token, (JwtUserDetails) userDetails);
         }
         return false;
     }

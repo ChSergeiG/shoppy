@@ -1,14 +1,14 @@
-import React, {useEffect, useState} from "react";
-import {Box, Paper} from "@mui/material";
+import React, {useCallback, useEffect, useState} from "react";
+import {Box, Grid} from "@mui/material";
 import GoodCard from "../components/GoodCard";
 import {Login, Logout, ManageAccounts, ShoppingBag, ShoppingBasket} from "@mui/icons-material";
 import type {IButtonBarItem} from "../components/ButtonBar";
-import type {IGood} from "../../types/AdminTypes";
-import {getAllGoods} from "../utils/API";
+import {getAllGoodsUsingFilterAndPagination} from "../utils/API";
 import {authorizationStore} from "../store/UserAuthorizationStore";
 import {useStore} from "effector-react";
 import {placeSnackBarAlert} from "../store/SnackBarStore";
 import {setButtons} from "../store/ButtonBarStore";
+import type * as T from "../types";
 
 const MainPage: React.FC<React.PropsWithChildren<{}>> = (props) => {
 
@@ -16,9 +16,9 @@ const MainPage: React.FC<React.PropsWithChildren<{}>> = (props) => {
 
     const authStore = useStore(authorizationStore);
 
-    const [state, setState] = useState<{ goods: IGood[] }>({goods: []});
+    const [state, setState] = useState<{ goods: T.CommonGoodDto[] }>({goods: []});
 
-    const buttonsForBar = (): IButtonBarItem[] => {
+    const buttonsForBar = useCallback((): IButtonBarItem[] => {
         const buttons: IButtonBarItem[] = [];
         if (authStore.authorized) {
             buttons.push(
@@ -61,21 +61,28 @@ const MainPage: React.FC<React.PropsWithChildren<{}>> = (props) => {
             });
         }
         return buttons;
-    };
+    }, [authStore.authorized]);
 
     useEffect(
         () => {
             setButtons(buttonsForBar())
         },
-        [authStore.authorized]
+        [authStore.authorized, buttonsForBar]
     );
 
     useEffect(
         () => {
-            getAllGoods(undefined, 0, 5)
+            getAllGoodsUsingFilterAndPagination({
+                params: {
+                    filter: '',
+                    page: 0,
+                    size: 25,
+                }
+            })
                 .then((r) => {
+                    console.log(r)
                     setState((prevState => {
-                        return {...prevState, goods: r.data.content};
+                        return {...prevState, goods: r.data};
                     }))
                 })
                 .catch((_) => {
@@ -87,23 +94,29 @@ const MainPage: React.FC<React.PropsWithChildren<{}>> = (props) => {
 
     return (
         <Box>
-            <Paper
-                sx={{display: "flex"}}
+            <Grid
+                container
+                spacing={2}
             >
                 {
-                    state.goods.map((g) =>
-                        <GoodCard
-                            sx={{
-                                m: "10px",
-                                width: "250px"
-                            }}
-                            variant="outlined"
-                            good={g}
-                            key={`good-${g.article}`}
-                        />
+                    state.goods?.map((g) =>
+                        <Grid
+                            item
+                            xs={3}
+                        >
+                            <GoodCard
+                                sx={{
+                                    m: "10px",
+                                    width: "250px"
+                                }}
+                                variant="outlined"
+                                good={g}
+                                key={`good-${g.article}`}
+                            />
+                        </Grid>
                     )
                 }
-            </Paper>
+            </Grid>
         </Box>
     );
 }

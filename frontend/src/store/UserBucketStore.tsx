@@ -1,15 +1,18 @@
+/**
+ * Store for user bucket state
+ */
 import {createEvent, createStore} from "effector";
-import type {IGood} from "../../types/AdminTypes";
+import type {AdminGoodDto} from "../types";
 
 const LOCAL_STORAGE_BASKET = "LOCAL_STORAGE_BASKET";
 
 const storedValue = localStorage.getItem(LOCAL_STORAGE_BASKET);
 
-export const selectedGoods = createStore<IGood[]>(JSON.parse(storedValue ? storedValue : "[]"));
+export const selectedGoods = createStore<AdminGoodDto[]>(JSON.parse(storedValue ? storedValue : "[]"));
 
-export const addGoodToBasket = createEvent<IGood>("Add good into basket");
+export const addGoodToBasket = createEvent<AdminGoodDto>("Add good into basket");
 
-export const removeGoodFromBasket = createEvent<IGood>("Remove good from basket");
+export const removeGoodFromBasket = createEvent<AdminGoodDto>("Remove good from basket");
 
 export const removeAllFromBasket = createEvent<void>("Remove all form basket");
 

@@ -3,23 +3,23 @@ import {useParams} from "react-router-dom";
 import AuthorizationOverlay from "./components/AuthorizationOverlay";
 import SearchField from "./components/SearchField";
 import {AccountsTable, GoodsTable, OrdersTable} from ".";
-import type {IAccount, IAdminContent, IAdminTableProps, IGood, IOrder} from "../../../types/AdminTypes";
+import type {AdminAccountDto, AdminGoodDto, AdminOrderDto, IAdminContent, IAdminTableProps} from "../../types";
 import {
-    createNewAccount,
-    createNewGood,
-    createNewOrder,
-    deleteExistingAccount,
-    deleteExistingGood,
-    deleteExistingOrder,
-    getAccount,
-    getAccounts,
-    getGood,
-    getGoods,
-    getOrder,
-    getOrders,
-    updateExistingAccount,
-    updateExistingGood,
-    updateExistingOrder
+    addAccountInAdminArea,
+    addGoodInAdminArea,
+    addOrderInAdminArea,
+    deleteAccountInAdminAreaByLogin,
+    deleteOrderInAdminAreaById,
+    deleteGoodInAdminAreaByArticle,
+    getAccountInAdminAreaByLogin,
+    getAllAccountsInAdminArea,
+    getGoodInAdminAreaById,
+    getAllGoodsInAdminArea,
+    getOrderInAdminAreaById,
+    getAllOrdersInAdminArea,
+    updateAccountInAdminArea,
+    updateGoodInAdminArea,
+    updateOrderInAdminArea
 } from "src/utils/API";
 import {Home, Logout, ManageAccounts, ShoppingBag, ShoppingBasket} from "@mui/icons-material";
 import type {IButtonBarItem} from "../../components/ButtonBar";
@@ -55,34 +55,34 @@ const AdminPage = <T extends IAdminContent>() => {
         switch (params.table) {
             case ADMIN_ACCOUNTS_KEY :
                 document.title = "Edit account page";
-                const accountsProps: PropsWithChildren<IAdminTableProps<IAccount>> = {
-                    getDataCallback: () => getAccounts(),
-                    createCallback: (e) => createNewAccount(e),
-                    updateCallback: (e) => updateExistingAccount(e),
-                    deleteCallback: (e) => deleteExistingAccount(e),
-                    refreshCallback: (e) => getAccount(e.login),
+                const accountsProps: PropsWithChildren<IAdminTableProps<AdminAccountDto>> = {
+                    getDataCallback: () => getAllAccountsInAdminArea(),
+                    createCallback: (e) => addAccountInAdminArea(e),
+                    updateCallback: (e) => updateAccountInAdminArea(e),
+                    deleteCallback: (e) => deleteAccountInAdminAreaByLogin(e.login),
+                    refreshCallback: (e) => getAccountInAdminAreaByLogin(e.login),
                     columns: 6,
                 };
                 return <AccountsTable {...accountsProps} />;
             case ADMIN_GOODS_KEY :
                 document.title = "Edit goods page";
-                const goodsProps: PropsWithChildren<IAdminTableProps<IGood>> = {
-                    getDataCallback: () => getGoods(),
-                    createCallback: (e) => createNewGood(e),
-                    updateCallback: (e) => updateExistingGood(e),
-                    deleteCallback: (e) => deleteExistingGood(e),
-                    refreshCallback: (e) => getGood(e.id),
+                const goodsProps: PropsWithChildren<IAdminTableProps<AdminGoodDto>> = {
+                    getDataCallback: () => getAllGoodsInAdminArea(),
+                    createCallback: (e) => addGoodInAdminArea(e),
+                    updateCallback: (e) => updateGoodInAdminArea(e),
+                    deleteCallback: (e) => deleteGoodInAdminAreaByArticle(e.article),
+                    refreshCallback: (e) => getGoodInAdminAreaById(e.id),
                     columns: 6,
                 };
                 return <GoodsTable {...goodsProps} />;
             case ADMIN_ORDERS_KEY:
                 document.title = "Edit orders page";
-                const ordersProps: PropsWithChildren<IAdminTableProps<IOrder>> = {
-                    getDataCallback: () => getOrders(),
-                    createCallback: (e) => createNewOrder(e),
-                    updateCallback: (e) => updateExistingOrder(e),
-                    deleteCallback: (e) => deleteExistingOrder(e),
-                    refreshCallback: (e) => getOrder(e.id),
+                const ordersProps: PropsWithChildren<IAdminTableProps<AdminOrderDto>> = {
+                    getDataCallback: () => getAllOrdersInAdminArea(),
+                    createCallback: (e) => addOrderInAdminArea(e),
+                    updateCallback: (e) => updateOrderInAdminArea(e),
+                    deleteCallback: (e) => deleteOrderInAdminAreaById(e.id),
+                    refreshCallback: (e) => getOrderInAdminAreaById(e.id),
                     columns: 6,
                 };
                 return <OrdersTable {...ordersProps}  />;

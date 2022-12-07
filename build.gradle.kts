@@ -6,6 +6,7 @@ import ru.chsergeig.shoppy.gradle.JAVA_COMPATIBILITY
 plugins {
     java
     jacoco
+    id("org.openapi.generator") version "6.2.1"
     id("com.diffplug.spotless") version "6.8.0"
 }
 
@@ -97,6 +98,12 @@ configure(kotlinProjects) {
         kotlin {
             ktlint()
         }
+    }
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        google()
     }
 
     tasks {

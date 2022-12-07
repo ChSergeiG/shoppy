@@ -9,13 +9,13 @@ import ru.chsergeig.shoppy.AbstractApiTest
 import ru.chsergeig.shoppy.jooq.enums.AccountRole
 import ru.chsergeig.shoppy.jooq.enums.Status
 
-open class CommonControllerTest : AbstractApiTest() {
+internal class CommonControllerTest : AbstractApiTest() {
 
     override fun flushMocks() {
     }
 
     @Test
-    open fun getStatuses() {
+    fun getStatuses() {
         var validatableResponse = RestAssured.given()
             .spec(spec)
             .`when`()
@@ -29,7 +29,7 @@ open class CommonControllerTest : AbstractApiTest() {
     }
 
     @Test
-    open fun getUserRoles() {
+    fun getUserRoles() {
         var validatableResponse = RestAssured.given()
             .spec(spec)
             .`when`()
