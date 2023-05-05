@@ -49,7 +49,10 @@ class GoodsController @Autowired constructor(
             .getHeader(securityProperties.jwt.authorizationHeader)
         val login = getUsernameFromToken(securityProperties, token)
         val roles = userService.getUserRoles(login!!)
-        return if (roles.contains(AccountRole.ROLE_USER) || roles.contains(AccountRole.ROLE_ADMIN)) {
+        return if (roles.contains(AccountRole.ROLE_USER) || roles.contains(
+                AccountRole.ROLE_ADMIN
+            )
+        ) {
             ResponseEntity.ok(
                 commonGoodService.getGoodsByIds(
                     requestBody!!.stream().map { s: String -> s.toInt() }.collect(Collectors.toList())

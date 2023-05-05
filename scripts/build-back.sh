@@ -16,5 +16,5 @@ rm -rf ./dependencies || true
 rm -rf ./snapshot-dependencies || true
 rm -rf ./spring-boot-loader || true
 
-#docker push chsergeig/shoppy-back:$version
-#docker push chsergeig/shoppy-back:latest
+docker push chsergeig/shoppy-back:$version
+docker push chsergeig/shoppy-back:latest

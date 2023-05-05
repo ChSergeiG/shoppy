@@ -4,6 +4,8 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import ru.chsergeig.shoppy.ShoppyTest
+import ru.chsergeig.shoppy.jooq.enums.AccountRole
+import ru.chsergeig.shoppy.jooq.enums.Status
 
 @ShoppyTest
 internal class EnumMapperTest {
@@ -21,19 +23,19 @@ internal class EnumMapperTest {
             },
             {
                 Assertions.assertEquals(
-                    ru.chsergeig.shoppy.jooq.enums.AccountRole.ROLE_ADMIN,
+                    AccountRole.ROLE_ADMIN,
                     mapper.toJooq(ru.chsergeig.shoppy.model.AccountRole.aDMIN)
                 )
             },
             {
                 Assertions.assertEquals(
-                    ru.chsergeig.shoppy.jooq.enums.AccountRole.ROLE_GUEST,
+                    AccountRole.ROLE_GUEST,
                     mapper.toJooq(ru.chsergeig.shoppy.model.AccountRole.gUEST)
                 )
             },
             {
                 Assertions.assertEquals(
-                    ru.chsergeig.shoppy.jooq.enums.AccountRole.ROLE_USER,
+                    AccountRole.ROLE_USER,
                     mapper.toJooq(ru.chsergeig.shoppy.model.AccountRole.uSER)
                 )
             }
@@ -45,25 +47,25 @@ internal class EnumMapperTest {
         Assertions.assertAll(
             {
                 Assertions.assertNull(
-                    mapper.fromJooq(null as ru.chsergeig.shoppy.jooq.enums.AccountRole?)
+                    mapper.fromJooq(null as AccountRole?)
                 )
             },
             {
                 Assertions.assertEquals(
                     ru.chsergeig.shoppy.model.AccountRole.aDMIN,
-                    mapper.fromJooq(ru.chsergeig.shoppy.jooq.enums.AccountRole.ROLE_ADMIN)
+                    mapper.fromJooq(AccountRole.ROLE_ADMIN)
                 )
             },
             {
                 Assertions.assertEquals(
                     ru.chsergeig.shoppy.model.AccountRole.gUEST,
-                    mapper.fromJooq(ru.chsergeig.shoppy.jooq.enums.AccountRole.ROLE_GUEST)
+                    mapper.fromJooq(AccountRole.ROLE_GUEST)
                 )
             },
             {
                 Assertions.assertEquals(
                     ru.chsergeig.shoppy.model.AccountRole.uSER,
-                    mapper.fromJooq(ru.chsergeig.shoppy.jooq.enums.AccountRole.ROLE_USER)
+                    mapper.fromJooq(AccountRole.ROLE_USER)
                 )
             }
         )
@@ -79,25 +81,25 @@ internal class EnumMapperTest {
             },
             {
                 Assertions.assertEquals(
-                    ru.chsergeig.shoppy.jooq.enums.Status.ACTIVE,
+                    Status.ACTIVE,
                     mapper.toJooq(ru.chsergeig.shoppy.model.Status.aCTIVE)
                 )
             },
             {
                 Assertions.assertEquals(
-                    ru.chsergeig.shoppy.jooq.enums.Status.ADDED,
+                    Status.ADDED,
                     mapper.toJooq(ru.chsergeig.shoppy.model.Status.aDDED)
                 )
             },
             {
                 Assertions.assertEquals(
-                    ru.chsergeig.shoppy.jooq.enums.Status.DISABLED,
+                    Status.DISABLED,
                     mapper.toJooq(ru.chsergeig.shoppy.model.Status.dISABLED)
                 )
             },
             {
                 Assertions.assertEquals(
-                    ru.chsergeig.shoppy.jooq.enums.Status.REMOVED,
+                    Status.REMOVED,
                     mapper.toJooq(ru.chsergeig.shoppy.model.Status.rEMOVED)
                 )
             }
@@ -109,31 +111,31 @@ internal class EnumMapperTest {
         Assertions.assertAll(
             {
                 Assertions.assertNull(
-                    mapper.fromJooq(null as ru.chsergeig.shoppy.jooq.enums.Status?)
+                    mapper.fromJooq(null as Status?)
                 )
             },
             {
                 Assertions.assertEquals(
                     ru.chsergeig.shoppy.model.Status.aCTIVE,
-                    mapper.fromJooq(ru.chsergeig.shoppy.jooq.enums.Status.ACTIVE)
+                    mapper.fromJooq(Status.ACTIVE)
                 )
             },
             {
                 Assertions.assertEquals(
                     ru.chsergeig.shoppy.model.Status.aDDED,
-                    mapper.fromJooq(ru.chsergeig.shoppy.jooq.enums.Status.ADDED)
+                    mapper.fromJooq(Status.ADDED)
                 )
             },
             {
                 Assertions.assertEquals(
                     ru.chsergeig.shoppy.model.Status.dISABLED,
-                    mapper.fromJooq(ru.chsergeig.shoppy.jooq.enums.Status.DISABLED)
+                    mapper.fromJooq(Status.DISABLED)
                 )
             },
             {
                 Assertions.assertEquals(
                     ru.chsergeig.shoppy.model.Status.rEMOVED,
-                    mapper.fromJooq(ru.chsergeig.shoppy.jooq.enums.Status.REMOVED)
+                    mapper.fromJooq(Status.REMOVED)
                 )
             }
         )

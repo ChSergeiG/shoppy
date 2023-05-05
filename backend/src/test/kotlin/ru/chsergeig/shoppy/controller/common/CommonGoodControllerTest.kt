@@ -58,7 +58,12 @@ internal class CommonGoodControllerTest : AbstractApiTest() {
 
         val pageable = Pageable.ofSize(size).withPage(page)
 
-        doReturn(listOf(Goods(), Goods()))
+        doReturn(
+            listOf(
+                Goods(),
+                Goods()
+            )
+        )
             .`when`(goodRepository).fetchByFilterAndPagination(eq(filter), eq(pageable))
 
         doReturn(322)

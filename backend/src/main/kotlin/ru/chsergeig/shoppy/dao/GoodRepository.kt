@@ -12,5 +12,5 @@ interface GoodRepository : DAO<GoodsRecord?, Goods?, Int?> {
         pageable: Pageable?
     ): List<Goods>
 
-    fun countActive(): Int
+    fun countActive(): Int?
 }

@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import ru.chsergeig.shoppy.ShoppyTest
+import ru.chsergeig.shoppy.jooq.enums.Status
 import ru.chsergeig.shoppy.jooq.tables.pojos.Orders
 import ru.chsergeig.shoppy.model.AdminOrderDto
 import ru.chsergeig.shoppy.model.CommonOrderDto
@@ -60,7 +61,7 @@ open class OrderMapperTest {
 
         pojo.id = Random.nextInt()
         pojo.info = UUID.randomUUID().toString()
-        pojo.status = ru.chsergeig.shoppy.jooq.enums.Status.ADDED
+        pojo.status = Status.ADDED
         pojo.guid = UUID.randomUUID().toString()
 
         dto = mapper.mapAdmin(pojo)
@@ -89,7 +90,7 @@ open class OrderMapperTest {
 
         pojo.id = Random.nextInt()
         pojo.info = UUID.randomUUID().toString()
-        pojo.status = ru.chsergeig.shoppy.jooq.enums.Status.ADDED
+        pojo.status = Status.ADDED
         pojo.guid = UUID.randomUUID().toString()
 
         dto = mapper.mapExtended(pojo)

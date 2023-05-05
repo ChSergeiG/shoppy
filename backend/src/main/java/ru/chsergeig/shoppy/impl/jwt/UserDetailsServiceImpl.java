@@ -23,7 +23,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final AccountRepository accountRepository;
     private final AccountRoleRepository accountRoleRepository;
-//    private final SecurityProperties securityProperties;
 
     @Override
     @SneakyThrows
@@ -36,11 +35,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             throw new UserPrincipalNotFoundException(username);
         }
         Accounts account = accounts.get(0);
-//        if (!account.getSalted()) {
-//            account.setPassword(TokenUtils.saltValue(securityProperties, account.getPassword()));
-//            account.setSalted(true);
-//            accountRepository.update(account);
-//        }
         List<AccountRole> roles = accountRoleRepository.fetchRolesByLogin(username);
         return new JwtUserDetails(
                 account.getId().longValue(),

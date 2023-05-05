@@ -4,9 +4,11 @@ import ru.chsergeig.shoppy.gradle.POSTGRES_VERSION
 import ru.chsergeig.shoppy.gradle.REST_ASSURED_VERSION
 
 plugins {
-    id("org.springframework.boot") version "2.6.4"
-    id("io.spring.dependency-management") version "1.0.11.RELEASE"
-    id("io.freefair.lombok") version "6.4.1"
+    id("org.springframework.boot")
+    id("io.spring.dependency-management")
+    id("io.freefair.lombok")
+    kotlin("kapt")
+    kotlin("plugin.lombok")
 }
 
 spotless {
@@ -24,6 +26,14 @@ kotlin {
     }
 }
 
+kotlinLombok {
+    lombokConfigurationFile(file("lombok.config"))
+}
+
+kapt {
+    keepJavacAnnotationProcessors = true
+}
+
 sourceSets {
     main {
         resources {
@@ -33,11 +43,13 @@ sourceSets {
 }
 
 dependencies {
+    implementation(project(":annotation-processor"))
     implementation(project(":jooq"))
     implementation(project(":openapi"))
 
     annotationProcessor(group = "org.springframework.boot", name = "spring-boot-configuration-processor")
     annotationProcessor(group = "org.mapstruct", name = "mapstruct-processor", version = MAPSTRUCT_VERSION)
+    kapt(project(":annotation-processor"))
 
     implementation(group = "org.springframework.boot", name = "spring-boot-starter")
     implementation(group = "org.springframework.boot", name = "spring-boot-starter-actuator")

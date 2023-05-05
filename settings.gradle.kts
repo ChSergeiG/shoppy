@@ -1,9 +1,6 @@
 rootProject.name = "shoppy"
 
-include(":backend")
-include(":frontend")
-include(":jooq")
-include(":openapi")
+include(":annotation-processor", ":backend", ":frontend", ":jooq", ":openapi")
 
 pluginManagement {
     repositories {

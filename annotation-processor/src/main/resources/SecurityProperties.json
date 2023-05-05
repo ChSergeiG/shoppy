@@ -1,0 +1,50 @@
+{
+  "constructorBinding": true,
+  "propertyPath": "shoppy.security",
+  "fields": [
+    {
+      "type": "Jwt",
+      "name": "jwt"
+    },
+    {
+      "type": "User",
+      "name": "user"
+    }
+  ],
+  "classes": [
+    {
+      "name": "Jwt",
+      "fields": [
+        {
+          "name": "authorizationHeader",
+          "type": "String"
+        },
+        {
+          "name": "secret",
+          "type": "String"
+        },
+        {
+          "name": "expirationInSeconds",
+          "type": "Long"
+        },
+        {
+          "name": "salt",
+          "type": "String"
+        }
+      ]
+    },
+    {
+      "name": "User",
+      "fields": [
+        {
+          "name": "login",
+          "type": "String"
+        },
+        {
+          "name": "password",
+          "type": "String"
+        }
+      ]
+    }
+  ]
+}

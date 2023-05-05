@@ -36,7 +36,7 @@ subprojects {
     apply(plugin = "com.diffplug.spotless")
 }
 
-val javaProjects = listOf(project(":backend"), project(":jooq"))
+val javaProjects = listOf(project(":annotation-processor"), project(":backend"), project(":jooq"))
 val kotlinProjects = listOf(project(":backend"))
 
 configure(javaProjects) {

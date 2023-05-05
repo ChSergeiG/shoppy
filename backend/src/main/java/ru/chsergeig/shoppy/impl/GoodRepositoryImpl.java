@@ -49,7 +49,7 @@ public class GoodRepositoryImpl
     }
 
     @Override
-    public int countActive() {
+    public Integer countActive() {
         return ctx().select(DSL.count())
                 .from(GOODS)
                 .where(GOODS.STATUS.eq(Status.ACTIVE))

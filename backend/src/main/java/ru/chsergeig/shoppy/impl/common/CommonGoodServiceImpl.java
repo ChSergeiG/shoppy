@@ -35,11 +35,11 @@ public class CommonGoodServiceImpl
             @NotNull Pageable pageable
     ) {
         final List<Goods> goods = goodRepository.fetchByFilterAndPagination(filter, pageable);
-        final int total = goodRepository.countActive();
+        final Integer total = goodRepository.countActive();
         final List<CommonGoodDto> dtos = goods.stream()
                 .map(goodMapper::mapCommon)
                 .collect(Collectors.toList());
-        return new PageImpl<>(dtos, pageable, total);
+        return new PageImpl<>(dtos, pageable, total.longValue());
     }
 
     @Override

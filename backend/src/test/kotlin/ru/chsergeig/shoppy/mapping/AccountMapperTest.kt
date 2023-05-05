@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import ru.chsergeig.shoppy.ShoppyTest
-import ru.chsergeig.shoppy.jooq.enums.AccountRole
 import ru.chsergeig.shoppy.jooq.enums.Status
 import ru.chsergeig.shoppy.jooq.tables.pojos.Accounts
 import ru.chsergeig.shoppy.model.AdminAccountDto
@@ -40,7 +39,7 @@ internal class AccountMapperTest {
         dto.password = UUID.randomUUID().toString()
         dto.salted = false
         dto.status = ru.chsergeig.shoppy.model.Status.aDDED
-        dto.accountRoles = listOf(AccountRole.ROLE_GUEST, AccountRole.ROLE_ADMIN)
+        dto.accountRoles = listOf(ru.chsergeig.shoppy.model.AccountRole.gUEST, ru.chsergeig.shoppy.model.AccountRole.aDMIN)
         pojo = mapper.mapAdmin(dto)
         assertAll(
             { assertEquals(dto.id, pojo.id) },
